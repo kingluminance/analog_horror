@@ -1,0 +1,40 @@
+using StoryFlags
+
+~ start
+$> locals.visits = StoryFlags.get_visit_count("ping_pong_bottle")
+$> StoryFlags.increment_visit_count("ping_pong_bottle")
+if locals.visits >= 1
+	=> repeat
+else
+	=> first_meet
+
+
+~ first_meet
+물병: ...
+- 여기서 뭐해?
+	물병: 그냥 시간 죽이기.
+	=> serve
+- 아무 말도 안 한다
+	=> serve
+=> END
+
+
+~ serve
+물병: 탁구 칠래?
+- 아니.
+	물병: 그럼 왜 나한테 온건데?
+	=> END
+- 그래
+	물병: 넌 라켓이 없잖아.
+	=> END
+
+
+~ repeat
+물병: 또 왔네.
+- 뚜껑이 왜 이렇게 많아?
+	물병: 아무리 많은 뚜껑이 있어도 물을 마시는 뚜껑은 하나야.
+	=> END
+- 탁구 치자.
+	물병: 그럼 라켓을 가져와.
+- 그냥 지나간다.
+	=> END

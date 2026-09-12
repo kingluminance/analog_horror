@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://duemy1qdkvw6j"
-path="res://.godot/imported/monocle_guy.png-f2404d004d4f47c33d1340e218748c41.ctex"
+path="res://.godot/imported/john.png-bc8738618ac5a39cc0d9e3e283396e45.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://entities/floating_photo/photos/monocle_guy.png"
-dest_files=["res://.godot/imported/monocle_guy.png-f2404d004d4f47c33d1340e218748c41.ctex"]
+source_file="res://entities/floating_photo/photos/john.png"
+dest_files=["res://.godot/imported/john.png-bc8738618ac5a39cc0d9e3e283396e45.ctex"]
 
 [params]
 

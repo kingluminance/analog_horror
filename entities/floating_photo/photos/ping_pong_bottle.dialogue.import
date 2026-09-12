@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://rv6o3uu6mjn6"
+path="res://.godot/imported/ping_pong_bottle.dialogue-846d29669ad4c54e8ec4f34fe1e57fe2.tres"
+
+[deps]
+
+source_file="res://entities/floating_photo/photos/ping_pong_bottle.dialogue"
+dest_files=["res://.godot/imported/ping_pong_bottle.dialogue-846d29669ad4c54e8ec4f34fe1e57fe2.tres"]
+
+[params]
+
+defaults=true

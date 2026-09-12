@@ -1,42 +1,24 @@
-[gd_scene load_steps=24 format=3]
+[gd_scene format=3 uid="uid://ct5yejfl1j6n2"]
 
-[ext_resource type="Script" path="res://entities/player/player.gd" id="1_player"]
-[ext_resource type="Shader" path="res://shaders/curved_world.gdshader" id="3_shader"]
+[ext_resource type="Script" uid="uid://cli8h3btmkntl" path="res://entities/player/player.gd" id="1_player"]
+[ext_resource type="Shader" uid="uid://keged1jvrqem" path="res://shaders/curved_world.gdshader" id="3_shader"]
 [ext_resource type="PackedScene" path="res://entities/floating_photo/floating_photo.tscn" id="5_photo"]
-[ext_resource type="Texture2D" path="res://entities/floating_photo/photos/monocle_guy_180.png" id="6_monocle_tex"]
-[ext_resource type="DialogueResource" path="res://entities/floating_photo/photos/monocle_guy.dialogue" id="7_monocle_dlg"]
-[ext_resource type="Script" path="res://audio/looping_player.gd" id="8_loop_audio"]
-[ext_resource type="AudioStream" path="res://audio/wind_ambience.wav" id="9_wind"]
-[ext_resource type="Script" path="res://audio/static_glitch.gd" id="10_static_glitch"]
-[ext_resource type="AudioStream" path="res://audio/static_burst.wav" id="11_static"]
+[ext_resource type="Texture2D" uid="uid://ds1amgwebd7rx" path="res://entities/floating_photo/photos/john_180.png" id="6_john_tex"]
+[ext_resource type="Resource" uid="uid://oy5catpy20lc" path="res://entities/floating_photo/photos/john.dialogue" id="7_john_dlg"]
+[ext_resource type="Script" uid="uid://3qdox47ogfjl" path="res://audio/looping_player.gd" id="8_loop_audio"]
+[ext_resource type="AudioStream" uid="uid://1rjqqnevvvpt" path="res://audio/wind_ambience.wav" id="9_wind"]
 [ext_resource type="PackedScene" path="res://ui/post_process.tscn" id="12_post"]
 [ext_resource type="PackedScene" path="res://ui/pause_menu.tscn" id="13_pause"]
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
-size = Vector2(200, 200)
-subdivide_width = 64
-subdivide_depth = 64
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ground"]
-shader = ExtResource("3_shader")
-shader_parameter/curve_strength = 0.0008
-shader_parameter/albedo_color = Color(0.31, 0.71, 0.31, 1)
-
-[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_ground"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_boundary_segment"]
-size = Vector3(11.3, 20.0, 2.0)
-
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
-radius = 0.4
-height = 1.8
+[ext_resource type="Texture2D" uid="uid://utg5el48mm3c" path="res://entities/floating_photo/photos/ping_pong_bottle.png" id="14_ppb_tex"]
+[ext_resource type="Resource" uid="uid://rv6o3uu6mjn6" path="res://entities/floating_photo/photos/ping_pong_bottle.dialogue" id="15_ppb_dlg"]
+[ext_resource type="PackedScene" path="res://entities/orbiting_paddle/orbiting_paddle.tscn" id="16_paddle"]
+[ext_resource type="Resource" uid="uid://cjlepndk3t00n" path="res://entities/orbiting_paddle/paddle.dialogue" id="17_paddle_dlg"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.35, 0.65, 1, 1)
 sky_horizon_color = Color(0.85, 0.92, 1, 1)
 ground_bottom_color = Color(0.6, 0.55, 0.5, 1)
 ground_horizon_color = Color(0.85, 0.92, 1, 1)
-sun_angle_max = 30.0
 
 [sub_resource type="Sky" id="Sky_main"]
 sky_material = SubResource("ProceduralSkyMaterial_sky")
@@ -45,22 +27,48 @@ sky_material = SubResource("ProceduralSkyMaterial_sky")
 background_mode = 2
 sky = SubResource("Sky_main")
 ambient_light_source = 3
+glow_enabled = true
+glow_intensity = 0.4
 fog_enabled = true
 fog_light_color = Color(0.85, 0.92, 1, 1)
 fog_density = 0.008
-glow_enabled = true
-glow_intensity = 0.4
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
+size = Vector2(200, 200)
+subdivide_width = 64
+subdivide_depth = 64
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ground"]
+render_priority = 0
+shader = ExtResource("3_shader")
+shader_parameter/curve_strength = 0.0008
+shader_parameter/albedo_color = Color(0.31, 0.71, 0.31, 1)
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_ground"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_boundary_segment"]
+size = Vector3(11.3, 20, 2)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
+radius = 0.4
+height = 1.8
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_trunk"]
+render_priority = 0
+shader = ExtResource("3_shader")
+shader_parameter/curve_strength = 0.0008
+shader_parameter/albedo_color = Color(0.36, 0.25, 0.16, 1)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_trunk"]
 top_radius = 0.15
 bottom_radius = 0.15
-height = 2.0
 radial_segments = 6
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_trunk"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_foliage"]
+render_priority = 0
 shader = ExtResource("3_shader")
 shader_parameter/curve_strength = 0.0008
-shader_parameter/albedo_color = Color(0.36, 0.25, 0.16, 1)
+shader_parameter/albedo_color = Color(0.2, 0.55, 0.22, 1)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_foliage"]
 top_radius = 0.05
@@ -68,768 +76,768 @@ bottom_radius = 1.2
 height = 3.0
 radial_segments = 6
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_foliage"]
-shader = ExtResource("3_shader")
-shader_parameter/curve_strength = 0.0008
-shader_parameter/albedo_color = Color(0.2, 0.55, 0.22, 1)
+[node name="Main" type="Node3D" unique_id=1138187657]
 
-[node name="Main" type="Node3D"]
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1427278277]
 environment = SubResource("Environment_main")
 
-[node name="Sun" type="DirectionalLight3D" parent="."]
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=1669088454]
 transform = Transform3D(0.866, -0.433, 0.25, 0, 0.5, 0.866, -0.5, -0.75, 0.433, 0, 10, 0)
 light_energy = 1.2
 shadow_enabled = true
 
-[node name="Ground" type="StaticBody3D" parent="."]
+[node name="Ground" type="StaticBody3D" parent="." unique_id=946839710]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground" unique_id=107020605]
 mesh = SubResource("PlaneMesh_ground")
 surface_material_override/0 = SubResource("ShaderMaterial_ground")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=616046033]
 shape = SubResource("WorldBoundaryShape3D_ground")
 
-[node name="WorldBoundary" type="StaticBody3D" parent="."]
+[node name="WorldBoundary" type="StaticBody3D" parent="." unique_id=1278651413]
 
-[node name="Segment0" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(0.000000, 0, -1.000000, 0, 1, 0, 1.000000, 0, 0.000000, 50.000000, 10.0, 0.000000)
+[node name="Segment0" type="CollisionShape3D" parent="WorldBoundary" unique_id=296334897]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 50, 10, 0)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment1" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(-0.195090, 0, -0.980785, 0, 1, 0, 0.980785, 0, -0.195090, 49.039264, 10.0, 9.754516)
+[node name="Segment1" type="CollisionShape3D" parent="WorldBoundary" unique_id=10060375]
+transform = Transform3D(-0.19509, 0, -0.980785, 0, 1, 0, 0.980785, 0, -0.19509, 49.039265, 10, 9.754516)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment2" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(-0.382683, 0, -0.923880, 0, 1, 0, 0.923880, 0, -0.382683, 46.193977, 10.0, 19.134172)
+[node name="Segment2" type="CollisionShape3D" parent="WorldBoundary" unique_id=1291885161]
+transform = Transform3D(-0.382683, 0, -0.92388, 0, 1, 0, 0.92388, 0, -0.382683, 46.193977, 10, 19.134172)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment3" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(-0.555570, 0, -0.831470, 0, 1, 0, 0.831470, 0, -0.555570, 41.573481, 10.0, 27.778512)
+[node name="Segment3" type="CollisionShape3D" parent="WorldBoundary" unique_id=1269789815]
+transform = Transform3D(-0.55557, 0, -0.83147, 0, 1, 0, 0.83147, 0, -0.55557, 41.573483, 10, 27.778511)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment4" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107, 35.355339, 10.0, 35.355339)
+[node name="Segment4" type="CollisionShape3D" parent="WorldBoundary" unique_id=1586685185]
+transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107, 35.35534, 10, 35.35534)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment5" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(-0.831470, 0, -0.555570, 0, 1, 0, 0.555570, 0, -0.831470, 27.778512, 10.0, 41.573481)
+[node name="Segment5" type="CollisionShape3D" parent="WorldBoundary" unique_id=1855647259]
+transform = Transform3D(-0.83147, 0, -0.55557, 0, 1, 0, 0.55557, 0, -0.83147, 27.778511, 10, 41.573483)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment6" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(-0.923880, 0, -0.382683, 0, 1, 0, 0.382683, 0, -0.923880, 19.134172, 10.0, 46.193977)
+[node name="Segment6" type="CollisionShape3D" parent="WorldBoundary" unique_id=1119626318]
+transform = Transform3D(-0.92388, 0, -0.382683, 0, 1, 0, 0.382683, 0, -0.92388, 19.134172, 10, 46.193977)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment7" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(-0.980785, 0, -0.195090, 0, 1, 0, 0.195090, 0, -0.980785, 9.754516, 10.0, 49.039264)
+[node name="Segment7" type="CollisionShape3D" parent="WorldBoundary" unique_id=834544041]
+transform = Transform3D(-0.980785, 0, -0.19509, 0, 1, 0, 0.19509, 0, -0.980785, 9.754516, 10, 49.039265)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment8" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(-1.000000, 0, -0.000000, 0, 1, 0, 0.000000, 0, -1.000000, 0.000000, 10.0, 50.000000)
+[node name="Segment8" type="CollisionShape3D" parent="WorldBoundary" unique_id=2019728201]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 10, 50)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment9" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(-0.980785, 0, 0.195090, 0, 1, 0, -0.195090, 0, -0.980785, -9.754516, 10.0, 49.039264)
+[node name="Segment9" type="CollisionShape3D" parent="WorldBoundary" unique_id=1834095047]
+transform = Transform3D(-0.980785, 0, 0.19509, 0, 1, 0, -0.19509, 0, -0.980785, -9.754516, 10, 49.039265)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment10" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(-0.923880, 0, 0.382683, 0, 1, 0, -0.382683, 0, -0.923880, -19.134172, 10.0, 46.193977)
+[node name="Segment10" type="CollisionShape3D" parent="WorldBoundary" unique_id=126661239]
+transform = Transform3D(-0.92388, 0, 0.382683, 0, 1, 0, -0.382683, 0, -0.92388, -19.134172, 10, 46.193977)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment11" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(-0.831470, 0, 0.555570, 0, 1, 0, -0.555570, 0, -0.831470, -27.778512, 10.0, 41.573481)
+[node name="Segment11" type="CollisionShape3D" parent="WorldBoundary" unique_id=1946493329]
+transform = Transform3D(-0.83147, 0, 0.55557, 0, 1, 0, -0.55557, 0, -0.83147, -27.778511, 10, 41.573483)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment12" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, -35.355339, 10.0, 35.355339)
+[node name="Segment12" type="CollisionShape3D" parent="WorldBoundary" unique_id=484683034]
+transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, -35.35534, 10, 35.35534)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment13" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(-0.555570, 0, 0.831470, 0, 1, 0, -0.831470, 0, -0.555570, -41.573481, 10.0, 27.778512)
+[node name="Segment13" type="CollisionShape3D" parent="WorldBoundary" unique_id=498643802]
+transform = Transform3D(-0.55557, 0, 0.83147, 0, 1, 0, -0.83147, 0, -0.55557, -41.573483, 10, 27.778511)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment14" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(-0.382683, 0, 0.923880, 0, 1, 0, -0.923880, 0, -0.382683, -46.193977, 10.0, 19.134172)
+[node name="Segment14" type="CollisionShape3D" parent="WorldBoundary" unique_id=1334250513]
+transform = Transform3D(-0.382683, 0, 0.92388, 0, 1, 0, -0.92388, 0, -0.382683, -46.193977, 10, 19.134172)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment15" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(-0.195090, 0, 0.980785, 0, 1, 0, -0.980785, 0, -0.195090, -49.039264, 10.0, 9.754516)
+[node name="Segment15" type="CollisionShape3D" parent="WorldBoundary" unique_id=1054482888]
+transform = Transform3D(-0.19509, 0, 0.980785, 0, 1, 0, -0.980785, 0, -0.19509, -49.039265, 10, 9.754516)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment16" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(-0.000000, 0, 1.000000, 0, 1, 0, -1.000000, 0, -0.000000, -50.000000, 10.0, 0.000000)
+[node name="Segment16" type="CollisionShape3D" parent="WorldBoundary" unique_id=1191021455]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -50, 10, 0)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment17" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(0.195090, 0, 0.980785, 0, 1, 0, -0.980785, 0, 0.195090, -49.039264, 10.0, -9.754516)
+[node name="Segment17" type="CollisionShape3D" parent="WorldBoundary" unique_id=203563454]
+transform = Transform3D(0.19509, 0, 0.980785, 0, 1, 0, -0.980785, 0, 0.19509, -49.039265, 10, -9.754516)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment18" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(0.382683, 0, 0.923880, 0, 1, 0, -0.923880, 0, 0.382683, -46.193977, 10.0, -19.134172)
+[node name="Segment18" type="CollisionShape3D" parent="WorldBoundary" unique_id=994539823]
+transform = Transform3D(0.382683, 0, 0.92388, 0, 1, 0, -0.92388, 0, 0.382683, -46.193977, 10, -19.134172)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment19" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(0.555570, 0, 0.831470, 0, 1, 0, -0.831470, 0, 0.555570, -41.573481, 10.0, -27.778512)
+[node name="Segment19" type="CollisionShape3D" parent="WorldBoundary" unique_id=1133565066]
+transform = Transform3D(0.55557, 0, 0.83147, 0, 1, 0, -0.83147, 0, 0.55557, -41.573483, 10, -27.778511)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment20" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -35.355339, 10.0, -35.355339)
+[node name="Segment20" type="CollisionShape3D" parent="WorldBoundary" unique_id=120562827]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, -35.35534, 10, -35.35534)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment21" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(0.831470, 0, 0.555570, 0, 1, 0, -0.555570, 0, 0.831470, -27.778512, 10.0, -41.573481)
+[node name="Segment21" type="CollisionShape3D" parent="WorldBoundary" unique_id=1435556692]
+transform = Transform3D(0.83147, 0, 0.55557, 0, 1, 0, -0.55557, 0, 0.83147, -27.778511, 10, -41.573483)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment22" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(0.923880, 0, 0.382683, 0, 1, 0, -0.382683, 0, 0.923880, -19.134172, 10.0, -46.193977)
+[node name="Segment22" type="CollisionShape3D" parent="WorldBoundary" unique_id=2130773058]
+transform = Transform3D(0.92388, 0, 0.382683, 0, 1, 0, -0.382683, 0, 0.92388, -19.134172, 10, -46.193977)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment23" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(0.980785, 0, 0.195090, 0, 1, 0, -0.195090, 0, 0.980785, -9.754516, 10.0, -49.039264)
+[node name="Segment23" type="CollisionShape3D" parent="WorldBoundary" unique_id=751166751]
+transform = Transform3D(0.980785, 0, 0.19509, 0, 1, 0, -0.19509, 0, 0.980785, -9.754516, 10, -49.039265)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment24" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(1.000000, 0, 0.000000, 0, 1, 0, -0.000000, 0, 1.000000, -0.000000, 10.0, -50.000000)
+[node name="Segment24" type="CollisionShape3D" parent="WorldBoundary" unique_id=219527109]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, -50)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment25" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(0.980785, 0, -0.195090, 0, 1, 0, 0.195090, 0, 0.980785, 9.754516, 10.0, -49.039264)
+[node name="Segment25" type="CollisionShape3D" parent="WorldBoundary" unique_id=1032079790]
+transform = Transform3D(0.980785, 0, -0.19509, 0, 1, 0, 0.19509, 0, 0.980785, 9.754516, 10, -49.039265)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment26" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(0.923880, 0, -0.382683, 0, 1, 0, 0.382683, 0, 0.923880, 19.134172, 10.0, -46.193977)
+[node name="Segment26" type="CollisionShape3D" parent="WorldBoundary" unique_id=125519649]
+transform = Transform3D(0.92388, 0, -0.382683, 0, 1, 0, 0.382683, 0, 0.92388, 19.134172, 10, -46.193977)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment27" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(0.831470, 0, -0.555570, 0, 1, 0, 0.555570, 0, 0.831470, 27.778512, 10.0, -41.573481)
+[node name="Segment27" type="CollisionShape3D" parent="WorldBoundary" unique_id=206936252]
+transform = Transform3D(0.83147, 0, -0.55557, 0, 1, 0, 0.55557, 0, 0.83147, 27.778511, 10, -41.573483)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment28" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 35.355339, 10.0, -35.355339)
+[node name="Segment28" type="CollisionShape3D" parent="WorldBoundary" unique_id=1905218619]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 35.35534, 10, -35.35534)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment29" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(0.555570, 0, -0.831470, 0, 1, 0, 0.831470, 0, 0.555570, 41.573481, 10.0, -27.778512)
+[node name="Segment29" type="CollisionShape3D" parent="WorldBoundary" unique_id=1976386612]
+transform = Transform3D(0.55557, 0, -0.83147, 0, 1, 0, 0.83147, 0, 0.55557, 41.573483, 10, -27.778511)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment30" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(0.382683, 0, -0.923880, 0, 1, 0, 0.923880, 0, 0.382683, 46.193977, 10.0, -19.134172)
+[node name="Segment30" type="CollisionShape3D" parent="WorldBoundary" unique_id=1489849441]
+transform = Transform3D(0.382683, 0, -0.92388, 0, 1, 0, 0.92388, 0, 0.382683, 46.193977, 10, -19.134172)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Segment31" type="CollisionShape3D" parent="WorldBoundary"]
-transform = Transform3D(0.195090, 0, -0.980785, 0, 1, 0, 0.980785, 0, 0.195090, 49.039264, 10.0, -9.754516)
+[node name="Segment31" type="CollisionShape3D" parent="WorldBoundary" unique_id=26761631]
+transform = Transform3D(0.19509, 0, -0.980785, 0, 1, 0, 0.980785, 0, 0.19509, 49.039265, 10, -9.754516)
 shape = SubResource("BoxShape3D_boundary_segment")
-[node name="Player" type="CharacterBody3D" parent="."]
+
+[node name="Player" type="CharacterBody3D" parent="." unique_id=1647718008]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 5)
 script = ExtResource("1_player")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=74698118]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 shape = SubResource("CapsuleShape3D_player")
 
-[node name="Camera3D" type="Camera3D" parent="Player"]
+[node name="Camera3D" type="Camera3D" parent="Player" unique_id=1976780151]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
 fov = 90.0
 
-[node name="FootstepPlayer" type="AudioStreamPlayer" parent="Player"]
+[node name="FootstepPlayer" type="AudioStreamPlayer" parent="Player" unique_id=1984211317]
 volume_db = -10.0
 
-[node name="Trees" type="Node3D" parent="."]
+[node name="Trees" type="Node3D" parent="." unique_id=1679648827]
 
-[node name="Tree0" type="Node3D" parent="Trees"]
-transform = Transform3D(-0.801886, 0, -0.268497, 0, 0.845643, 0, 0.268497, 0, -0.801886, 24.713933, 0, -11.027682)
+[node name="Tree0" type="Node3D" parent="Trees" unique_id=1237486572]
+transform = Transform3D(-0.801886, 0, -0.268497, 0, 0.845643, 0, 0.268497, 0, -0.801886, 24.713934, 0, -11.027682)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
-mesh = SubResource("CylinderMesh_trunk")
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree0" unique_id=902146887]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 material_override = SubResource("ShaderMaterial_trunk")
-
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
-material_override = SubResource("ShaderMaterial_foliage")
-
-[node name="Tree1" type="Node3D" parent="Trees"]
-transform = Transform3D(-0.880867, 0, -0.561281, 0, 1.044491, 0, 0.561281, 0, -0.880867, 33.737146, 0, 0.381589)
-
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree1"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree0" unique_id=157851509]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree2" type="Node3D" parent="Trees"]
+[node name="Tree1" type="Node3D" parent="Trees" unique_id=246946019]
+transform = Transform3D(-0.880867, 0, -0.561281, 0, 1.044491, 0, 0.561281, 0, -0.880867, 33.737144, 0, 0.381589)
+
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree1" unique_id=215952204]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
+mesh = SubResource("CylinderMesh_trunk")
+
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree1" unique_id=428780639]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
+material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
+
+[node name="Tree2" type="Node3D" parent="Trees" unique_id=745259340]
 transform = Transform3D(0.012259, 0, 0.843612, 0, 0.843701, 0, -0.843612, 0, 0.012259, -29.127472, 0, 20.968826)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
-mesh = SubResource("CylinderMesh_trunk")
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree2" unique_id=724714323]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 material_override = SubResource("ShaderMaterial_trunk")
-
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
-material_override = SubResource("ShaderMaterial_foliage")
-
-[node name="Tree3" type="Node3D" parent="Trees"]
-transform = Transform3D(-0.728620, 0, 1.045174, 0, 1.274079, 0, -1.045174, 0, -0.728620, -9.828675, 0, 7.445038)
-
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree3"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree2" unique_id=1190289309]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree4" type="Node3D" parent="Trees"]
+[node name="Tree3" type="Node3D" parent="Trees" unique_id=935591121]
+transform = Transform3D(-0.72862, 0, 1.045174, 0, 1.274079, 0, -1.045174, 0, -0.72862, -9.828675, 0, 7.445038)
+
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree3" unique_id=1380621521]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
+mesh = SubResource("CylinderMesh_trunk")
+
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree3" unique_id=1565731159]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
+material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
+
+[node name="Tree4" type="Node3D" parent="Trees" unique_id=1031910396]
 transform = Transform3D(-0.123174, 0, 1.096246, 0, 1.103144, 0, -1.096246, 0, -0.123174, -1.136142, 0, 9.600259)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
-mesh = SubResource("CylinderMesh_trunk")
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree4" unique_id=1329661705]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 material_override = SubResource("ShaderMaterial_trunk")
-
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
-material_override = SubResource("ShaderMaterial_foliage")
-
-[node name="Tree5" type="Node3D" parent="Trees"]
-transform = Transform3D(0.022534, 0, 1.201462, 0, 1.201674, 0, -1.201462, 0, 0.022534, -3.504628, 0, 37.274999)
-
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree5"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree4" unique_id=315070981]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree6" type="Node3D" parent="Trees"]
-transform = Transform3D(0.704626, 0, -0.833436, 0, 1.091381, 0, 0.833436, 0, 0.704626, -27.305949, 0, 34.074749)
+[node name="Tree5" type="Node3D" parent="Trees" unique_id=995524804]
+transform = Transform3D(0.022534, 0, 1.201462, 0, 1.201674, 0, -1.201462, 0, 0.022534, -3.504628, 0, 37.274998)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree5" unique_id=698364759]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree6"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree5" unique_id=2030109193]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree7" type="Node3D" parent="Trees"]
-transform = Transform3D(0.614357, 0, 0.554750, 0, 0.827757, 0, -0.554750, 0, 0.614357, -38.007225, 0, 13.240178)
+[node name="Tree6" type="Node3D" parent="Trees" unique_id=770243239]
+transform = Transform3D(0.704626, 0, -0.833436, 0, 1.091381, 0, 0.833436, 0, 0.704626, -27.305948, 0, 34.07475)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree7"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree6" unique_id=1223800294]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree7"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree6" unique_id=1816329451]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree8" type="Node3D" parent="Trees"]
-transform = Transform3D(0.471807, 0, -1.085651, 0, 1.183739, 0, 1.085651, 0, 0.471807, -21.138381, 0, 5.189896)
+[node name="Tree7" type="Node3D" parent="Trees" unique_id=1497800793]
+transform = Transform3D(0.614357, 0, 0.55475, 0, 0.827757, 0, -0.55475, 0, 0.614357, -38.007225, 0, 13.240178)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree8"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree7" unique_id=877707435]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree8"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree7" unique_id=633903305]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree9" type="Node3D" parent="Trees"]
-transform = Transform3D(-0.566766, 0, 0.871560, 0, 1.039635, 0, -0.871560, 0, -0.566766, -12.291637, 0, 4.478340)
+[node name="Tree8" type="Node3D" parent="Trees" unique_id=191346987]
+transform = Transform3D(0.471807, 0, -1.085651, 0, 1.183739, 0, 1.085651, 0, 0.471807, -21.13838, 0, 5.189896)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree9"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree8" unique_id=1789760228]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree9"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree8" unique_id=1840211910]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree10" type="Node3D" parent="Trees"]
+[node name="Tree9" type="Node3D" parent="Trees" unique_id=726967254]
+transform = Transform3D(-0.566766, 0, 0.87156, 0, 1.039635, 0, -0.87156, 0, -0.566766, -12.291637, 0, 4.47834)
+
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree9" unique_id=1917893591]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
+mesh = SubResource("CylinderMesh_trunk")
+
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree9" unique_id=1886015687]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
+material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
+
+[node name="Tree10" type="Node3D" parent="Trees" unique_id=1576641894]
 transform = Transform3D(-0.439583, 0, 1.040799, 0, 1.129821, 0, -1.040799, 0, -0.439583, 4.620173, 0, 3.341366)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree10"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
-mesh = SubResource("CylinderMesh_trunk")
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree10" unique_id=1109612895]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 material_override = SubResource("ShaderMaterial_trunk")
-
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree10"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
-material_override = SubResource("ShaderMaterial_foliage")
-
-[node name="Tree11" type="Node3D" parent="Trees"]
-transform = Transform3D(-0.412218, 0, 0.889442, 0, 0.980322, 0, -0.889442, 0, -0.412218, -25.318802, 0, 20.996978)
-
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree11"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree11"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree10" unique_id=1032825098]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree12" type="Node3D" parent="Trees"]
+[node name="Tree11" type="Node3D" parent="Trees" unique_id=1472539083]
+transform = Transform3D(-0.412218, 0, 0.889442, 0, 0.980322, 0, -0.889442, 0, -0.412218, -25.318802, 0, 20.996979)
+
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree11" unique_id=79056467]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
+mesh = SubResource("CylinderMesh_trunk")
+
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree11" unique_id=190938280]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
+material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
+
+[node name="Tree12" type="Node3D" parent="Trees" unique_id=256963608]
 transform = Transform3D(0.202737, 0, -1.214476, 0, 1.231281, 0, 1.214476, 0, 0.202737, 5.742477, 0, 15.390471)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree12"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
-mesh = SubResource("CylinderMesh_trunk")
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree12" unique_id=1125760446]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 material_override = SubResource("ShaderMaterial_trunk")
-
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree12"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
-material_override = SubResource("ShaderMaterial_foliage")
-
-[node name="Tree13" type="Node3D" parent="Trees"]
-transform = Transform3D(0.804858, 0, 0.531416, 0, 0.964469, 0, -0.531416, 0, 0.804858, 23.751155, 0, 15.416493)
-
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree13"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree13"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree12" unique_id=1424171564]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree14" type="Node3D" parent="Trees"]
-transform = Transform3D(-0.971624, 0, 0.265738, 0, 1.007308, 0, -0.265738, 0, -0.971624, -20.286302, 0, -0.176333)
+[node name="Tree13" type="Node3D" parent="Trees" unique_id=139123522]
+transform = Transform3D(0.804858, 0, 0.531416, 0, 0.964469, 0, -0.531416, 0, 0.804858, 23.751156, 0, 15.416493)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree14"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree13" unique_id=1067702933]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree14"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree13" unique_id=938313224]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree15" type="Node3D" parent="Trees"]
-transform = Transform3D(0.381386, 0, -0.715840, 0, 0.811099, 0, 0.715840, 0, 0.381386, -14.252015, 0, 21.438949)
+[node name="Tree14" type="Node3D" parent="Trees" unique_id=1444987383]
+transform = Transform3D(-0.971624, 0, 0.265738, 0, 1.007308, 0, -0.265738, 0, -0.971624, -20.286303, 0, -0.176333)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree15"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree14" unique_id=659326252]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree15"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree14" unique_id=639347698]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree16" type="Node3D" parent="Trees"]
+[node name="Tree15" type="Node3D" parent="Trees" unique_id=1729016481]
+transform = Transform3D(0.381386, 0, -0.71584, 0, 0.811099, 0, 0.71584, 0, 0.381386, -14.252015, 0, 21.43895)
+
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree15" unique_id=424072901]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
+mesh = SubResource("CylinderMesh_trunk")
+
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree15" unique_id=881038263]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
+material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
+
+[node name="Tree16" type="Node3D" parent="Trees" unique_id=126319039]
 transform = Transform3D(-0.750339, 0, 1.049185, 0, 1.289883, 0, -1.049185, 0, -0.750339, 23.083183, 0, 6.796266)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree16"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
-mesh = SubResource("CylinderMesh_trunk")
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree16" unique_id=38284632]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 material_override = SubResource("ShaderMaterial_trunk")
+mesh = SubResource("CylinderMesh_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree16"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree16" unique_id=2103452975]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree17" type="Node3D" parent="Trees"]
+[node name="Tree17" type="Node3D" parent="Trees" unique_id=2034551968]
 transform = Transform3D(-0.840348, 0, 0.244136, 0, 0.875092, 0, -0.244136, 0, -0.840348, 4.857932, 0, -3.388543)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree17"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
-mesh = SubResource("CylinderMesh_trunk")
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree17" unique_id=147482722]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 material_override = SubResource("ShaderMaterial_trunk")
-
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree17"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
-material_override = SubResource("ShaderMaterial_foliage")
-
-[node name="Tree18" type="Node3D" parent="Trees"]
-transform = Transform3D(0.871589, 0, -0.812997, 0, 1.191902, 0, 0.812997, 0, 0.871589, 42.827213, 0, 17.628875)
-
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree18"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree18"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree17" unique_id=404838095]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree19" type="Node3D" parent="Trees"]
-transform = Transform3D(-1.063172, 0, 0.761310, 0, 1.307642, 0, -0.761310, 0, -1.063172, -15.833797, 0, -49.468812)
+[node name="Tree18" type="Node3D" parent="Trees" unique_id=527945046]
+transform = Transform3D(0.871589, 0, -0.812997, 0, 1.191902, 0, 0.812997, 0, 0.871589, 42.827213, 0, 17.628876)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree19"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree18" unique_id=838042100]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree19"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree18" unique_id=1428142385]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree20" type="Node3D" parent="Trees"]
+[node name="Tree19" type="Node3D" parent="Trees" unique_id=724639662]
+transform = Transform3D(-1.063172, 0, 0.76131, 0, 1.307642, 0, -0.76131, 0, -1.063172, -15.833797, 0, -49.46881)
+
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree19" unique_id=430308610]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
+mesh = SubResource("CylinderMesh_trunk")
+
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree19" unique_id=446252160]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
+material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
+
+[node name="Tree20" type="Node3D" parent="Trees" unique_id=920504604]
 transform = Transform3D(-0.379053, 0, 1.051701, 0, 1.117925, 0, -1.051701, 0, -0.379053, 30.813711, 0, -29.728035)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree20"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
-mesh = SubResource("CylinderMesh_trunk")
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree20" unique_id=447741880]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 material_override = SubResource("ShaderMaterial_trunk")
-
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree20"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
-material_override = SubResource("ShaderMaterial_foliage")
-
-[node name="Tree21" type="Node3D" parent="Trees"]
-transform = Transform3D(-0.483385, 0, 0.741666, 0, 0.885285, 0, -0.741666, 0, -0.483385, -44.312565, 0, -17.487107)
-
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree21"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree21"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree20" unique_id=552384162]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree22" type="Node3D" parent="Trees"]
-transform = Transform3D(-0.874489, 0, -0.013291, 0, 0.874590, 0, 0.013291, 0, -0.874489, 18.954466, 0, -48.312533)
+[node name="Tree21" type="Node3D" parent="Trees" unique_id=96845018]
+transform = Transform3D(-0.483385, 0, 0.741666, 0, 0.885285, 0, -0.741666, 0, -0.483385, -44.312565, 0, -17.487106)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree22"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree21" unique_id=1360126681]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree22"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree21" unique_id=1428349609]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree23" type="Node3D" parent="Trees"]
-transform = Transform3D(-1.108797, 0, 0.067923, 0, 1.110875, 0, -0.067923, 0, -1.108797, 51.019221, 0, -3.164588)
+[node name="Tree22" type="Node3D" parent="Trees" unique_id=80245873]
+transform = Transform3D(-0.874489, 0, -0.013291, 0, 0.87459, 0, 0.013291, 0, -0.874489, 18.954466, 0, -48.312534)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree23"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree22" unique_id=2120724222]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree23"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree22" unique_id=460614815]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree24" type="Node3D" parent="Trees"]
-transform = Transform3D(0.632669, 0, -0.651902, 0, 0.908431, 0, 0.651902, 0, 0.632669, -40.497018, 0, 15.872764)
+[node name="Tree23" type="Node3D" parent="Trees" unique_id=1345560144]
+transform = Transform3D(-1.108797, 0, 0.067923, 0, 1.110875, 0, -0.067923, 0, -1.108797, 51.019222, 0, -3.164588)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree24"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree23" unique_id=438602476]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree24"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree23" unique_id=1865585364]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree25" type="Node3D" parent="Trees"]
-transform = Transform3D(-0.386481, 0, -0.839164, 0, 0.923885, 0, 0.839164, 0, -0.386481, 0.653187, 0, 43.612699)
+[node name="Tree24" type="Node3D" parent="Trees" unique_id=431943872]
+transform = Transform3D(0.632669, 0, -0.651902, 0, 0.908431, 0, 0.651902, 0, 0.632669, -40.497017, 0, 15.872764)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree25"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree24" unique_id=1779525426]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree25"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree24" unique_id=1327849521]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree26" type="Node3D" parent="Trees"]
-transform = Transform3D(0.220354, 0, -1.339921, 0, 1.357919, 0, 1.339921, 0, 0.220354, 34.298452, 0, 27.015054)
+[node name="Tree25" type="Node3D" parent="Trees" unique_id=618576888]
+transform = Transform3D(-0.386481, 0, -0.839164, 0, 0.923885, 0, 0.839164, 0, -0.386481, 0.653187, 0, 43.612698)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree26"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree25" unique_id=681751195]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree26"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree25" unique_id=1499353214]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree27" type="Node3D" parent="Trees"]
+[node name="Tree26" type="Node3D" parent="Trees" unique_id=1637940637]
+transform = Transform3D(0.220354, 0, -1.339921, 0, 1.357919, 0, 1.339921, 0, 0.220354, 34.29845, 0, 27.015055)
+
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree26" unique_id=1612382134]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
+mesh = SubResource("CylinderMesh_trunk")
+
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree26" unique_id=1291055767]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
+material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
+
+[node name="Tree27" type="Node3D" parent="Trees" unique_id=1921486492]
 transform = Transform3D(0.971849, 0, -0.339601, 0, 1.029475, 0, 0.339601, 0, 0.971849, -42.692852, 0, 13.372028)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree27"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
-mesh = SubResource("CylinderMesh_trunk")
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree27" unique_id=1831863551]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 material_override = SubResource("ShaderMaterial_trunk")
-
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree27"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
-material_override = SubResource("ShaderMaterial_foliage")
-
-[node name="Tree28" type="Node3D" parent="Trees"]
-transform = Transform3D(-0.906306, 0, -0.220542, 0, 0.932754, 0, 0.220542, 0, -0.906306, -16.271531, 0, -41.236447)
-
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree28"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree28"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree27" unique_id=1482538720]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree29" type="Node3D" parent="Trees"]
-transform = Transform3D(1.086151, 0, -0.558424, 0, 1.221295, 0, 0.558424, 0, 1.086151, 45.362092, 0, -20.354196)
+[node name="Tree28" type="Node3D" parent="Trees" unique_id=735533718]
+transform = Transform3D(-0.906306, 0, -0.220542, 0, 0.932754, 0, 0.220542, 0, -0.906306, -16.27153, 0, -41.236446)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree29"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree28" unique_id=1998437930]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree29"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree28" unique_id=508282963]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree30" type="Node3D" parent="Trees"]
-transform = Transform3D(0.377980, 0, -0.978382, 0, 1.048857, 0, 0.978382, 0, 0.377980, -37.314039, 0, 21.091445)
+[node name="Tree29" type="Node3D" parent="Trees" unique_id=1548601121]
+transform = Transform3D(1.086151, 0, -0.558424, 0, 1.221295, 0, 0.558424, 0, 1.086151, 45.36209, 0, -20.354197)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree30"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree29" unique_id=234829136]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree30"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree29" unique_id=2137952966]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree31" type="Node3D" parent="Trees"]
-transform = Transform3D(-0.766117, 0, -0.420434, 0, 0.873900, 0, 0.420434, 0, -0.766117, 37.158757, 0, 23.746588)
+[node name="Tree30" type="Node3D" parent="Trees" unique_id=79202230]
+transform = Transform3D(0.37798, 0, -0.978382, 0, 1.048857, 0, 0.978382, 0, 0.37798, -37.314037, 0, 21.091446)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree31"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree30" unique_id=1553865177]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree31"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree30" unique_id=718737403]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree32" type="Node3D" parent="Trees"]
-transform = Transform3D(-1.178286, 0, 0.499226, 0, 1.279682, 0, -0.499226, 0, -1.178286, -0.901667, 0, -51.803229)
+[node name="Tree31" type="Node3D" parent="Trees" unique_id=2034610555]
+transform = Transform3D(-0.766117, 0, -0.420434, 0, 0.8739, 0, 0.420434, 0, -0.766117, 37.158756, 0, 23.746588)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree32"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree31" unique_id=1948170043]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree32"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree31" unique_id=456703573]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree33" type="Node3D" parent="Trees"]
-transform = Transform3D(-0.988020, 0, 0.015039, 0, 0.988134, 0, -0.015039, 0, -0.988020, -31.764539, 0, -30.650421)
+[node name="Tree32" type="Node3D" parent="Trees" unique_id=1908782805]
+transform = Transform3D(-1.178286, 0, 0.499226, 0, 1.279682, 0, -0.499226, 0, -1.178286, -0.901667, 0, -51.80323)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree33"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree32" unique_id=1760125097]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree33"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree32" unique_id=1152844]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree34" type="Node3D" parent="Trees"]
-transform = Transform3D(-0.811425, 0, -0.894505, 0, 1.207705, 0, 0.894505, 0, -0.811425, 8.279524, 0, -48.094259)
+[node name="Tree33" type="Node3D" parent="Trees" unique_id=860393558]
+transform = Transform3D(-0.98802, 0, 0.015039, 0, 0.988134, 0, -0.015039, 0, -0.98802, -31.76454, 0, -30.650421)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree34"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree33" unique_id=891371674]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree34"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree33" unique_id=1160011381]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree35" type="Node3D" parent="Trees"]
-transform = Transform3D(-0.931259, 0, -0.938551, 0, 1.322165, 0, 0.938551, 0, -0.931259, -49.510064, 0, -9.522671)
+[node name="Tree34" type="Node3D" parent="Trees" unique_id=1070668057]
+transform = Transform3D(-0.811425, 0, -0.894505, 0, 1.207705, 0, 0.894505, 0, -0.811425, 8.279524, 0, -48.094257)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree35"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree34" unique_id=996560765]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree35"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree34" unique_id=1535622508]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree36" type="Node3D" parent="Trees"]
-transform = Transform3D(-0.620960, 0, 0.992603, 0, 1.170834, 0, -0.992603, 0, -0.620960, -48.262177, 0, 19.297269)
+[node name="Tree35" type="Node3D" parent="Trees" unique_id=2044241018]
+transform = Transform3D(-0.931259, 0, -0.938551, 0, 1.322165, 0, 0.938551, 0, -0.931259, -49.510063, 0, -9.522671)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree36"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree35" unique_id=883327010]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree36"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree35" unique_id=856627598]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree37" type="Node3D" parent="Trees"]
-transform = Transform3D(0.053080, 0, -1.363343, 0, 1.364376, 0, 1.363343, 0, 0.053080, 27.144707, 0, 32.909015)
+[node name="Tree36" type="Node3D" parent="Trees" unique_id=2027366134]
+transform = Transform3D(-0.62096, 0, 0.992603, 0, 1.170834, 0, -0.992603, 0, -0.62096, -48.262177, 0, 19.29727)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree37"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree36" unique_id=1749858205]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree37"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree36" unique_id=1363768020]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree38" type="Node3D" parent="Trees"]
-transform = Transform3D(-0.866042, 0, 0.614606, 0, 1.061965, 0, -0.614606, 0, -0.866042, -46.309350, 0, 4.120574)
+[node name="Tree37" type="Node3D" parent="Trees" unique_id=1364773659]
+transform = Transform3D(0.05308, 0, -1.363343, 0, 1.364376, 0, 1.363343, 0, 0.05308, 27.144707, 0, 32.909016)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree38"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree37" unique_id=1212948662]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree38"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree37" unique_id=1482709289]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree39" type="Node3D" parent="Trees"]
-transform = Transform3D(0.643312, 0, 0.799297, 0, 1.026024, 0, -0.799297, 0, 0.643312, 22.181678, 0, -37.273153)
+[node name="Tree38" type="Node3D" parent="Trees" unique_id=869110107]
+transform = Transform3D(-0.866042, 0, 0.614606, 0, 1.061965, 0, -0.614606, 0, -0.866042, -46.30935, 0, 4.120574)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree39"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree38" unique_id=649183928]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree39"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree38" unique_id=859651029]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree40" type="Node3D" parent="Trees"]
-transform = Transform3D(0.707392, 0, 0.557150, 0, 0.900455, 0, -0.557150, 0, 0.707392, -50.676325, 0, 6.840147)
+[node name="Tree39" type="Node3D" parent="Trees" unique_id=866855097]
+transform = Transform3D(0.643312, 0, 0.799297, 0, 1.026024, 0, -0.799297, 0, 0.643312, 22.181679, 0, -37.27315)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree40"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree39" unique_id=523401391]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree40"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree39" unique_id=1061157351]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree41" type="Node3D" parent="Trees"]
-transform = Transform3D(-0.569800, 0, 0.769305, 0, 0.957341, 0, -0.769305, 0, -0.569800, 21.394637, 0, 45.049885)
+[node name="Tree40" type="Node3D" parent="Trees" unique_id=1795148898]
+transform = Transform3D(0.707392, 0, 0.55715, 0, 0.900455, 0, -0.55715, 0, 0.707392, -50.676327, 0, 6.840147)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree41"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree40" unique_id=1284165675]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree41"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree40" unique_id=1173566596]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree42" type="Node3D" parent="Trees"]
-transform = Transform3D(1.145773, 0, -0.635956, 0, 1.310433, 0, 0.635956, 0, 1.145773, 9.708340, 0, 42.496929)
+[node name="Tree41" type="Node3D" parent="Trees" unique_id=1175924450]
+transform = Transform3D(-0.5698, 0, 0.769305, 0, 0.957341, 0, -0.769305, 0, -0.5698, 21.394636, 0, 45.049885)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree42"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree41" unique_id=371575293]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
 mesh = SubResource("CylinderMesh_trunk")
-material_override = SubResource("ShaderMaterial_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree42"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree41" unique_id=787949033]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="Tree43" type="Node3D" parent="Trees"]
+[node name="Tree42" type="Node3D" parent="Trees" unique_id=2119333133]
+transform = Transform3D(1.145773, 0, -0.635956, 0, 1.310433, 0, 0.635956, 0, 1.145773, 9.70834, 0, 42.49693)
+
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree42" unique_id=46134635]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+material_override = SubResource("ShaderMaterial_trunk")
+mesh = SubResource("CylinderMesh_trunk")
+
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree42" unique_id=2144857948]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
+material_override = SubResource("ShaderMaterial_foliage")
+mesh = SubResource("CylinderMesh_foliage")
+
+[node name="Tree43" type="Node3D" parent="Trees" unique_id=1391398972]
 transform = Transform3D(-0.977731, 0, 0.006687, 0, 0.977754, 0, -0.006687, 0, -0.977731, -11.843564, 0, -40.821693)
 
-[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree43"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
-mesh = SubResource("CylinderMesh_trunk")
+[node name="Trunk" type="MeshInstance3D" parent="Trees/Tree43" unique_id=2049299935]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 material_override = SubResource("ShaderMaterial_trunk")
+mesh = SubResource("CylinderMesh_trunk")
 
-[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree43"]
+[node name="Foliage" type="MeshInstance3D" parent="Trees/Tree43" unique_id=114984990]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
-mesh = SubResource("CylinderMesh_foliage")
 material_override = SubResource("ShaderMaterial_foliage")
-[node name="Objects" type="Node3D" parent="."]
+mesh = SubResource("CylinderMesh_foliage")
 
-[node name="PingPongBottle" parent="Objects" instance=ExtResource("5_photo")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 1.3, 1)
+[node name="Objects" type="Node3D" parent="." unique_id=1275608517]
 
-[node name="MonocleGuy" parent="Objects" instance=ExtResource("5_photo")]
+[node name="PingPongBottle" parent="Objects" unique_id=372486733 instance=ExtResource("5_photo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.7895155, 1.4665903, -12.611078)
+pixel_size = 0.004396
+texture = ExtResource("14_ppb_tex")
+bob_height = 0.0
+dialogue_resource = ExtResource("15_ppb_dlg")
+
+[node name="OrbitingPaddle" parent="Objects/PingPongBottle" unique_id=1762396659 instance=ExtResource("16_paddle")]
+dialogue_resource = ExtResource("17_paddle_dlg")
+
+[node name="John" parent="Objects" unique_id=495650000 instance=ExtResource("5_photo")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.5, 2.5)
-texture = ExtResource("6_monocle_tex")
 pixel_size = 0.004
-dialogue_resource = ExtResource("7_monocle_dlg")
+texture = ExtResource("6_john_tex")
+dialogue_resource = ExtResource("7_john_dlg")
 
-[node name="WindAmbience" type="AudioStreamPlayer" parent="."]
+[node name="WindAmbience" type="AudioStreamPlayer" parent="." unique_id=1326488122]
 stream = ExtResource("9_wind")
 volume_db = -14.0
 autoplay = true
 script = ExtResource("8_loop_audio")
 
-[node name="StaticGlitch" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("11_static")
-script = ExtResource("10_static_glitch")
+[node name="PostProcess" parent="." unique_id=1554422126 instance=ExtResource("12_post")]
 
-[node name="PostProcess" parent="." instance=ExtResource("12_post")]
-
-[node name="PauseMenu" parent="." instance=ExtResource("13_pause")]
+[node name="PauseMenu" parent="." unique_id=1460182729 instance=ExtResource("13_pause")]

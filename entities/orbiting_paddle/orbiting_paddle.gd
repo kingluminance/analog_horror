@@ -1,20 +1,21 @@
 extends Sprite3D
+## Circles around its parent's origin at a fixed radius/height, on a tilted
+## orbit plane — used to make the ping pong paddle orbit around the bottle
+## creature. Also supports E-to-talk (same pattern as floating_photo.gd), but
+## with a much tighter facing cone since this target keeps moving — the
+## player has to actually track it, not just be nearby.
 
-# ponytail: shared per-frame sine bob; if dozens of these end up on screen at once
-# and the synced motion reads as artificial, give each instance its own noise curve instead.
-@export var bob_height := 0.15
-@export var bob_speed := 0.6
+@export var orbit_radius := 1.3
+@export var orbit_speed := 3.5 # radians per second
+@export var orbit_height := 0.0 # local Y offset from the parent's origin (orbit center)
+@export var tilt_degrees := 30.0 # how far the orbit plane leans from flat/horizontal
 
-# Optional — leave unset for a silent floating photo with no interaction.
+# Optional — leave unset for a silent orbiting paddle with no interaction.
 @export var dialogue_resource: DialogueResource
 @export var dialogue_start_title := "start"
+@export var facing_angle_degrees := 10.0 # tight on purpose — must be aimed right at the paddle
 
-# Player must be looking roughly at this object (within this half-angle, in
-# degrees, of dead-center) for E to work — proximity alone isn't enough.
-@export var facing_angle_degrees := 35.0
-
-var _base_y: float
-var _time_offset: float
+var _angle := 0.0
 var _player_in_range := false
 # ponytail: DialogueManager exposes no "is running" property, only start/end signals —
 # track it locally. Fine even with multiple instances since only one dialogue runs at a time.
@@ -24,8 +25,7 @@ var _dialogue_running := false
 @onready var _hint: Label3D = $InteractRange/InteractHint
 
 func _ready() -> void:
-	_base_y = position.y
-	_time_offset = randf() * TAU
+	_angle = randf() * TAU # avoid every orbiter starting at the same spot
 	if dialogue_resource:
 		_range.body_entered.connect(_on_body_entered)
 		_range.body_exited.connect(_on_body_exited)
@@ -35,8 +35,11 @@ func _ready() -> void:
 		_range.monitoring = false
 		_hint.hide()
 
-func _process(_delta: float) -> void:
-	position.y = _base_y + sin(Time.get_ticks_msec() / 1000.0 * bob_speed + _time_offset) * bob_height
+func _process(delta: float) -> void:
+	_angle += orbit_speed * delta
+	var flat := Vector3(cos(_angle) * orbit_radius, 0.0, sin(_angle) * orbit_radius)
+	var tilted := flat.rotated(Vector3.RIGHT, deg_to_rad(tilt_degrees))
+	position = tilted + Vector3(0.0, orbit_height, 0.0)
 	if dialogue_resource and _player_in_range:
 		_hint.visible = _is_player_facing()
 
@@ -56,8 +59,8 @@ func _on_body_exited(body: Node3D) -> void:
 		_player_in_range = false
 		_hint.hide()
 
-# True when the active camera is pointed roughly at this object — proximity
-# (Area3D range) alone isn't enough to let the player interact.
+# True when the active camera is pointed (tightly) at the paddle right now —
+# it's a moving target, so proximity alone isn't nearly enough.
 func _is_player_facing() -> bool:
 	var cam := get_viewport().get_camera_3d()
 	if not cam:

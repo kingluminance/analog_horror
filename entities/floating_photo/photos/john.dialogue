@@ -1,0 +1,36 @@
+using StoryFlags
+
+~ start
+$> locals.visits = StoryFlags.get_visit_count("john")
+$> StoryFlags.increment_visit_count("john")
+if locals.visits >= 1
+	=> repeat
+else
+	=> first_meet
+
+
+~ first_meet
+존: 오랜만이야.
+- 우리 아는 사이였나?
+	존: 그럴 리가. 오늘 처음 봤잖아.
+	=> END
+- 여기서 뭐 하고 있어?
+	존: 그냥 있어. 원래 여기 있었어.
+	=> END
+- 오랜만이네 존, 마이클은 어디갔어?
+	존 : 마이클? 걔는 오늘 연차냈어.
+	=> END
+=> END
+
+
+~ repeat
+존: 또 왔네.
+- 존은?
+	존: 그건 내이름이지.
+	=> END
+- 마이클은?
+	존: 몰론 연차지.
+	=> END
+
+
+

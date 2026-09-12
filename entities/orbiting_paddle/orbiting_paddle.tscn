@@ -1,23 +1,16 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=4 format=3]
 
-[ext_resource type="Script" path="res://entities/floating_photo/floating_photo.gd" id="1_script"]
-
-[sub_resource type="Gradient" id="Gradient_placeholder"]
-colors = PackedColorArray(0.55, 0.5, 0.45, 1, 0.3, 0.27, 0.25, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_placeholder"]
-gradient = SubResource("Gradient_placeholder")
-width = 128
-height = 128
+[ext_resource type="Script" path="res://entities/orbiting_paddle/orbiting_paddle.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://entities/orbiting_paddle/paddle.png" id="2_texture"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_range"]
-radius = 1.8
+radius = 1.2
 
-[node name="FloatingPhoto" type="Sprite3D"]
+[node name="OrbitingPaddle" type="Sprite3D"]
 billboard = 1
 texture_filter = 0
-pixel_size = 0.01
-texture = SubResource("GradientTexture2D_placeholder")
+pixel_size = 0.0007
+texture = ExtResource("2_texture")
 script = ExtResource("1_script")
 
 [node name="InteractRange" type="Area3D" parent="."]
@@ -29,7 +22,7 @@ shape = SubResource("SphereShape3D_range")
 
 [node name="InteractHint" type="Label3D" parent="InteractRange"]
 visible = false
-position = Vector3(0, 0.4, 0)
+position = Vector3(0, 0.3, 0)
 billboard = 1
 no_depth_test = true
 sorting_offset = 1.0

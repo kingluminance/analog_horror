@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://oy5catpy20lc"
+path="res://.godot/imported/john.dialogue-d841f9df3eff6520164ad31bbab1bdac.tres"
+
+[deps]
+
+source_file="res://entities/floating_photo/photos/john.dialogue"
+dest_files=["res://.godot/imported/john.dialogue-d841f9df3eff6520164ad31bbab1bdac.tres"]
+
+[params]
+
+defaults=true

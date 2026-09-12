@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://cjlepndk3t00n"
+path="res://.godot/imported/paddle.dialogue-eabbf94ffccfe4a48321a72f9f7146bb.tres"
+
+[deps]
+
+source_file="res://entities/orbiting_paddle/paddle.dialogue"
+dest_files=["res://.godot/imported/paddle.dialogue-eabbf94ffccfe4a48321a72f9f7146bb.tres"]
+
+[params]
+
+defaults=true
