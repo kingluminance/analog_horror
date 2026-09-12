@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://oy5catpy20lc"
+path="res://.godot/imported/monocle_guy.dialogue-aa654a28c843427388df8313acabecc3.tres"
+
+[deps]
+
+source_file="res://entities/floating_photo/photos/monocle_guy.dialogue"
+dest_files=["res://.godot/imported/monocle_guy.dialogue-aa654a28c843427388df8313acabecc3.tres"]
+
+[params]
+
+defaults=true
