@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://bqputpd7mfooj"
+path="res://.godot/imported/trash_angel.dialogue-69a891b05336530a24b133b887a23310.tres"
+
+[deps]
+
+source_file="res://entities/trash_angel/trash_angel.dialogue"
+dest_files=["res://.godot/imported/trash_angel.dialogue-69a891b05336530a24b133b887a23310.tres"]
+
+[params]
+
+defaults=true
