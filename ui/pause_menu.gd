@@ -8,11 +8,15 @@ var _master_bus := AudioServer.get_bus_index("Master")
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	add_to_group("modal_ui")
 	panel.hide()
 	volume_slider.value = db_to_linear(AudioServer.get_bus_volume_db(_master_bus))
 	volume_slider.value_changed.connect(_on_volume_changed)
 	DialogueManager.dialogue_started.connect(func(_r): _dialogue_active = true)
 	DialogueManager.dialogue_ended.connect(func(_r): _dialogue_active = false)
+
+func is_modal_open() -> bool:
+	return panel.visible
 
 func _unhandled_input(event: InputEvent) -> void:
 	if _dialogue_active:
@@ -22,6 +26,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		if panel.visible:
 			_resume()
 		else:
+			for node in get_tree().get_nodes_in_group("modal_ui"):
+				if node != self and node.has_method("is_modal_open") and node.is_modal_open():
+					return
 			_pause()
 
 func _pause() -> void:
