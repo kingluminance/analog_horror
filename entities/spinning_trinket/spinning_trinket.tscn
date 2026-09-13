@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://entities/spinning_trinket/spinning_trinket.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://entities/spinning_trinket/trinket.png" id="2_texture"]
+
+[node name="SpinningTrinket" type="Sprite3D"]
+billboard = 1
+texture_filter = 0
+pixel_size = 0.000265
+texture = ExtResource("2_texture")
+script = ExtResource("1_script")

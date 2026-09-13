@@ -1,0 +1,31 @@
+using StoryFlags
+
+~ start
+$> locals.visits = StoryFlags.get_visit_count("brain_in_vat")
+$> StoryFlags.increment_visit_count("brain_in_vat")
+if locals.visits >= 1
+	=> repeat
+else
+	=> first_meet
+
+
+~ first_meet
+통속의 뇌: ...아, 몸이 없네.
+- 언제부터 거기 있었어?
+	통속의 뇌: 상자를 보기 전부터.
+	=> END
+- 답답하지 않아?
+	통속의 뇌: 압력계가 있으니까 괜찮아.
+	=> END
+- 아무 말도 안 한다
+	=> END
+=> END
+
+
+~ repeat
+통속의 뇌: 또 왔네. 난 여기 그대로야.
+- 나갈 생각 없어?
+	통속의 뇌: 상자가 나야, 이제는.
+	=> END
+- 그냥 지나간다.
+	=> END
