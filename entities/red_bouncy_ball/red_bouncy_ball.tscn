@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3 uid="uid://cfa0qifwfg51f"]
 
-[ext_resource type="Script" path="res://entities/red_bouncy_ball/red_bouncy_ball.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://c15qbo345obyw" path="res://entities/red_bouncy_ball/red_bouncy_ball.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://entities/shared/interactable.tscn" id="2_interactable"]
+[ext_resource type="Resource" uid="uid://dk8cilt2100h8" path="res://entities/red_bouncy_ball/ball.dialogue" id="3_dialogue"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_ball"]
 radius = 0.2
@@ -10,14 +11,15 @@ height = 0.4
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ball"]
 albedo_color = Color(0.85, 0.1, 0.1, 1)
 
-[node name="RedBouncyBall" type="Node3D"]
+[node name="RedBouncyBall" type="Node3D" unique_id=924753020]
 script = ExtResource("1_script")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=329234293]
 mesh = SubResource("SphereMesh_ball")
 surface_material_override/0 = SubResource("StandardMaterial3D_ball")
 
-[node name="Interactable" parent="." instance=ExtResource("2_interactable")]
-range_radius = 1.5
-hint_offset = Vector3(0, 0.6, 0)
+[node name="Interactable" parent="." unique_id=211891052 instance=ExtResource("2_interactable")]
+range_radius = 1.0
+hint_offset = Vector3(0, 1.5, 0)
 facing_angle_degrees = 20.0
+dialogue_resource = ExtResource("3_dialogue")

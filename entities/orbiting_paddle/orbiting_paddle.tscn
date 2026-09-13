@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://entities/orbiting_paddle/orbiting_paddle.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://entities/orbiting_paddle/paddle.png" id="2_texture"]
 [ext_resource type="PackedScene" path="res://entities/shared/interactable.tscn" id="3_interactable"]
+[ext_resource type="Resource" uid="uid://cjlepndk3t00n" path="res://entities/orbiting_paddle/paddle.dialogue" id="4_dialogue"]
 
 [node name="OrbitingPaddle" type="Sprite3D"]
 billboard = 1
@@ -15,3 +16,4 @@ script = ExtResource("1_script")
 range_radius = 1.2
 hint_offset = Vector3(0, 0.3, 0)
 facing_angle_degrees = 10.0
+dialogue_resource = ExtResource("4_dialogue")
