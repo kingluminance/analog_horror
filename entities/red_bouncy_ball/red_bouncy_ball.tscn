@@ -19,5 +19,5 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ball")
 
 [node name="Interactable" parent="." instance=ExtResource("2_interactable")]
 range_radius = 1.5
-hint_offset = Vector3(0, 0.3, 0)
+hint_offset = Vector3(0, 0.6, 0)
 facing_angle_degrees = 20.0

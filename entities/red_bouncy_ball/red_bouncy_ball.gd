@@ -9,7 +9,7 @@ extends Node3D
 ## anchor for the sibling Interactable (E-to-talk range/facing checks would
 ## jitter with the fast bounce cycle otherwise).
 
-@export var bounce_height := 0.5
+@export var bounce_height := 1.0
 @export var bounce_duration := 0.8
 
 # Squash-and-stretch tuning: how strong the flatten gets at ground contact,
