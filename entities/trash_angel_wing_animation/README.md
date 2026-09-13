@@ -8,7 +8,7 @@ sprites/
   body_closed_lid_eyes.png       # 뚜껑 닫힘 + 눈 3개 (몸통만)
   body_closed_lid_noeyes.png     # 뚜껑 닫힘 + 눈 없음 (몸통만)
   wing_flap/
-    wing_flap_00.png ~ 07.png    # 날개 퍼덕임 8프레임 (왼쪽 날개 기준)
+	wing_flap_00.png ~ 07.png    # 날개 퍼덕임 8프레임 (왼쪽 날개 기준)
 wing_flap_frames.tres            # Godot 4용 SpriteFrames 리소스 (애니메이션 "flap")
 TrashAngel.tscn                  # 몸통 + 양쪽 날개 조립 예시 씬
 ```

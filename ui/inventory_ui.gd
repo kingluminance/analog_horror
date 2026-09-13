@@ -80,11 +80,16 @@ func _rebuild() -> void:
 		var card: Control = InventoryPolaroidScene.instantiate()
 		scatter.add_child(card)
 		card.position = Vector2(start_x + i * spacing - 80.0, base_y)
-		card.setup(item.id, item.display_name, item.texture)
+		card.setup(item.id, item.display_name, item.texture, item.description)
+		card.clicked.connect(_on_card_clicked.bind(i))
 		_cards.append(card)
 
 	if not _cards.is_empty():
 		_focused_index = 0
+	_update_focus()
+
+func _on_card_clicked(index: int) -> void:
+	_focused_index = index
 	_update_focus()
 
 func _move_focus(delta: int) -> void:

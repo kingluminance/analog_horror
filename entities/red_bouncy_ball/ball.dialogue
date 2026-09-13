@@ -1,15 +1,33 @@
 using Inventory
 using StoryFlags
-
 ~ start
+$> locals.visits = StoryFlags.get_visit_count("ping_pong_bottle")
+$> StoryFlags.increment_visit_count("ping_pong_bottle")
+if locals.visits >= 1
+	=> repeat
+else
+	=> first_meet
+
+~ first_meet
 작은 공: 통.
 작은 공: 통. 통.
 작은 공: 흑흑흑..
 작은 공: 원래는 셋이서 튀어 다녔는데..
 작은 공: 큰 공.. 중간 공 ..
+~ repeat
 작은 공: 내 가족들을 찾아줄래?
 - 물론 가능하지.
 	작은 공 : 고마워! 너와 함께 할게 같이 찾아줘!
-	$> StoryFlags.set_visual_state("small_ball", "visible", false)
-	$> Inventory.give_item("small_ball")
+	작은공을 흭득하시겠습니까?
+	- 네
+		$> StoryFlags.set_visual_state("small_ball", "visible", false)
+		$> Inventory.give_item("small_ball")
+	- 아니요
+		작은공 : 도와준다며..
+	
 - 미안.
+	작은 공: ...
+	작은 공: 통.. 흑 .. 통 .. 
+
+
+	

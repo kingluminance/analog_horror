@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://tsceqafuuvvt"
+path="res://.godot/imported/speaker.dialogue-fe4451e9bf67d6630135ad31de28f2f0.tres"
+
+[deps]
+
+source_file="res://entities/floating_photo/photos/speaker.dialogue"
+dest_files=["res://.godot/imported/speaker.dialogue-fe4451e9bf67d6630135ad31de28f2f0.tres"]
+
+[params]
+
+defaults=true
