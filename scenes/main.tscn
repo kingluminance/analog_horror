@@ -13,6 +13,8 @@
 [ext_resource type="Resource" uid="uid://rv6o3uu6mjn6" path="res://entities/floating_photo/photos/ping_pong_bottle.dialogue" id="15_ppb_dlg"]
 [ext_resource type="PackedScene" path="res://entities/orbiting_paddle/orbiting_paddle.tscn" id="16_paddle"]
 [ext_resource type="Resource" uid="uid://cjlepndk3t00n" path="res://entities/orbiting_paddle/paddle.dialogue" id="17_paddle_dlg"]
+[ext_resource type="PackedScene" path="res://entities/trash_angel/trash_angel.tscn" id="18_trash_angel"]
+[ext_resource type="Resource" path="res://entities/trash_angel/trash_angel.dialogue" id="19_trash_angel_dlg"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.35, 0.65, 1, 1)
@@ -837,6 +839,12 @@ texture = ExtResource("6_john_tex")
 
 [node name="Interactable" parent="Objects/John"]
 dialogue_resource = ExtResource("7_john_dlg")
+
+[node name="TrashAngel" parent="Objects" instance=ExtResource("18_trash_angel")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, 3)
+
+[node name="Interactable" parent="Objects/TrashAngel"]
+dialogue_resource = ExtResource("19_trash_angel_dlg")
 
 [node name="WindAmbience" type="AudioStreamPlayer" parent="." unique_id=1326488122]
 stream = ExtResource("9_wind")

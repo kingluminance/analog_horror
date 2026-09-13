@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3]
 
-[ext_resource type="Texture2D" path="res://sprites/body_open_lid_eyes.png" id="1"]
-[ext_resource type="SpriteFrames" path="res://wing_flap_frames.tres" id="2"]
+[ext_resource type="Texture2D" path="res://entities/trash_angel_wing_animation/sprites/body_open_lid_eyes.png" id="1"]
+[ext_resource type="SpriteFrames" path="res://entities/trash_angel_wing_animation/wing_flap_frames.tres" id="2"]
 
 [node name="TrashAngel" type="Node2D"]
 
