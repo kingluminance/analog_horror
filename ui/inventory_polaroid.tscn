@@ -1,0 +1,47 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://ui/inventory_polaroid.gd" id="1_script"]
+
+[sub_resource type="SystemFont" id="SystemFont_mono"]
+font_names = PackedStringArray("Menlo", "Courier New", "Consolas", "monospace")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_polaroid"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 12.0
+bg_color = Color(0.93, 0.9, 0.82, 0.97)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.05, 0.04, 0.03, 0.4)
+shadow_size = 6
+shadow_color = Color(0, 0, 0, 0.35)
+
+[node name="InventoryPolaroid" type="PanelContainer"]
+custom_minimum_size = Vector2(160, 190)
+theme_override_styles/panel = SubResource("StyleBoxFlat_polaroid")
+script = ExtResource("1_script")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 140)
+layout_mode = 2
+size_flags_vertical = 3
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Caption" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_mono")
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.15, 0.12, 0.08, 1)
+horizontal_alignment = 1
+autowrap_mode = 2
+text = "..."
