@@ -1,40 +1,40 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene format=3 uid="uid://cro4e40sxusd8"]
 
-[ext_resource type="Script" path="res://entities/trash_angel/trash_angel.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://entities/trash_angel_wing_animation/sprites/body_open_lid_eyes.png" id="2_body_tex"]
+[ext_resource type="Script" uid="uid://5nge852sfwlg" path="res://entities/trash_angel/trash_angel.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://cflyi3dmibi18" path="res://entities/trash_angel_wing_animation/sprites/body_open_lid_eyes.png" id="2_body_tex"]
 [ext_resource type="SpriteFrames" path="res://entities/trash_angel_wing_animation/wing_flap_frames.tres" id="3_wing_frames"]
 [ext_resource type="PackedScene" path="res://entities/shared/interactable.tscn" id="4_interactable"]
-[ext_resource type="Resource" path="res://entities/trash_angel/trash_angel.dialogue" id="5_dialogue"]
+[ext_resource type="Resource" uid="uid://bqputpd7mfooj" path="res://entities/trash_angel/trash_angel.dialogue" id="5_dialogue"]
 
-[node name="TrashAngel" type="Node3D"]
+[node name="TrashAngel" type="Node3D" unique_id=1912692899]
 script = ExtResource("1_script")
 
-[node name="Body" type="Sprite3D" parent="."]
-billboard = 1
+[node name="Body" type="Sprite3D" parent="." unique_id=1668437312]
 pixel_size = 0.001818
-sorting_offset = 0.0
+billboard = 1
 texture = ExtResource("2_body_tex")
 
-[node name="WingLeft" type="AnimatedSprite3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.207252, 0.08181, 0)
-billboard = 1
-sorting_offset = 0.1
-pixel_size = 0.001818
-sprite_frames = ExtResource("3_wing_frames")
-animation = &"flap"
-autoplay = "flap"
-offset = Vector2(-0.432684, 0.132714)
-
-[node name="WingRight" type="AnimatedSprite3D" parent="."]
+[node name="WingLeft" type="AnimatedSprite3D" parent="." unique_id=93092926]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.207252, 0.08181, 0)
-billboard = 1
 sorting_offset = 0.1
+offset = Vector2(0.433, 0.133)
 pixel_size = 0.001818
-flip_h = true
+billboard = 1
 sprite_frames = ExtResource("3_wing_frames")
 animation = &"flap"
 autoplay = "flap"
-offset = Vector2(0.432684, 0.132714)
 
-[node name="Interactable" parent="." instance=ExtResource("4_interactable")]
+[node name="WingRight" type="AnimatedSprite3D" parent="." unique_id=906000062]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.207252, 0.08181, 0)
+sorting_offset = 0.1
+offset = Vector2(-0.433, -0.133)
+flip_h = true
+pixel_size = 0.001818
+billboard = 1
+sprite_frames = ExtResource("3_wing_frames")
+animation = &"flap"
+autoplay = "flap"
+frame_progress = 0.9439942
+
+[node name="Interactable" parent="." unique_id=1528331911 instance=ExtResource("4_interactable")]
 dialogue_resource = ExtResource("5_dialogue")
