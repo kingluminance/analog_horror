@@ -15,7 +15,7 @@ billboard = 1
 texture = ExtResource("2_body_tex")
 
 [node name="WingLeft" type="AnimatedSprite3D" parent="." unique_id=93092926]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.207252, 0.08181, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.38, 0.08181, 0)
 sorting_offset = 0.1
 offset = Vector2(0.433, 0.133)
 pixel_size = 0.001818
@@ -25,7 +25,7 @@ animation = &"flap"
 autoplay = "flap"
 
 [node name="WingRight" type="AnimatedSprite3D" parent="." unique_id=906000062]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.207252, 0.08181, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.38, 0.08181, 0)
 sorting_offset = 0.1
 offset = Vector2(-0.433, -0.133)
 flip_h = true
