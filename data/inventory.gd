@@ -42,6 +42,9 @@ func has_item(id: String, count: int = 1) -> bool:
 func get_count(id: String) -> int:
 	return _counts.get(id, 0)
 
+func get_display_name(id: String) -> String:
+	return _metadata.get(id, {}).get("display_name", id)
+
 func get_owned_items() -> Array:
 	var result: Array = []
 	for id in _counts.keys():

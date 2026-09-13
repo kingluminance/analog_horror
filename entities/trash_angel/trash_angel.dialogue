@@ -1,38 +1,29 @@
 using StoryFlags
 
 ~ start
-$> locals.visits = StoryFlags.get_visit_count("trash_angel")
-$> StoryFlags.increment_visit_count("trash_angel")
-if locals.visits >= 1
-	=> repeat
-else
-	=> first_meet
+#$> locals.visits = StoryFlags.get_visit_count("trash_angel")
+#$> StoryFlags.increment_visit_count("trash_angel")
+#if locals.visits >= 1
+#	=> repeat
+#else
+#	=> first_meet
 
 
 ~ first_meet
-천사: 나는 원래 쓰레기통이었어.
-천사: 지금은 날 수 있어.
-- 뚜껑을 닫아줄까?
-	천사: ...그래줘.
+$> StoryFlags.set_visual_state("trash_angel", "body", "closed_lid_noeyes")
+쓰레기가 되어버린 날개 : 날개들이 말을 안 듣네.
+- 앞은 보여?
+	쓰레기가 되어버린 날개: 안 보이지.
+	쓰레기가 되어버린 날개: 보는 건 별로 중요하지 않아.
+	쓰레기가 되어버린 날개: 물론...
 	$> StoryFlags.set_visual_state("trash_angel", "body", "closed_lid_eyes")
-	천사: 이게 더 편해.
+	쓰레기가 되어버린 날개: 볼 수도 있지만.
+- 쓰레기 좀 버려줘	
+	쓰레기가 되어버린 날개: 안 될 건 없지.
+	$> StoryFlags.set_visual_state("trash_angel", "body", "open_lid_eyes")
+	쓰레기가 되어버린 날개: 자.
 	=> END
 - 눈은 왜 세 개야?
-	천사: 원래 있던 걸 세어봤어.
-	=> END
-- 아무 말도 안 한다
-	=> END
-
-
-~ repeat
-천사: 또 왔네.
-- 뚜껑을 다시 열어줘.
-	$> StoryFlags.set_visual_state("trash_angel", "body", "open_lid_eyes")
-	천사: 후련하다.
-	=> END
-- 눈을 감겨줄게.
-	$> StoryFlags.set_visual_state("trash_angel", "body", "closed_lid_noeyes")
-	천사: ...고마워.
-	=> END
-- 그냥 지나간다.
+	$> StoryFlags.set_visual_state("trash_angel", "body", "closed_lid_eyes")
+	쓰레기가 되어버린 날개: 그래? 난 안 세어 봤네.
 	=> END
