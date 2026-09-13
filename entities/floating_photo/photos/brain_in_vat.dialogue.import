@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://dg5y33dh1h0e8"
+path="res://.godot/imported/brain_in_vat.dialogue-ace65f03e2474502e144c4174d047d3d.tres"
+
+[deps]
+
+source_file="res://entities/floating_photo/photos/brain_in_vat.dialogue"
+dest_files=["res://.godot/imported/brain_in_vat.dialogue-ace65f03e2474502e144c4174d047d3d.tres"]
+
+[params]
+
+defaults=true
