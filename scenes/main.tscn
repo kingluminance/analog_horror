@@ -821,15 +821,21 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.7895155, 1.4665903, -12.611
 pixel_size = 0.004396
 texture = ExtResource("14_ppb_tex")
 bob_height = 0.0
+
+[node name="Interactable" parent="Objects/PingPongBottle"]
 dialogue_resource = ExtResource("15_ppb_dlg")
 
 [node name="OrbitingPaddle" parent="Objects/PingPongBottle" unique_id=1762396659 instance=ExtResource("16_paddle")]
+
+[node name="Interactable" parent="Objects/PingPongBottle/OrbitingPaddle"]
 dialogue_resource = ExtResource("17_paddle_dlg")
 
 [node name="John" parent="Objects" unique_id=495650000 instance=ExtResource("5_photo")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.5, 2.5)
 pixel_size = 0.004
 texture = ExtResource("6_john_tex")
+
+[node name="Interactable" parent="Objects/John"]
 dialogue_resource = ExtResource("7_john_dlg")
 
 [node name="WindAmbience" type="AudioStreamPlayer" parent="." unique_id=1326488122]

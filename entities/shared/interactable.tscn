@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://entities/shared/interactable.gd" id="1_script"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_range"]
+radius = 1.8
+
+[node name="Interactable" type="Area3D"]
+script = ExtResource("1_script")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_range")
+
+[node name="InteractHint" type="Label3D" parent="."]
+visible = false
+position = Vector3(0, 0.4, 0)
+billboard = 1
+no_depth_test = true
+sorting_offset = 1.0
+font_size = 32
+outline_size = 3
+modulate = Color(0.95, 0.78, 0.42, 1)
+text = "[E]"

@@ -1,0 +1,24 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Texture2D" path="res://sprites/body_open_lid_eyes.png" id="1"]
+[ext_resource type="SpriteFrames" path="res://wing_flap_frames.tres" id="2"]
+
+[node name="TrashAngel" type="Node2D"]
+
+[node name="WingLeft" type="AnimatedSprite2D" parent="."]
+position = Vector2(-114, -45)
+offset = Vector2(-238, -73)
+sprite_frames = ExtResource("2")
+animation = &"flap"
+autoplay = "flap"
+
+[node name="WingRight" type="AnimatedSprite2D" parent="."]
+position = Vector2(114, -45)
+offset = Vector2(238, -73)
+flip_h = true
+sprite_frames = ExtResource("2")
+animation = &"flap"
+autoplay = "flap"
+
+[node name="Body" type="Sprite2D" parent="."]
+texture = ExtResource("1")
