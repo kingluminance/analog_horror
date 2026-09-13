@@ -22,4 +22,4 @@ surface_material_override/0 = SubResource("StandardMaterial3D_ball")
 dialogue_resource = ExtResource("3_dialogue")
 facing_angle_degrees = 20.0
 range_radius = 2.5
-hint_offset = Vector3(0, 0.6, 0)
+hint_offset = Vector3(0, 1.0, 0)

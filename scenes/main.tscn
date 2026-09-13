@@ -842,7 +842,7 @@ dialogue_resource = ExtResource("7_john_dlg")
 
 [node name="RedBouncyBall" parent="Objects" unique_id=1696660959 instance=ExtResource("18_ball")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 0, -4)
-bounce_height = 2.5
+bounce_height = 2.0
 bounce_duration = 1.5
 max_squash = 0.7
 

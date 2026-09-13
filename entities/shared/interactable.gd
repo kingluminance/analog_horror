@@ -73,12 +73,18 @@ func _on_body_exited(body: Node3D) -> void:
 		_hint.hide()
 
 # True when the active camera is pointed roughly at this object — proximity
-# (Area3D range) alone isn't enough to let the player interact.
+# (Area3D range) alone isn't enough to let the player interact. Aimed at
+# the hint's position (global_position + hint_offset), not this node's raw
+# global_position — for most entities those coincide closely, but for one
+# whose Interactable is deliberately anchored away from its moving visual
+# (e.g. a bouncing ball fixed at ground level so the hint doesn't jitter),
+# the player naturally looks at the visual/hint, not the fixed anchor point.
 func _is_player_facing() -> bool:
 	var cam := get_viewport().get_camera_3d()
 	if not cam:
 		return true
-	var to_self := global_position - cam.global_position
+	var target := global_position + hint_offset
+	var to_self := target - cam.global_position
 	if to_self.length() < 0.001:
 		return true
 	var forward := -cam.global_transform.basis.z
