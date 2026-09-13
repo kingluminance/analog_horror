@@ -16,7 +16,7 @@
 [ext_resource type="PackedScene" path="res://ui/inventory_ui.tscn" id="18_inventory"]
 [ext_resource type="PackedScene" path="res://entities/trash_angel/trash_angel.tscn" id="20_trash_angel"]
 [ext_resource type="Texture2D" uid="uid://b6hoxc516sp3s" path="res://entities/floating_photo/photos/brain_in_vat.png" id="22_brain_tex"]
-[ext_resource type="Resource" path="res://entities/floating_photo/photos/brain_in_vat.dialogue" id="23_brain_dlg"]
+[ext_resource type="Resource" uid="uid://dg5y33dh1h0e8" path="res://entities/floating_photo/photos/brain_in_vat.dialogue" id="23_brain_dlg"]
 [ext_resource type="PackedScene" path="res://entities/spinning_trinket/spinning_trinket.tscn" id="24_trinket"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
@@ -827,21 +827,17 @@ pixel_size = 0.004396
 texture = ExtResource("14_ppb_tex")
 bob_height = 0.0
 
-[node name="OrbitingPaddle" parent="Objects/PingPongBottle" unique_id=1762396659 instance=ExtResource("16_paddle")]
-
-[editable path="Objects/PingPongBottle"]
-
-[node name="Interactable" parent="Objects/PingPongBottle"]
+[node name="Interactable" parent="Objects/PingPongBottle" index="0"]
 dialogue_resource = ExtResource("15_ppb_dlg")
+
+[node name="OrbitingPaddle" parent="Objects/PingPongBottle" unique_id=1762396659 instance=ExtResource("16_paddle")]
 
 [node name="John" parent="Objects" unique_id=495650000 instance=ExtResource("5_photo")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.5, 2.5)
 pixel_size = 0.004
 texture = ExtResource("6_john_tex")
 
-[editable path="Objects/John"]
-
-[node name="Interactable" parent="Objects/John"]
+[node name="Interactable" parent="Objects/John" index="0"]
 dialogue_resource = ExtResource("7_john_dlg")
 
 [node name="RedBouncyBall" parent="Objects" unique_id=1696660959 instance=ExtResource("18_ball")]
@@ -859,13 +855,11 @@ pixel_size = 0.001142
 texture = ExtResource("22_brain_tex")
 bob_height = 0.0
 
+[node name="Interactable" parent="Objects/BrainInVat" index="0"]
+dialogue_resource = ExtResource("23_brain_dlg")
+
 [node name="SpinningTrinket" parent="Objects/BrainInVat" unique_id=2004641828 instance=ExtResource("24_trinket")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 0.4, 0.3)
-
-[editable path="Objects/BrainInVat"]
-
-[node name="Interactable" parent="Objects/BrainInVat"]
-dialogue_resource = ExtResource("23_brain_dlg")
 
 [node name="WindAmbience" type="AudioStreamPlayer" parent="." unique_id=1326488122]
 stream = ExtResource("9_wind")
@@ -878,3 +872,7 @@ script = ExtResource("8_loop_audio")
 [node name="PauseMenu" parent="." unique_id=1460182729 instance=ExtResource("13_pause")]
 
 [node name="InventoryUI" parent="." unique_id=1509137938 instance=ExtResource("18_inventory")]
+
+[editable path="Objects/PingPongBottle"]
+[editable path="Objects/John"]
+[editable path="Objects/BrainInVat"]

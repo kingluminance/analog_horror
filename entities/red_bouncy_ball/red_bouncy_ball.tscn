@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://cfa0qifwfg51f"]
+[gd_scene format=3 uid="uid://cfa0qifwfg51f"]
 
 [ext_resource type="Script" uid="uid://c15qbo345obyw" path="res://entities/red_bouncy_ball/red_bouncy_ball.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://entities/shared/interactable.tscn" id="2_interactable"]
@@ -19,7 +19,7 @@ mesh = SubResource("SphereMesh_ball")
 surface_material_override/0 = SubResource("StandardMaterial3D_ball")
 
 [node name="Interactable" parent="." unique_id=211891052 instance=ExtResource("2_interactable")]
-range_radius = 1.0
-hint_offset = Vector3(0, 1.5, 0)
-facing_angle_degrees = 20.0
 dialogue_resource = ExtResource("3_dialogue")
+facing_angle_degrees = 20.0
+range_radius = 2.5
+hint_offset = Vector3(0, 0.6, 0)
