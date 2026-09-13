@@ -93,6 +93,18 @@ Interactable과 떨어져 배치된 경우 그 시각적 위치(또는 평균 �
   파일에서 `using StoryFlags` + `$> StoryFlags.set_visual_state("trash_angel", "body", "...")`처럼
   호출하면, 해당 id를 구독하는 엔티티 스크립트가 반응해서 텍스처 등을 바꾼다 (쓰레기천사가 이 방식으로
   몸통 3종을 전환함). 새 오브젝트도 이 패턴을 재사용하면 됨 — 새 오토로드 만들지 말 것.
+
+### `DialogueVisibility` — 대화로 오브젝트 통째로 보이기/숨기기
+`entities/shared/dialogue_visibility.gd` (`class_name DialogueVisibility extends Node`).
+`StoryFlags.visual_state` 메커니즘 위에 얹은 컴포넌트 — 아무 오브젝트에나 플레인 `Node`
+자식으로 추가하고 `entity_id`만 지정하면 됨. 대화 파일에서:
+```
+using StoryFlags
+$> StoryFlags.set_visual_state("<entity_id>", "visible", false)  # 숨김
+$> StoryFlags.set_visual_state("<entity_id>", "visible", true)   # 다시 보임
+```
+숨겨지면 그 오브젝트의 `Interactable` 자식도 같이 꺼짐(숨겨진 걸 대화로 다시 못 걸게).
+통통볼에 데모로 연결돼 있음("이제 그만 튀어도 돼." 선택지). 세이브 없음 — 재시작하면 초기화.
 - 세이브/로드 없음, 게임 재시작하면 초기화됨 (doda 프로젝트도 동일 상태)
 
 ### `Inventory` (오토로드, `data/inventory.gd`) + `ui/inventory_ui.*`
