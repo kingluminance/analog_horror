@@ -1,3 +1,5 @@
+using Inventory
+
 ~ start
 빨간 공: 텅.
 빨간 공: 텅. 텅.
@@ -6,6 +8,8 @@
 	빨간 공: 던질 필요가 없어. 나는 이미 여기 있으니까.
 	=> END
 - (같이 튄다)
+	$> Inventory.give_item("red_marble")
 	빨간 공: 그래, 그거야.
 	빨간 공: 계속 튀어.
+	빨간 공: 이거 하나 줄게.
 	=> END
