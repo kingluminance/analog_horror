@@ -2,20 +2,14 @@ using Inventory
 using StoryFlags
 
 ~ start
-빨간 공: 텅.
-빨간 공: 텅. 텅.
-빨간 공: 나는 그냥 튀어다니는 게 좋아.
-- 왜 아무도 널 던지지 않아?
-	빨간 공: 던질 필요가 없어. 나는 이미 여기 있으니까.
-	=> END
-- (같이 튄다)
-	$> Inventory.give_item("red_marble")
-	빨간 공: 그래, 그거야.
-	빨간 공: 계속 튀어.
-	빨간 공: 이거 하나 줄게.
-	=> END
-- 이제 그만 튀어도 돼.
-	빨간 공: ...그래.
-	빨간 공: 텅.
-	$> StoryFlags.set_visual_state("red_bouncy_ball", "visible", false)
-	=> END
+작은 공: 통.
+작은 공: 통. 통.
+작은 공: 흑흑흑..
+작은 공: 원래는 셋이서 튀어 다녔는데..
+작은 공: 큰 공.. 중간 공 ..
+작은 공: 내 가족들을 찾아줄래?
+- 물론 가능하지.
+	작은 공 : 고마워! 너와 함께 할게 같이 찾아줘!
+	$> StoryFlags.set_visual_state("small_ball", "visible", false)
+	$> Inventory.give_item("small_ball")
+- 미안.

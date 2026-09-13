@@ -10,16 +10,14 @@ var _metadata: Dictionary = {}
 signal item_added(id: String, count: int)
 signal item_removed(id: String, count: int)
 
-func _ready() -> void:
+#func _ready() -> void:
 	# Temporary smoke-test seed so the inventory UI has something to show
 	# before any real feature grants items via dialogue. Real features
 	# should call register_item() themselves and grant items with
 	# `using Inventory` + `$> Inventory.give_item("id")` from their own
 	# .dialogue files (see ping_pong_bottle.dialogue for an example).
-	register_item("test_polaroid", "정체불명의 폴라로이드", preload("res://entities/floating_photo/photos/ping_pong_bottle_180.png"), "언제 찍었는지 기억나지 않는 사진.")
-	register_item("test_bottlecap", "떨어진 뚜껑", preload("res://entities/orbiting_paddle/paddle.png"), "주웠는데 왜 주웠는지 모르겠다.")
-	give_item("test_bottlecap")
-
+	
+	
 func register_item(id: String, display_name: String, texture: Texture2D, description: String = "") -> void:
 	_metadata[id] = {"display_name": display_name, "texture": texture, "description": description}
 

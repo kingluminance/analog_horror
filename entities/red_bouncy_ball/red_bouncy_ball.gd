@@ -23,7 +23,7 @@ extends Node3D
 var _time_elapsed := 0.0
 
 func _ready() -> void:
-	Inventory.register_item("red_marble", "빨간 구슬", preload("res://entities/red_bouncy_ball/red_marble.png"), "빨간 공한테서 굴러나온 작은 구슬.")
+	Inventory.register_item("small_ball", "작은 공", preload("res://entities/red_bouncy_ball/red_marble.png"), "도와줘서 고마워, 여기 좀 따듯한데?.")
 
 func _process(delta: float) -> void:
 	_time_elapsed += delta

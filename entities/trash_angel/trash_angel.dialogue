@@ -27,3 +27,4 @@ $> StoryFlags.set_visual_state("trash_angel", "body", "closed_lid_noeyes")
 	$> StoryFlags.set_visual_state("trash_angel", "body", "closed_lid_eyes")
 	쓰레기가 되어버린 날개: 그래? 난 안 세어 봤네.
 	=> END
+	

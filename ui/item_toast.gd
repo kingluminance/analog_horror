@@ -1,15 +1,21 @@
 extends CanvasLayer
-## Brief "<이름>을/를 얻었습니다" notification at the top of the screen
-## whenever Inventory.item_added fires. No queue — a new pickup while one
-## is showing just restarts the fade with the new text.
+## Small, quiet "<이름>을/를 얻었습니다" notification — slides in from the
+## right near the top of the screen, holds briefly, slides back out. Fires
+## on Inventory.item_added. No queue: a pickup while one is showing just
+## restarts with the new text.
 
-@onready var label: Label = %Label
+@onready var panel: Control = %Panel
 
 var _tween: Tween
+var _rest_x: float
+var _hidden_x: float
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	label.modulate.a = 0.0
+	_rest_x = panel.position.x
+	_hidden_x = _rest_x + panel.size.x + 40.0
+	panel.position.x = _hidden_x
+	panel.modulate.a = 0.0
 	Inventory.item_added.connect(_on_item_added)
 
 func _on_item_added(id: String, _count: int) -> void:
@@ -17,14 +23,18 @@ func _on_item_added(id: String, _count: int) -> void:
 	_show_toast("%s%s 얻었습니다" % [display_name, _josa_eul_reul(display_name)])
 
 func _show_toast(text: String) -> void:
-	label.text = text
+	%Label.text = text
 	if _tween and _tween.is_valid():
 		_tween.kill()
-	label.modulate.a = 0.0
+	panel.position.x = _hidden_x
+	panel.modulate.a = 0.0
+
 	_tween = create_tween()
-	_tween.tween_property(label, "modulate:a", 1.0, 0.25)
-	_tween.tween_interval(1.6)
-	_tween.tween_property(label, "modulate:a", 0.0, 0.5)
+	_tween.tween_property(panel, "position:x", _rest_x, 0.3).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	_tween.parallel().tween_property(panel, "modulate:a", 1.0, 0.2)
+	_tween.tween_interval(1.3)
+	_tween.tween_property(panel, "position:x", _hidden_x, 0.3).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+	_tween.parallel().tween_property(panel, "modulate:a", 0.0, 0.25)
 
 # Korean object-marker particle: 을 after a syllable with a batchim (final
 # consonant), 를 after one without — picked from the Hangul syllable's

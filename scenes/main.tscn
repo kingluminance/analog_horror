@@ -14,11 +14,11 @@
 [ext_resource type="PackedScene" path="res://entities/orbiting_paddle/orbiting_paddle.tscn" id="16_paddle"]
 [ext_resource type="PackedScene" uid="uid://cfa0qifwfg51f" path="res://entities/red_bouncy_ball/red_bouncy_ball.tscn" id="18_ball"]
 [ext_resource type="PackedScene" path="res://ui/inventory_ui.tscn" id="18_inventory"]
-[ext_resource type="PackedScene" path="res://ui/item_toast.tscn" id="25_toast"]
-[ext_resource type="PackedScene" path="res://entities/trash_angel/trash_angel.tscn" id="20_trash_angel"]
+[ext_resource type="PackedScene" uid="uid://cro4e40sxusd8" path="res://entities/trash_angel/trash_angel.tscn" id="20_trash_angel"]
 [ext_resource type="Texture2D" uid="uid://b6hoxc516sp3s" path="res://entities/floating_photo/photos/brain_in_vat.png" id="22_brain_tex"]
 [ext_resource type="Resource" uid="uid://dg5y33dh1h0e8" path="res://entities/floating_photo/photos/brain_in_vat.dialogue" id="23_brain_dlg"]
-[ext_resource type="PackedScene" path="res://entities/spinning_trinket/spinning_trinket.tscn" id="24_trinket"]
+[ext_resource type="PackedScene" uid="uid://c2fp1ylvau0qp" path="res://entities/spinning_trinket/spinning_trinket.tscn" id="24_trinket"]
+[ext_resource type="PackedScene" path="res://ui/item_toast.tscn" id="25_toast"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.35, 0.65, 1, 1)
@@ -874,7 +874,7 @@ script = ExtResource("8_loop_audio")
 
 [node name="InventoryUI" parent="." unique_id=1509137938 instance=ExtResource("18_inventory")]
 
-[node name="ItemToast" parent="." instance=ExtResource("25_toast")]
+[node name="ItemToast" parent="." unique_id=1216048891 instance=ExtResource("25_toast")]
 
 [editable path="Objects/PingPongBottle"]
 [editable path="Objects/John"]
