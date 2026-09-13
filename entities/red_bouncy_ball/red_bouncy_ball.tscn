@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://c15qbo345obyw" path="res://entities/red_bouncy_ball/red_bouncy_ball.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://entities/shared/interactable.tscn" id="2_interactable"]
 [ext_resource type="Resource" uid="uid://dk8cilt2100h8" path="res://entities/red_bouncy_ball/ball.dialogue" id="3_dialogue"]
+[ext_resource type="Script" path="res://entities/shared/dialogue_visibility.gd" id="4_visibility"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_ball"]
 radius = 0.2
@@ -23,3 +24,7 @@ dialogue_resource = ExtResource("3_dialogue")
 facing_angle_degrees = 20.0
 range_radius = 2.5
 hint_offset = Vector3(0, 1.0, 0)
+
+[node name="DialogueVisibility" type="Node" parent="."]
+script = ExtResource("4_visibility")
+entity_id = "red_bouncy_ball"

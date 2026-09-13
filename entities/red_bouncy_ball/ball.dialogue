@@ -1,4 +1,5 @@
 using Inventory
+using StoryFlags
 
 ~ start
 빨간 공: 텅.
@@ -12,4 +13,9 @@ using Inventory
 	빨간 공: 그래, 그거야.
 	빨간 공: 계속 튀어.
 	빨간 공: 이거 하나 줄게.
+	=> END
+- 이제 그만 튀어도 돼.
+	빨간 공: ...그래.
+	빨간 공: 텅.
+	$> StoryFlags.set_visual_state("red_bouncy_ball", "visible", false)
 	=> END
