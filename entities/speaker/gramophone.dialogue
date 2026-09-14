@@ -2,6 +2,25 @@ using StoryFlags
 
 ~ start
 축음기: (대사 필요 — 아직 안 정해짐)
+$> locals.playing = StoryFlags.get_flag("gramophone_playing")
+$> locals.stuck = StoryFlags.get_flag("gramophone_stuck")
+if not locals.playing
+	=> not_playing_yet
+elif locals.stuck
+	=> stuck
+else
+	=> END
+
+
+~ not_playing_yet
+- 노래를 틀어볼게.
+	$> StoryFlags.set_flag("gramophone_playing", true)
+	=> END
+- 그냥 둘게.
+	=> END
+
+
+~ stuck
 - 레코드가 계속 튀는 것 같은데... 고쳐볼게.
 	$> StoryFlags.set_flag("gramophone_loop_fixed", true)
 	=> END
