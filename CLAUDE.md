@@ -266,6 +266,11 @@ display_name, default=0.0, max_value=10.0, description="")`로 한 번 등록해
   넘어갔었음). 고칠 때는 그 `Interactable`을 트링켓의 형제 노드로 옮기고(`Objects/BrainInVat` 밑,
   `SpeakerInteractable`로 개명) 같은 월드 위치가 되도록 `transform`을 직접 지정해서 해결 —
   `BrainInVat`엔 이미 `[editable path="Objects/BrainInVat"]`가 있어서 마커 추가는 불필요했음.
+  **그래도 이 시각 효과(힌트가 같이 도는 것) 자체는 사용자가 마음에 들어해서** — `Interactable`에
+  `hint_spin_speed`(기본 0 = 꺼짐) export를 새로 추가함, 켜면 `_hint`(Label3D) 자기 자신의 `scale.x`만
+  같은 빌보드 플립 트릭으로 오실레이션시킴(Area3D 루트나 `CollisionShape3D`는 절대 안 건드림 — 그래서
+  Jolt는 계속 조용함). `SpeakerInteractable`엔 `hint_spin_speed = 6.0`(트링켓의 `spin_speed`와 동일)을
+  걸어서 다시 같이 돌게 해둠.
 - **`.dialogue`의 `locals.x`는 Dialogue Manager 내장 기능이 아니라, 대화창(`analog_dialogue_balloon.gd`
   등)이 자기 자신을 `extra_game_states`로 넘길 때 그 스크립트가 갖고 있는 평범한 `var locals: Dictionary`
   프로퍼티를 찾아서 읽고 쓰는 것뿐임**. 그래서 실제 게임(Interactable → `show_dialogue_balloon()`)에서는
