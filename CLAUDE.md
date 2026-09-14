@@ -135,10 +135,19 @@ InputMap 액션을 새로 추가하지 말고 이 관례를 따를 것. **아이
 ### `Stats` (오토로드, `data/stats.gd`) + `ui/stat_gauge.*` — RPG식 스탯
 HP/공격성/유연성/레벨 등, 나중에 이벤트(전투일지는 미정)에 쓰일 플레이어 스탯. `StoryFlags`/`Inventory`처럼
 딕셔너리 기반이라 `stats.gd` 자체엔 특정 스탯 이름이 하나도 안 박혀있음 — `register_stat(id,
-display_name, default=0.0, max_value=10.0, description="")`로 한 번 등록해두면(현재 시작 세트는
-`entities/player/player.gd`의 `_ready()`에서 등록) `get_stat(id)`/`set_stat(id, value)`/
-`add_stat(id, delta)`/`get_max(id)`로 어디서든(`.dialogue` 포함) 읽고 쓸 수 있음. `using Stats` +
+display_name, default=0.0, max_value=10.0, clamp_to_max=true, description="")`로 한 번 등록해두면
+(현재 시작 세트는 `entities/player/player.gd`의 `_ready()`에서 등록) `get_stat(id)`/`set_stat(id,
+value)`/`add_stat(id, delta)`/`get_max(id)`로 어디서든(`.dialogue` 포함) 읽고 쓸 수 있음. `using Stats` +
 `$> Stats.add_stat("aggression", 1)`처럼. 실제로 전투/이벤트에서 어떻게 쓸지는 아직 안 정해짐.
+
+**스탯 두 종류, `clamp_to_max`로 구분** (최댓값 넘으면 어떻게 되는지 논의 후 결정):
+- **자원형**(HP/공격성/유연성, `clamp_to_max=true` 기본값) — 진짜 상한/하한이 있고 HP처럼 소모될 수
+  있음. `set_stat`/`add_stat`을 부를 때마다(등록 시 기본값이 범위 밖이어도) 실제 값 자체를
+  `[0, max]`로 잘라냄 — 그래서 게이지 바늘이 꽉 찬 것과 숫자가 항상 일치함(둘 다 진짜 최대치를 뜻함)
+- **성장형**(레벨, `clamp_to_max=false`로 등록) — 상한 강제 없음, `max_value`는 그냥 게이지 바늘
+  눈금 기준일 뿐이고 값 자체는 그 이상 계속 오름. 넘으면 바늘은 꽉 찬 자리에 고정되고 숫자만 계속
+  올라가는 상태가 되는데, "그냥 어쩔 수 없고 평범한 레벨 시스템"이라 의도적으로 그대로 둠
+
 **표시는 인벤토리 패널(Tab) 안, 별도 HUD 아님** — 처음엔 화면 구석에 항상 떠있는 별도 HUD로
 만들었었는데, "Tab 눌러야 나오게" 피드백으로 인벤토리 패널의 `StatsRow`로 옮겨서 같은 열고/닫는
 생명주기를 씀(패널 열 때마다 다시 그림). 각 스탯은 **바 대신 아날로그 바늘 게이지**(`ui/stat_gauge.gd`,
