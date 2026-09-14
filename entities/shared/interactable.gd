@@ -1,12 +1,14 @@
 class_name Interactable
 extends Area3D
 ## Reusable E-to-talk component: proximity detection + facing-check gate +
-## "[E]" hint + dialogue trigger. Any entity that wants dialogue instances
+## "[E]" hint + an action trigger. Any entity that wants this instances
 ## `interactable.tscn` as a child (anywhere in its tree — doesn't have to be
 ## at the visual root; e.g. a bouncing object can anchor this at a fixed
 ## height instead of wherever the bouncing mesh currently is) and sets
-## `dialogue_resource`. Leave `dialogue_resource` unset for a silent,
-## fully-disabled interactable.
+## either `dialogue_resource` (opens a dialogue balloon) or `scene_to_load`
+## (a door -- changes the whole scene instead, e.g. a cabin's front door
+## leading to its interior). Leave both unset for a silent, fully-disabled
+## interactable.
 ##
 ## Extracted from floating_photo.gd / orbiting_paddle.gd, which had each
 ## independently grown the same ~25-line block — this is now the one copy.
@@ -20,6 +22,11 @@ extends Area3D
 
 @export var dialogue_resource: DialogueResource
 @export var dialogue_start_title := "start"
+
+## Set this instead of dialogue_resource to make E change the whole scene
+## (a door) rather than open a dialogue. Mutually exclusive with
+## dialogue_resource in practice -- if both are set, dialogue wins.
+@export_file("*.tscn") var scene_to_load := ""
 
 # Player must be looking roughly at this object (within this half-angle, in
 # degrees, of dead-center) for E to work — proximity alone isn't enough.
@@ -67,12 +74,15 @@ static var _next_best: Interactable = null
 static var _next_best_dist: float = INF
 static var _tally_frame: int = -1
 
+func _has_action() -> bool:
+	return dialogue_resource != null or scene_to_load != ""
+
 func _ready() -> void:
 	collision_layer = 0
 	collision_mask = 1
 	_shape.shape.radius = range_radius
 	_hint.position = hint_offset
-	if dialogue_resource:
+	if _has_action():
 		body_entered.connect(_on_body_entered)
 		body_exited.connect(_on_body_exited)
 		DialogueManager.dialogue_started.connect(func(_res): _dialogue_running = true)
@@ -82,7 +92,7 @@ func _ready() -> void:
 		_hint.hide()
 
 func _process(_delta: float) -> void:
-	if not dialogue_resource:
+	if not _has_action():
 		return
 
 	if hint_spin_speed != 0.0:
@@ -105,14 +115,18 @@ func _process(_delta: float) -> void:
 	_hint.visible = _player_in_range and self == Interactable._best
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not dialogue_resource or not _player_in_range or not _is_player_facing():
+	if not _has_action() or not _player_in_range or not _is_player_facing():
 		return
 	if self != Interactable._best:
 		return
 	if event.is_action_pressed("ui_accept") or (event is InputEventKey and event.pressed and event.keycode == KEY_E):
-		if not _dialogue_running:
-			DialogueManager.show_dialogue_balloon(dialogue_resource, dialogue_start_title)
+		if dialogue_resource:
+			if not _dialogue_running:
+				DialogueManager.show_dialogue_balloon(dialogue_resource, dialogue_start_title)
+				get_viewport().set_input_as_handled()
+		elif scene_to_load != "":
 			get_viewport().set_input_as_handled()
+			get_tree().change_scene_to_file(scene_to_load)
 
 func _on_body_entered(body: Node3D) -> void:
 	if body is CharacterBody3D:
