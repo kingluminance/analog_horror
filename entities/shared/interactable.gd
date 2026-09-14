@@ -37,6 +37,16 @@ extends Area3D
 		if _hint:
 			_hint.position = value
 
+# Purely cosmetic, opt-in (0 = off, the default for every other
+# Interactable in the game): spins just the hint marker itself the same
+# billboard-flip way spinning_trinket.gd fakes a spin (scale.x = cos(...)),
+# never the Area3D root -- so the CollisionShape3D's scale never changes
+# and Jolt Physics never complains. Added so the "스피커" hint next to
+# BrainInVat/SpinningTrinket can visually spin along with it again after
+# being moved out from under it (that nesting caused a real bug — see
+# CLAUDE.md's Jolt scale-error note — but the user liked the synced look).
+@export var hint_spin_speed := 0.0 # radians/sec
+
 var _player_in_range := false
 # ponytail: DialogueManager exposes no "is running" property, only start/end signals —
 # track it locally. Fine even with multiple instances since only one dialogue runs at a time.
@@ -74,6 +84,9 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if not dialogue_resource:
 		return
+
+	if hint_spin_speed != 0.0:
+		_hint.scale.x = cos(Time.get_ticks_msec() / 1000.0 * hint_spin_speed)
 
 	var frame := Engine.get_process_frames()
 	if frame != Interactable._tally_frame:

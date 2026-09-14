@@ -868,6 +868,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 0.4, 0.3)
 [node name="SpeakerInteractable" parent="Objects/BrainInVat" unique_id=259501128 instance=ExtResource("14_gqmmt")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 0.4, 0.3)
 dialogue_resource = ExtResource("15_yc10j")
+hint_spin_speed = 6.0
 
 [node name="Speaker" parent="Objects" unique_id=969417477 instance=ExtResource("26_speaker")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 30.774786)
