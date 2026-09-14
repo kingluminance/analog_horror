@@ -165,7 +165,12 @@ $> StoryFlags.set_visual_state("<entity_id>", "visible", true)   # 다시 보임
   눈으로 읽다 보니 또 부정확할 수 있어서 — 결국 abcnotation.com에서 실제 ABC 악보 원본 데이터(John
   Chambers Vintage 컬렉션, G장조)를 웹 검색/페치로 찾아서 그대로 가져와 옮김(픽셀 추측이 아니라 실제
   음/길이 데이터). 사용자가 보내준 2페이지 전체 분량(버스 4줄, "Daisy Daisy..."부터 "...bicycle built
-  for two!"까지)을 전부 담아서 트랙 길이가 13초 → 37초로 늘어남. **레코드 튀는(스킵) 연출은 오디오
+  for two!"까지)을 전부 담아서 트랙 길이가 13초 → 37초로 늘어남. **베이스+코드 반주 추가**: "피아노
+  멜로디만 있지 말고 노래답게 해달라"는 피드백으로, 왈츠 특유의 "쿵-짝짝"(oom-pah) 좌수 반주를 추가함
+  — 마디 1박은 베이스음 단독, 2~3박은 코드 3음을 겹쳐 침. 코드는 멜로디와 같은 ABC 소스에 있던 코드
+  기호(G/D7/Em/B7/A7)를 마디별로 그대로 매핑해서 실제 화성 진행과 맞춤(`CHORDS`/`BARS` in the
+  generator script — 스크립트 자체는 리포에는 안 넣고 스크래치패드에만 둠, 다른 이미지 배경제거
+  스크립트들과 같은 관례). **레코드 튀는(스킵) 연출은 오디오
   파일에 안 구워져 있고 런타임에 구현**: `skip_loop_end_sec`(기본 9.6초)를 넘으면
   `skip_loop_start_sec`(기본 9.0초)로 계속 `seek()`해서 그 구간을 무한 반복하다가,
   `gramophone.dialogue`의 "고쳐볼게" 선택지가 `StoryFlags.set_flag("gramophone_loop_fixed", true)`를
