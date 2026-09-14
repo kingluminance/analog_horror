@@ -170,12 +170,14 @@ $> StoryFlags.set_visual_state("<entity_id>", "visible", true)   # 다시 보임
   — 마디 1박은 베이스음 단독, 2~3박은 코드 3음을 겹쳐 침. 코드는 멜로디와 같은 ABC 소스에 있던 코드
   기호(G/D7/Em/B7/A7)를 마디별로 그대로 매핑해서 실제 화성 진행과 맞춤(`CHORDS`/`BARS` in the
   generator script — 스크립트 자체는 리포에는 안 넣고 스크래치패드에만 둠, 다른 이미지 배경제거
-  스크립트들과 같은 관례). **레코드 튀는(스킵) 연출은 오디오
-  파일에 안 구워져 있고 런타임에 구현**: `skip_loop_end_sec`(기본 9.6초)를 넘으면
-  `skip_loop_start_sec`(기본 9.0초)로 계속 `seek()`해서 그 구간을 무한 반복하다가,
-  `gramophone.dialogue`의 "고쳐볼게" 선택지가 `StoryFlags.set_flag("gramophone_loop_fixed", true)`를
-  호출하면 멈춤 — 트랙이 길어져서 이 두 기본값이 이제 곡 초반부(1번째 줄 안)에 해당하니, 스킵 위치를
-  중간쯤으로 옮기고 싶으면 이 두 값만 조정하면 됨
+  스크립트들과 같은 관례). **자동재생 안 함** — `StoryFlags.get_flag("gramophone_playing")`이 true가
+  될 때까지 `play()`를 안 부름, `gramophone.dialogue`의 "노래를 틀어볼게." 선택지가 그 플래그를 세워줌.
+  **레코드 튀는(스킵) 연출은 오디오 파일에 안 구워져 있고 런타임에 구현**: `skip_loop_end_sec`(기본
+  9.6초)를 넘으면 `skip_loop_start_sec`(기본 9.0초)로 계속 `seek()`해서 그 구간을 무한 반복하면서
+  `"gramophone_stuck"` 플래그를 세움 — `gramophone.dialogue`는 이 플래그가 true일 때만(재생 중이면서
+  튀고 있을 때만) "고쳐볼게" 선택지를 보여주고, 그걸 고르면 `"gramophone_loop_fixed"`를 세워서 멈춤(동시에
+  `"gramophone_stuck"`도 다시 false로 정리됨). 트랙이 길어져서 스킵 기본값이 곡 초반부(1번째 줄 안)에
+  해당하니, 중간쯤으로 옮기고 싶으면 이 두 값만 조정하면 됨
 
 ## 개발 환경 메모
 - **Godot 4.7 헤드리스 바이너리**: `C:\Users\my\Downloads\Godot_v4.7-stable_win64.exe\
