@@ -151,7 +151,11 @@ $> StoryFlags.set_visual_state("<entity_id>", "visible", true)   # 다시 보임
   (기본 0.05초) 동안 좌우로(`pump_scale_x`, 기본 1.7배) 확 찢어지듯 늘어나면서 동시에 위아래는
   살짝 눌리고(`pump_scale_y`, 기본 0.8배 — 스퀴시&스트레치 반대 방향 움직임), 남은 `pump_interval`
   (기본 0.28초) 동안 `smoothstep`으로 부드럽게 원래 비율로 돌아옴 — 넷 다 `@export`라 실제 노래
-  넣고 귀로 들으면서 다시 튜닝하면 됨. Horn은 `billboard=0`(항상 카메라를 보지 않음)이고 `_ready()`에서 180도 뒤집힌 채로 고정.
+  넣고 귀로 들으면서 다시 튜닝하면 됨. Horn은 `billboard=0`(항상 카메라를 보지 않음)이고 `_ready()`에서
+  180도 뒤집힌 채로 고정. **Box도 같은 엔벨로프로 펌핑함 — 대신 `box_pump_scale_y`(기본 1.4배)로
+  위아래로만**(가로는 안 건드림), Horn과 같은 타이밍이라 같이 맞춰서 펄떡거림. **재생 중일 때만
+  펌핑**: `StoryFlags.get_flag("gramophone_playing")`가 false면 둘 다 `scale = Vector3.ONE`으로 고정 —
+  노래 안 틀었으면 가만히 있음.
   대화는 `entities/speaker/gramophone.dialogue`(아직 대사 비어있는 스텁) — **`entities/floating_photo/
   photos/speaker.dialogue`("나는 왜 휴일인데 일하지...")를 쓰는 `BrainInVat/SpinningTrinket` 밑의 "스피커"
   NPC와는 완전히 다른 별개의 캐릭터**임에 주의. 폴더/노드 이름이 둘 다 "speaker" 계열이라 헷갈리기 쉬움 —
