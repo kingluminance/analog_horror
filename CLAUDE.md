@@ -228,7 +228,9 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
   `chase_radius`(집에서 얼마나 멀어질 수 있는지)랑 독립적인 별개 제약이라, 둘 다 걸리는 위치에서
   테스트하면 어느 쪽이 실제로 막고 있는지 헷갈릴 수 있음(실제로 헷갈렸음 — 플레이어를 `chase_radius`
   경계 근처에 둔 첫 테스트에서 애매한 값이 나와서, `chase_radius` 안쪽 깊숙한 곳으로 옮겨서 다시
-  테스트해 확인함).
+  테스트해 확인함). **단, 처음 한 번은 예외** — `_has_closed_in_once`가 false인 동안(=한 번도 플레이어
+  코앞까지 닿아본 적 없는 동안)은 옛날처럼 0.05m까지 바짝 붙음(한 번의 깜짝 연출 용도). 한 번이라도
+  닿으면 그 뒤로는(노래를 껐다 다시 켜도) 계속 `chase_stop_distance`를 지킴.
 
 ## 개발 환경 메모
 - **Godot 4.7 헤드리스 바이너리**: `C:\Users\my\Downloads\Godot_v4.7-stable_win64.exe\
