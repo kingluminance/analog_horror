@@ -144,12 +144,16 @@ $> StoryFlags.set_visual_state("<entity_id>", "visible", true)   # 다시 보임
   `"body"`, 값 `open_lid_eyes`/`closed_lid_eyes`/`closed_lid_noeyes`)로 몸통 전환
 - **빨간 통통볼** (`Objects/RedBouncyBall`) — 첫 실사진이 아닌 실제 3D 메쉬(SphereMesh) NPC. 물리
   아님, 스크립트 포물선(`y = 4h(t/T)(1-t/T)`)으로 바운스 + 접지 시 찌부(squash) 스케일
-- **스피커** (`Objects/Speaker`, `entities/speaker/`) — 상자(Box, billboard) 위에 축음기 나팔(Horn)이
-  얹혀서 계속 도는 오브젝트. Horn은 일부러 `billboard=0`으로 둠 — billboard 켜진 Sprite3D는 매 프레임
-  카메라를 향해 베이시스를 통째로 재계산해서 `rotation`을 무시하기 때문(트링켓이 `scale.x = cos(...)`
-  플립 트릭을 쓰는 이유와 동일한 제약). billboard를 끄면 로컬 Z축 회전이 그대로 반영돼서 정면에서 볼 때
-  진짜 "시계방향 회전"으로 보임 — 대신 극단적인 측면 각도에서는 부자연스러울 수 있음(요구사항 자체가
-  "정면 기준"이라 의도된 트레이드오프)
+- **축음기(박스+나팔)** (`Objects/Speaker`, `entities/speaker/`) — 상자(Box, billboard) 위에 축음기
+  나팔(Horn)이 얹혀서 계속 도는 오브젝트. Horn은 일부러 `billboard=0`으로 둠 — billboard 켜진 Sprite3D는
+  매 프레임 카메라를 향해 베이시스를 통째로 재계산해서 `rotation`을 무시하기 때문(트링켓이
+  `scale.x = cos(...)` 플립 트릭을 쓰는 이유와 동일한 제약). billboard를 끄면 로컬 Z축 회전이 그대로
+  반영돼서 정면에서 볼 때 진짜 "시계방향 회전"으로 보임 — 대신 극단적인 측면 각도에서는 부자연스러울 수
+  있음(요구사항 자체가 "정면 기준"이라 의도된 트레이드오프). 대화는 `entities/speaker/gramophone.dialogue`
+  (아직 대사 비어있는 스텁) — **`entities/floating_photo/photos/speaker.dialogue`("나는 왜 휴일인데
+  일하지...")를 쓰는 `BrainInVat/SpinningTrinket` 밑의 "스피커" NPC와는 완전히 다른 별개의 캐릭터**임에
+  주의. 폴더/노드 이름이 둘 다 "speaker" 계열이라 헷갈리기 쉬움 — 처음에 실수로 둘을 같은 대화로
+  합쳐버린 적 있어서(바로 되돌림) 기록해둠
 
 ## 개발 환경 메모
 - **Godot 4.7 헤드리스 바이너리**: `C:\Users\my\Downloads\Godot_v4.7-stable_win64.exe\
