@@ -128,6 +128,16 @@ $> StoryFlags.set_visual_state("<entity_id>", "visible", true)   # 다시 보임
 `project.godot`에 `[input]` 섹션이 없다 — 모든 키는 `event.keycode == KEY_X` 식으로 하드코딩되어
 있음(E, I 등), InputMap 액션을 새로 추가하지 말고 이 관례를 따를 것.
 
+### `Stats` (오토로드, `data/stats.gd`) — RPG식 스탯 (진행 중, 아직 UI 없음)
+HP/공격성/유연성 등, 나중에 이벤트(전투일지는 미정)에 쓰일 플레이어 스탯. `StoryFlags`/`Inventory`처럼
+딕셔너리 기반이라 `stats.gd` 자체엔 특정 스탯 이름이 하나도 안 박혀있음 — `register_stat(id,
+display_name, default=0.0, description="")`로 한 번 등록해두면(현재 시작 세트는
+`entities/player/player.gd`의 `_ready()`에서 등록) `get_stat(id)`/`set_stat(id, value)`/
+`add_stat(id, delta)`로 어디서든(`.dialogue` 포함) 읽고 쓸 수 있음. `using Stats` +
+`$> Stats.add_stat("aggression", 1)`처럼. `get_registered_stats()`/`get_display_name(id)`는 나중에
+스탯 표시 UI 만들 때 쓰라고 미리 넣어둠 — 실제로 전투/이벤트에서 어떻게 쓸지는 아직 안 정해짐, UI도 아직
+없음. 새 스탯 추가할 때 이 파일은 건드릴 필요 없이 아무 데서나 `register_stat()` 한 번 더 부르면 됨.
+
 ## NPC / 오브젝트 목록
 - **존** (`Objects/John`) — 첫 실사진 NPC, 얼굴 크롭. 예전 이름 "몽클가이"
 - **물병** (`Objects/PingPongBottle`) — 탁구 치는 물병. `rembg` AI 배경 제거로 누끼(투명 재질이라
