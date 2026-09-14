@@ -161,12 +161,16 @@ $> StoryFlags.set_visual_state("<entity_id>", "visible", true)   # 다시 보임
   없이 Python stdlib(wave/math/random)로 합성함 — Daisy Bell 피아노 하나만(처음엔 Twinkle Twinkle
   Little Star를 한 옥타브 내려서 언더레이로 겹쳤었는데, 오히려 데이지벨이 잘 안 들린다는 피드백으로
   뺌), 여기에 히스/럼블/크래클 비닐 노이즈 + wow 피치 LFO를 더함. 멜로디는 처음엔 기억만으로 옮겼다가
-  음이 부정확해서 사용자가 실제 악보(Harry Dacre, F장조, 3/4 왈츠)를 보내줘서 다시 옮김 — 그래도
-  마디 하나하나까지 완벽히 정확하다는 보장은 없음(이미지에서 픽셀 단위로 읽은 거라). **레코드 튀는(스킵)
-  연출은 오디오 파일에 안 구워져 있고 런타임에
-  구현**: `skip_loop_end_sec`(기본 9.6초)를 넘으면 `skip_loop_start_sec`(기본 9.0초)로 계속
-  `seek()`해서 그 구간을 무한 반복하다가, `gramophone.dialogue`의 "고쳐볼게" 선택지가
-  `StoryFlags.set_flag("gramophone_loop_fixed", true)`를 호출하면 멈춤
+  음이 부정확해서 사용자가 실제 악보(Harry Dacre, F장조, 3/4 왈츠) 사진을 보내줬는데, 그것도 이미지를
+  눈으로 읽다 보니 또 부정확할 수 있어서 — 결국 abcnotation.com에서 실제 ABC 악보 원본 데이터(John
+  Chambers Vintage 컬렉션, G장조)를 웹 검색/페치로 찾아서 그대로 가져와 옮김(픽셀 추측이 아니라 실제
+  음/길이 데이터). 사용자가 보내준 2페이지 전체 분량(버스 4줄, "Daisy Daisy..."부터 "...bicycle built
+  for two!"까지)을 전부 담아서 트랙 길이가 13초 → 37초로 늘어남. **레코드 튀는(스킵) 연출은 오디오
+  파일에 안 구워져 있고 런타임에 구현**: `skip_loop_end_sec`(기본 9.6초)를 넘으면
+  `skip_loop_start_sec`(기본 9.0초)로 계속 `seek()`해서 그 구간을 무한 반복하다가,
+  `gramophone.dialogue`의 "고쳐볼게" 선택지가 `StoryFlags.set_flag("gramophone_loop_fixed", true)`를
+  호출하면 멈춤 — 트랙이 길어져서 이 두 기본값이 이제 곡 초반부(1번째 줄 안)에 해당하니, 스킵 위치를
+  중간쯤으로 옮기고 싶으면 이 두 값만 조정하면 됨
 
 ## 개발 환경 메모
 - **Godot 4.7 헤드리스 바이너리**: `C:\Users\my\Downloads\Godot_v4.7-stable_win64.exe\
