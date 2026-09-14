@@ -865,7 +865,8 @@ dialogue_resource = ExtResource("23_brain_dlg")
 [node name="SpinningTrinket" parent="Objects/BrainInVat" unique_id=2004641828 instance=ExtResource("24_trinket")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 0.4, 0.3)
 
-[node name="Interactable" parent="Objects/BrainInVat/SpinningTrinket" unique_id=259501128 instance=ExtResource("14_gqmmt")]
+[node name="SpeakerInteractable" parent="Objects/BrainInVat" unique_id=259501128 instance=ExtResource("14_gqmmt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 0.4, 0.3)
 dialogue_resource = ExtResource("15_yc10j")
 
 [node name="Speaker" parent="Objects" unique_id=969417477 instance=ExtResource("26_speaker")]
