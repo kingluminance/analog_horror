@@ -1,0 +1,25 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://entities/speaker/speaker.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://entities/speaker/box.png" id="2_box_tex"]
+[ext_resource type="Texture2D" path="res://entities/speaker/horn.png" id="3_horn_tex"]
+[ext_resource type="PackedScene" path="res://entities/shared/interactable.tscn" id="4_interactable"]
+[ext_resource type="Resource" uid="uid://tsceqafuuvvt" path="res://entities/floating_photo/photos/speaker.dialogue" id="5_dialogue"]
+
+[node name="Speaker" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="Box" type="Sprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+pixel_size = 0.002888
+billboard = 1
+texture = ExtResource("2_box_tex")
+
+[node name="Horn" type="Sprite3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7275, 0)
+pixel_size = 0.00125
+texture = ExtResource("3_horn_tex")
+
+[node name="Interactable" parent="." instance=ExtResource("4_interactable")]
+dialogue_resource = ExtResource("5_dialogue")
+hint_offset = Vector3(0, 1.3, 0)
