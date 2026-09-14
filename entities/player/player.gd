@@ -25,6 +25,7 @@ func _ready() -> void:
 	Stats.register_stat("hp", "HP", 10.0)
 	Stats.register_stat("aggression", "공격성", 5.0)
 	Stats.register_stat("flexibility", "유연성", 5.0)
+	Stats.register_stat("level", "레벨", 1.0)
 	DialogueManager.dialogue_started.connect(func(_res):
 		_dialogue_active = true
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
