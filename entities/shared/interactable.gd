@@ -10,6 +10,13 @@ extends Area3D
 ##
 ## Extracted from floating_photo.gd / orbiting_paddle.gd, which had each
 ## independently grown the same ~25-line block — this is now the one copy.
+##
+## Only one Interactable is ever "active" (hint shown, E responds) across
+## the whole game at a time — whichever eligible one is closest to the
+## camera — via a shared static tally. Without this, standing where two
+## NPCs are both in range and both within the facing cone (e.g. lined up
+## next to each other) showed both hints and opened both dialogues on one
+## E press.
 
 @export var dialogue_resource: DialogueResource
 @export var dialogue_start_title := "start"
@@ -38,6 +45,18 @@ var _dialogue_running := false
 @onready var _shape: CollisionShape3D = $CollisionShape3D
 @onready var _hint: Label3D = $InteractHint
 
+# --- Shared "who's the active one" tally across every Interactable instance ---
+# _best is last frame's fully-settled winner (read by every instance this
+# frame); _next_best/_next_best_dist accumulate this frame's candidates as
+# each instance's _process() runs, and get promoted to _best exactly once
+# per frame (whichever instance happens to process first resets/commits).
+# One frame of lag is imperceptible at 60fps and keeps this simple — no
+# central "game manager" node needed.
+static var _best: Interactable = null
+static var _next_best: Interactable = null
+static var _next_best_dist: float = INF
+static var _tally_frame: int = -1
+
 func _ready() -> void:
 	collision_layer = 0
 	collision_mask = 1
@@ -53,15 +72,34 @@ func _ready() -> void:
 		_hint.hide()
 
 func _process(_delta: float) -> void:
-	if dialogue_resource and _player_in_range:
-		_hint.visible = _is_player_facing()
+	if not dialogue_resource:
+		return
+
+	var frame := Engine.get_process_frames()
+	if frame != Interactable._tally_frame:
+		Interactable._best = Interactable._next_best
+		Interactable._next_best = null
+		Interactable._next_best_dist = INF
+		Interactable._tally_frame = frame
+
+	if _player_in_range and _is_player_facing():
+		var cam := get_viewport().get_camera_3d()
+		var dist := global_position.distance_to(cam.global_position) if cam else 0.0
+		if dist < Interactable._next_best_dist:
+			Interactable._next_best_dist = dist
+			Interactable._next_best = self
+
+	_hint.visible = _player_in_range and self == Interactable._best
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not dialogue_resource or not _player_in_range or not _is_player_facing():
 		return
+	if self != Interactable._best:
+		return
 	if event.is_action_pressed("ui_accept") or (event is InputEventKey and event.pressed and event.keycode == KEY_E):
 		if not _dialogue_running:
 			DialogueManager.show_dialogue_balloon(dialogue_resource, dialogue_start_title)
+			get_viewport().set_input_as_handled()
 
 func _on_body_entered(body: Node3D) -> void:
 	if body is CharacterBody3D:

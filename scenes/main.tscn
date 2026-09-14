@@ -884,3 +884,4 @@ script = ExtResource("8_loop_audio")
 [editable path="Objects/PingPongBottle"]
 [editable path="Objects/John"]
 [editable path="Objects/BrainInVat"]
+[editable path="Objects/BrainInVat/SpinningTrinket"]
