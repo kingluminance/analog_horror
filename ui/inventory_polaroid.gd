@@ -18,6 +18,7 @@ var _desc_tween: Tween
 
 func _ready() -> void:
 	card.gui_input.connect(_on_card_gui_input)
+	card.mouse_entered.connect(show_description)
 
 func setup(id: String, display_name: String, tex: Texture2D, description: String = "") -> void:
 	item_id = id
@@ -35,10 +36,11 @@ func set_focused(focused: bool) -> void:
 
 func _on_card_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		clicked.emit()
-		_show_description()
+		clicked.emit()  # parent's focus-change handler shows the description
 
-func _show_description() -> void:
+## Public so the parent can flash it on arrow-key focus changes too, not
+## just on click/hover.
+func show_description() -> void:
 	if _description.is_empty():
 		return
 	description_label.text = _description

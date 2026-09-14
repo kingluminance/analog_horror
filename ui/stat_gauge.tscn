@@ -1,0 +1,38 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://ui/stat_gauge.gd" id="1_script"]
+
+[sub_resource type="SystemFont" id="SystemFont_mono"]
+font_names = PackedStringArray("Menlo", "Courier New", "Consolas", "monospace")
+
+[node name="StatGauge" type="Control"]
+custom_minimum_size = Vector2(96, 120)
+layout_mode = 2
+script = ExtResource("1_script")
+
+[node name="ValueLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 0.0
+offset_top = 24.0
+offset_right = 96.0
+offset_bottom = 54.0
+theme_override_fonts/font = SubResource("SystemFont_mono")
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(0.95, 0.8, 0.45, 1)
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "0"
+
+[node name="NameLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 0.0
+offset_top = 98.0
+offset_right = 96.0
+offset_bottom = 120.0
+theme_override_fonts/font = SubResource("SystemFont_mono")
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.75, 0.6, 0.38, 0.9)
+horizontal_alignment = 1
+text = "STAT"

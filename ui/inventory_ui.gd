@@ -1,22 +1,26 @@
 extends CanvasLayer
-## VHS-drawer-of-Polaroids inventory. KEY_TAB toggles it (this project has no
-## InputMap [input] section — every interactable hardcodes its key the same
-## way, e.g. floating_photo/orbiting_paddle hardcode KEY_E — so this follows
-## that convention rather than being the first to add one). Mutually
-## exclusive with the pause menu and with dialogue via the "modal_ui" group
-## / DialogueManager signals.
+## VHS-drawer-of-Polaroids inventory + a row of analog stat gauges.
+## KEY_TAB toggles it (this project has no InputMap [input] section --
+## every interactable hardcodes its key the same way, e.g.
+## floating_photo/orbiting_paddle hardcode KEY_E -- so this follows that
+## convention rather than being the first to add one). Mutually
+## exclusive with the pause menu and with dialogue via the "modal_ui"
+## group / DialogueManager signals.
 
 const InventoryPolaroidScene := preload("res://ui/inventory_polaroid.tscn")
+const StatGaugeScene := preload("res://ui/stat_gauge.tscn")
 
 @onready var panel: Control = %Panel
 @onready var scatter: Control = %Scatter
 @onready var caption: Label = %Caption
+@onready var stats_row: Control = %StatsRow
 
 var _dialogue_active := false
 var _open := false
 var _cards: Array = []
 var _items: Array = []
 var _focused_index := -1
+var _gauges: Dictionary = {}  # stat id -> StatGauge instance
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -26,6 +30,7 @@ func _ready() -> void:
 	DialogueManager.dialogue_ended.connect(func(_r): _dialogue_active = false)
 	Inventory.item_added.connect(func(_id, _count): if _open: _rebuild())
 	Inventory.item_removed.connect(func(_id, _count): if _open: _rebuild())
+	Stats.stat_changed.connect(func(id, value): if _open: _update_gauge(id, value))
 
 func is_modal_open() -> bool:
 	return _open
@@ -52,6 +57,7 @@ func _try_open() -> void:
 		if node != self and node.has_method("is_modal_open") and node.is_modal_open():
 			return
 	_rebuild()
+	_rebuild_gauges()
 	panel.show()
 	get_tree().paused = true
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -88,6 +94,22 @@ func _rebuild() -> void:
 		_focused_index = 0
 	_update_focus()
 
+func _rebuild_gauges() -> void:
+	for g in stats_row.get_children():
+		g.queue_free()
+	_gauges.clear()
+	for id in Stats.get_registered_stats():
+		var gauge: Control = StatGaugeScene.instantiate()
+		stats_row.add_child(gauge)
+		gauge.setup(Stats.get_display_name(id), Stats.get_stat(id), Stats.get_max(id))
+		_gauges[id] = gauge
+
+func _update_gauge(id: String, value: float) -> void:
+	if _gauges.has(id):
+		_gauges[id].set_value(value)
+	else:
+		_rebuild_gauges()  # a new stat got registered after the panel was built
+
 func _on_card_clicked(index: int) -> void:
 	_focused_index = index
 	_update_focus()
@@ -103,5 +125,6 @@ func _update_focus() -> void:
 		_cards[i].set_focused(i == _focused_index)
 	if _focused_index >= 0 and _focused_index < _items.size():
 		caption.text = "[%s]" % _items[_focused_index].display_name
+		_cards[_focused_index].show_description()
 	else:
 		caption.text = "(비어 있음)"

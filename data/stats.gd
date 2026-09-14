@@ -11,11 +11,11 @@ extends Node
 
 signal stat_changed(stat_id: String, value: float)
 
-var _definitions: Dictionary = {}  # id -> {display_name, description, default}
+var _definitions: Dictionary = {}  # id -> {display_name, description, default, max}
 var _values: Dictionary = {}       # id -> float
 
-func register_stat(id: String, display_name: String, default: float = 0.0, description: String = "") -> void:
-	_definitions[id] = {"display_name": display_name, "description": description, "default": default}
+func register_stat(id: String, display_name: String, default: float = 0.0, max_value: float = 10.0, description: String = "") -> void:
+	_definitions[id] = {"display_name": display_name, "description": description, "default": default, "max": max_value}
 	if not _values.has(id):
 		_values[id] = default
 
@@ -25,6 +25,9 @@ func get_stat(id: String) -> float:
 	if _definitions.has(id):
 		return _definitions[id].default
 	return 0.0
+
+func get_max(id: String) -> float:
+	return _definitions[id].max if _definitions.has(id) else 10.0
 
 func set_stat(id: String, value: float) -> void:
 	_values[id] = value
