@@ -1,5 +1,5 @@
 extends CanvasLayer
-## VHS-drawer-of-Polaroids inventory. KEY_I toggles it (this project has no
+## VHS-drawer-of-Polaroids inventory. KEY_TAB toggles it (this project has no
 ## InputMap [input] section — every interactable hardcodes its key the same
 ## way, e.g. floating_photo/orbiting_paddle hardcode KEY_E — so this follows
 ## that convention rather than being the first to add one). Mutually
@@ -33,7 +33,7 @@ func is_modal_open() -> bool:
 func _unhandled_input(event: InputEvent) -> void:
 	if _dialogue_active:
 		return
-	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_I:
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_TAB:
 		get_viewport().set_input_as_handled()
 		if _open:
 			_close()
