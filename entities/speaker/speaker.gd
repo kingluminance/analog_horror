@@ -12,8 +12,8 @@ extends Node3D
 # horn stretches wide left-right (X) while squashing a little vertically
 # (Y), like it's ripping open sideways, then springs back to normal for
 # the rest of the cycle.
-@export var pump_scale_x := 1.7 # peak horizontal stretch
-@export var pump_scale_y := 0.8 # peak vertical squash (counter-motion)
+@export var pump_scale_x := 3.5 # peak horizontal stretch
+@export var pump_scale_y := 2.0 # peak vertical squash (counter-motion)
 
 var _time_offset: float
 

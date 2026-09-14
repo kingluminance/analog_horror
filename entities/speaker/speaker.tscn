@@ -1,25 +1,34 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://d1xhbiif8egkt"]
 
-[ext_resource type="Script" path="res://entities/speaker/speaker.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://entities/speaker/box.png" id="2_box_tex"]
-[ext_resource type="Texture2D" path="res://entities/speaker/horn.png" id="3_horn_tex"]
+[ext_resource type="Script" uid="uid://c3db0acmd5xoy" path="res://entities/speaker/speaker.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://b1lwd01m8cuta" path="res://entities/speaker/box.png" id="2_box_tex"]
+[ext_resource type="Texture2D" uid="uid://bvtm1hifv2uew" path="res://entities/speaker/horn.png" id="3_horn_tex"]
 [ext_resource type="PackedScene" path="res://entities/shared/interactable.tscn" id="4_interactable"]
-[ext_resource type="Resource" path="res://entities/speaker/gramophone.dialogue" id="5_dialogue"]
+[ext_resource type="Resource" uid="uid://drxynvb0db4ht" path="res://entities/speaker/gramophone.dialogue" id="5_dialogue"]
+[ext_resource type="AudioStream" path="res://audio/gramophone_song.wav" id="6_song"]
+[ext_resource type="Script" path="res://entities/speaker/gramophone_audio.gd" id="7_audio_script"]
 
-[node name="Speaker" type="Node3D"]
+[node name="Speaker" type="Node3D" unique_id=828226470]
 script = ExtResource("1_script")
 
-[node name="Box" type="Sprite3D" parent="."]
+[node name="Box" type="Sprite3D" parent="." unique_id=472177017]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
 pixel_size = 0.002888
 billboard = 1
 texture = ExtResource("2_box_tex")
 
-[node name="Horn" type="Sprite3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7275, 0)
+[node name="Horn" type="Sprite3D" parent="." unique_id=1186531860]
+transform = Transform3D(3.2947536, 0, 0, 0, 0.91247547, 0, 0, 0, 1, 0, 1.7275, 0)
 pixel_size = 0.00125
 texture = ExtResource("3_horn_tex")
 
-[node name="Interactable" parent="." instance=ExtResource("4_interactable")]
+[node name="Interactable" parent="." unique_id=270452030 instance=ExtResource("4_interactable")]
 dialogue_resource = ExtResource("5_dialogue")
 hint_offset = Vector3(0, 1.3, 0)
+
+[node name="GramophoneAudio" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7275, 0)
+stream = ExtResource("6_song")
+unit_size = 6.0
+max_distance = 25.0
+script = ExtResource("7_audio_script")

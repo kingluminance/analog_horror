@@ -1,2 +1,9 @@
+using StoryFlags
+
 ~ start
 축음기: (대사 필요 — 아직 안 정해짐)
+- 레코드가 계속 튀는 것 같은데... 고쳐볼게.
+	$> StoryFlags.set_flag("gramophone_loop_fixed", true)
+	=> END
+- 그냥 둘게.
+	=> END
