@@ -137,7 +137,8 @@ HP/공격성/유연성/레벨 등, 나중에 이벤트(전투일지는 미정)�
 딕셔너리 기반이라 `stats.gd` 자체엔 특정 스탯 이름이 하나도 안 박혀있음 — `register_stat(id,
 display_name, default=0.0, max_value=10.0, clamp_to_max=true, description="")`로 한 번 등록해두면
 (현재 시작 세트는 `entities/player/player.gd`의 `_ready()`에서 등록) `get_stat(id)`/`set_stat(id,
-value)`/`add_stat(id, delta)`/`get_max(id)`로 어디서든(`.dialogue` 포함) 읽고 쓸 수 있음. `using Stats` +
+value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delta)`로 어디서든
+(`.dialogue` 포함) 읽고 쓸 수 있음. `using Stats` +
 `$> Stats.add_stat("aggression", 1)`처럼. 실제로 전투/이벤트에서 어떻게 쓸지는 아직 안 정해짐.
 
 **스탯 두 종류, `clamp_to_max`로 구분** (최댓값 넘으면 어떻게 되는지 논의 후 결정):
