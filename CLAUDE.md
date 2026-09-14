@@ -225,6 +225,20 @@ $> StoryFlags.set_visual_state("<entity_id>", "visible", true)   # 다시 보임
 - ~~VHS/라디오 정적 글리치~~ — `main.tscn`에서 `StaticGlitch` 노드 제거해서 비활성화됨 (거슬린다는
   피드백). 스크립트(`audio/static_glitch.gd`)와 사운드는 남아있어서 나중에 필요하면 노드만 다시
   추가하면 됨
+- **`.dialogue`의 `locals.x`는 Dialogue Manager 내장 기능이 아니라, 대화창(`analog_dialogue_balloon.gd`
+  등)이 자기 자신을 `extra_game_states`로 넘길 때 그 스크립트가 갖고 있는 평범한 `var locals: Dictionary`
+  프로퍼티를 찾아서 읽고 쓰는 것뿐임**. 그래서 실제 게임(Interactable → `show_dialogue_balloon()`)에서는
+  잘 되지만, 헤드리스 테스트에서 `DialogueManager.get_next_dialogue_line(res, key)`를 `extra_game_states`
+  없이 맨몸으로 부르면 `"locals" not found` 에러가 나고(그런데도 조용히 계속 진행돼서 `if not locals.x`가
+  **항상 true로 잘못 평가됨** — 침묵 실패라 알아채기 어려움). 헤드리스로 `locals` 쓰는 대화를 테스트할 땐
+  `var locals: Dictionary = {}` 프로퍼티 하나만 가진 더미 객체를 만들어서 `extra_game_states` 배열에
+  넣어 넘겨야 함(`gramophone.dialogue`의 재생/스킵 분기 테스트할 때 실제로 이 삽질을 함).
+- **`.dialogue` 파일 내용만 고쳤다고 헤드리스(비에디터) 실행에 바로 반영 안 됨** — import 캐시가
+  마지막 `--editor` 패스 시점 내용으로 고정돼있어서, 텍스트 파일을 바꿔도 새로 `--headless --editor
+  --path . --quit`을 한 번 더 돌리기 전까진 구버전 컴파일 결과가 계속 로드됨(새 이미지/오디오 파일을
+  처음 추가했을 때랑 똑같은 종류의 문제 — 여긴 "신규 파일"이 아니라 "기존 파일 내용 변경"이라 더
+  헷갈리기 쉬움. 실제로 이것 때문에 방금 수정한 분기 로직이 헤드리스 테스트에서 계속 구버전처럼
+  동작하는 걸 보고 한참 헤맴).
 
 ## TODO
 - [ ] 게임 에디터로 직접 열어서 존/물병/탁구채/통속의뇌/트링켓/쓰레기천사/통통볼/인벤토리 전부
