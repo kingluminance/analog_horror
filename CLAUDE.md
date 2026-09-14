@@ -206,7 +206,14 @@ display_name, default=0.0, max_value=10.0, description="")`로 한 번 등록해
   "gramophone_loop_fixed")`가 true일 때만 부르도록 가드해둠 — 안 그러면 한 번도 안 고쳤어도(스킵을
   만나기 전에) "재생 중" 방문이 쌓여서 6번 채워질 수 있음(실제로 사용자가 발견한 버그). 6번(고친 뒤부터)
   채우면 `~repeat`로 빠져서 "그만 듣는다."/"계속 듣는다." 선택지가 나오고, 그만 듣기를 고르면
-  `"gramophone_playing"`을 다시 false로 돌려서 실제로 음악이 멈춤
+  `"gramophone_playing"`을 다시 false로 돌려서 실제로 음악이 멈춤. **재생 중엔 플레이어를 쫓아감**:
+  `chase_radius`(기본 8m) 안에서는 카메라 위치(이 프로젝트엔 "player" 그룹이 없어서 `interactable.gd`가
+  쓰는 것과 같은 방식으로 카메라를 플레이어 위치 대용으로 씀)를 향해 걸어가고, 그 반경을 넘어서면
+  `_returning_home`이 true가 되면서 원래 스폰 위치로 돌아가는 데 전념함(다시 집에 도착할 때까지는
+  거리가 반경 안으로 들어와도 재추격 안 함) — 이 래치(latch)가 없으면 반경 경계에서 매 프레임
+  추격↔귀환이 뒤바뀌면서 제자리에 멈춰버리는 버그가 남(실제로 겪음, 헤드리스 테스트로 재현·수정 확인).
+  Box/Horn/Interactable/GramophoneAudio가 전부 `Speaker`의 자식이라 이동하면 E 범위랑 3D 오디오
+  패닝도 같이 따라감.
 
 ## 개발 환경 메모
 - **Godot 4.7 헤드리스 바이너리**: `C:\Users\my\Downloads\Godot_v4.7-stable_win64.exe\
