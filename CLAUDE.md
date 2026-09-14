@@ -129,7 +129,7 @@ $> StoryFlags.set_visual_state("<entity_id>", "visible", true)   # 다시 보임
 있음(E, I 등), InputMap 액션을 새로 추가하지 말고 이 관례를 따를 것.
 
 ### `Stats` (오토로드, `data/stats.gd`) — RPG식 스탯 (진행 중, 아직 UI 없음)
-HP/공격성/유연성 등, 나중에 이벤트(전투일지는 미정)에 쓰일 플레이어 스탯. `StoryFlags`/`Inventory`처럼
+HP/공격성/유연성/레벨 등, 나중에 이벤트(전투일지는 미정)에 쓰일 플레이어 스탯. `StoryFlags`/`Inventory`처럼
 딕셔너리 기반이라 `stats.gd` 자체엔 특정 스탯 이름이 하나도 안 박혀있음 — `register_stat(id,
 display_name, default=0.0, description="")`로 한 번 등록해두면(현재 시작 세트는
 `entities/player/player.gd`의 `_ready()`에서 등록) `get_stat(id)`/`set_stat(id, value)`/
