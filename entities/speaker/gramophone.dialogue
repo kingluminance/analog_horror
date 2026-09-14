@@ -4,6 +4,7 @@ using StoryFlags
 $> locals.playing = StoryFlags.get_flag("gramophone_playing")
 $> locals.stuck = StoryFlags.get_flag("gramophone_stuck")
 $> locals.visits = StoryFlags.get_visit_count("gramophone")
+$> locals.aggression = Stats.get_stat("aggression")
 if not locals.playing
 	=> not_playing_yet
 elif locals.stuck
@@ -43,7 +44,15 @@ if StoryFlags.get_flag("gramophone_loop_fixed")
 ~ repeat
 노래를 그만 듣고 싶습니까?
 - 그만 듣는다.
-	$> StoryFlags.set_flag("gramophone_playing", false)
+	전원 버튼이 없다.
+	방법을 찾아보겠습니까?
+	- 나팔을 뽑는다.
+		달리 도구가 없다.
+	- 부순다.
+		if locals.aggression >= 10
+			부서졌다.
+		else
+			힘이 부족하다.
 	=> END
 - 계속 듣는다.
 	=> END

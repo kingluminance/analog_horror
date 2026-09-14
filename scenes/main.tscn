@@ -1,6 +1,5 @@
 [gd_scene format=3 uid="uid://ct5yejfl1j6n2"]
 
-[ext_resource type="Script" uid="uid://cli8h3btmkntl" path="res://entities/player/player.gd" id="1_player"]
 [ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player_scene"]
 [ext_resource type="Shader" uid="uid://keged1jvrqem" path="res://shaders/curved_world.gdshader" id="3_shader"]
 [ext_resource type="PackedScene" path="res://entities/floating_photo/floating_photo.tscn" id="5_photo"]
@@ -23,8 +22,8 @@
 [ext_resource type="PackedScene" uid="uid://c2fp1ylvau0qp" path="res://entities/spinning_trinket/spinning_trinket.tscn" id="24_trinket"]
 [ext_resource type="PackedScene" path="res://ui/item_toast.tscn" id="25_toast"]
 [ext_resource type="PackedScene" uid="uid://d1xhbiif8egkt" path="res://entities/speaker/speaker.tscn" id="26_speaker"]
-[ext_resource type="Resource" path="res://entities/log_cabin/cabin_door.dialogue" id="28_cabin_dlg"]
-[ext_resource type="Script" path="res://entities/log_cabin/cabin_door_watcher.gd" id="29_cabin_watcher"]
+[ext_resource type="Resource" uid="uid://bvsucdl5uq5w0" path="res://entities/log_cabin/cabin_door.dialogue" id="28_cabin_dlg"]
+[ext_resource type="Script" uid="uid://df35dx5g0r08c" path="res://entities/log_cabin/cabin_door_watcher.gd" id="29_cabin_watcher"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.35, 0.65, 1, 1)
@@ -61,10 +60,6 @@ shader_parameter/albedo_color = Color(0.31, 0.71, 0.31, 1)
 [sub_resource type="BoxShape3D" id="BoxShape3D_boundary_segment"]
 size = Vector3(11.3, 20, 2)
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
-radius = 0.4
-height = 1.8
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_trunk"]
 render_priority = 0
 shader = ExtResource("3_shader")
@@ -92,7 +87,7 @@ radial_segments = 6
 render_priority = 0
 shader = ExtResource("3_shader")
 shader_parameter/curve_strength = 0.0008
-shader_parameter/albedo_color = Color(0.45, 0.3, 0.18, 1)
+shader_parameter/albedo_color = Color(1, 1, 1, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_cabin_body"]
 size = Vector3(4, 2.8, 4)
@@ -104,7 +99,7 @@ size = Vector3(4, 2.8, 4)
 render_priority = 0
 shader = ExtResource("3_shader")
 shader_parameter/curve_strength = 0.0008
-shader_parameter/albedo_color = Color(0.3, 0.14, 0.1, 1)
+shader_parameter/albedo_color = Color(1, 1, 1, 1)
 
 [sub_resource type="PrismMesh" id="PrismMesh_cabin_roof"]
 size = Vector3(4.6, 1.6, 4.6)
@@ -113,10 +108,10 @@ size = Vector3(4.6, 1.6, 4.6)
 render_priority = 0
 shader = ExtResource("3_shader")
 shader_parameter/curve_strength = 0.0008
-shader_parameter/albedo_color = Color(0.18, 0.11, 0.06, 1)
+shader_parameter/albedo_color = Color(0.92561305, 0, 0.22328633, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_cabin_door"]
-size = Vector3(1.0, 2.0, 0.15)
+size = Vector3(1, 2, 0.15)
 
 [node name="Main" type="Node3D" unique_id=1138187657]
 
@@ -894,36 +889,36 @@ hint_spin_speed = 6.0
 [node name="Speaker" parent="Objects" unique_id=969417477 instance=ExtResource("26_speaker")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 30.774786)
 
-[node name="LogCabin" type="Node3D" parent="Objects"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, -20)
+[node name="LogCabin" type="Node3D" parent="Objects" unique_id=1260868365]
+transform = Transform3D(0.60702544, 0, -0.79468256, 0, 1, 0, 0.79468256, 0, 0.60702544, 41.297424, 0, -26.37288)
 
-[node name="Body" type="StaticBody3D" parent="Objects/LogCabin"]
+[node name="Body" type="StaticBody3D" parent="Objects/LogCabin" unique_id=1402501880]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Objects/LogCabin/Body"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Objects/LogCabin/Body" unique_id=1950293480]
 material_override = SubResource("ShaderMaterial_cabin_body")
 mesh = SubResource("BoxMesh_cabin_body")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Objects/LogCabin/Body"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Objects/LogCabin/Body" unique_id=338833772]
 shape = SubResource("BoxShape3D_cabin_body")
 
-[node name="Roof" type="MeshInstance3D" parent="Objects/LogCabin"]
+[node name="Roof" type="MeshInstance3D" parent="Objects/LogCabin" unique_id=278686464]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.6, 0)
 material_override = SubResource("ShaderMaterial_cabin_roof")
 mesh = SubResource("PrismMesh_cabin_roof")
 
-[node name="Door" type="MeshInstance3D" parent="Objects/LogCabin"]
+[node name="Door" type="MeshInstance3D" parent="Objects/LogCabin" unique_id=760248113]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 2.08)
 material_override = SubResource("ShaderMaterial_cabin_door")
 mesh = SubResource("BoxMesh_cabin_door")
 
-[node name="DoorInteractable" parent="Objects/LogCabin" instance=ExtResource("14_gqmmt")]
+[node name="DoorInteractable" parent="Objects/LogCabin" unique_id=31961120 instance=ExtResource("14_gqmmt")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 2.1)
 dialogue_resource = ExtResource("28_cabin_dlg")
-hint_offset = Vector3(0, 0.3, 0.3)
 range_radius = 2.2
+hint_offset = Vector3(0, 0.3, 0.3)
 
-[node name="CabinDoorWatcher" type="Node" parent="Objects/LogCabin"]
+[node name="CabinDoorWatcher" type="Node" parent="Objects/LogCabin" unique_id=517665990]
 script = ExtResource("29_cabin_watcher")
 scene_to_load = "res://scenes/log_cabin_interior.tscn"
 
