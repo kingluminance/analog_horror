@@ -8,14 +8,14 @@
 
 [sub_resource type="Environment" id="Environment_interior"]
 background_mode = 1
-background_color = Color(0.02, 0.02, 0.025, 1)
+background_color = Color(0.005, 0.005, 0.006, 1)
 ambient_light_source = 2
-ambient_light_color = Color(0.25, 0.24, 0.28, 1)
-ambient_light_energy = 0.6
+ambient_light_color = Color(0.06, 0.06, 0.07, 1)
+ambient_light_energy = 0.05
 fog_enabled = true
-fog_light_color = Color(0.15, 0.14, 0.17, 1)
-fog_density = 0.025
-fog_depth_begin = 6.0
+fog_light_color = Color(0.01, 0.01, 0.012, 1)
+fog_density = 0.045
+fog_depth_begin = 1.5
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_floor"]
 size = Vector2(34, 34)
@@ -40,12 +40,6 @@ size = Vector3(34, 10, 0.4)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_interior")
-
-[node name="Lamp" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 8)
-light_color = Color(0.85, 0.75, 0.55, 1)
-light_energy = 1.4
-omni_range = 20.0
 
 [node name="Floor" type="StaticBody3D" parent="."]
 
