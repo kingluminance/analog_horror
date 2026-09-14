@@ -309,6 +309,16 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
   처음 추가했을 때랑 똑같은 종류의 문제 — 여긴 "신규 파일"이 아니라 "기존 파일 내용 변경"이라 더
   헷갈리기 쉬움. 실제로 이것 때문에 방금 수정한 분기 로직이 헤드리스 테스트에서 계속 구버전처럼
   동작하는 걸 보고 한참 헤맴).
+- **오토로드(`DialogueManager`/`StoryFlags`/`Stats` 등)를 이름으로 직접 참조하는 스크립트는, `--headless
+  --script res://_tmp_test_X.gd`처럼 맨몸 `SceneTree` 진입점으로 띄우면 컴파일 자체가 안 됨**
+  (`Identifier not found: DialogueManager` 같은 에러) — 그 스크립트 안에서 `res://scenes/main.tscn`을
+  `load()`+`instantiate()`해서 오토로드를 미리 "띄워봐도" 소용없음(실제로 시도해봤는데도 안 됨). 오토로드가
+  전역 식별자로 풀리는 건 Godot이 `.tscn`을 **정식 메인 씬으로 직접 부팅**할 때만 일어나는 것으로 보임 —
+  즉 `--headless --path . res://아무씬.tscn --quit-after N`(지금까지 잘 써온 방식)은 되고, `--script`
+  진입점 안에서 아무리 다른 씬을 로드해봐도 안 됨. 그런 스크립트(예: `interactable.gd`, 대화 관련 로직)의
+  실제 동작을 테스트하려면, 맨몸 `SceneTree` 스크립트 대신 **작은 더미 `.tscn` + 그 안에서 도는 스크립트를
+  따로 만들어서 그 씬 자체를 정식으로 실행**해야 함(`entities/shared/interactable.gd`의 `scene_to_load`
+  기능 테스트할 때 실제로 이 방식으로 우회함).
 
 ## TODO
 - [ ] 게임 에디터로 직접 열어서 존/물병/탁구채/통속의뇌/트링켓/쓰레기천사/통통볼/인벤토리 전부
