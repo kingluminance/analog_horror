@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" path="res://entities/shared/interactable.tscn" id="14_gqmmt"]
 [ext_resource type="Texture2D" uid="uid://utg5el48mm3c" path="res://entities/floating_photo/photos/ping_pong_bottle.png" id="14_ppb_tex"]
 [ext_resource type="Resource" uid="uid://rv6o3uu6mjn6" path="res://entities/floating_photo/photos/ping_pong_bottle.dialogue" id="15_ppb_dlg"]
+[ext_resource type="Resource" uid="uid://tsceqafuuvvt" path="res://entities/floating_photo/photos/speaker.dialogue" id="15_yc10j"]
 [ext_resource type="PackedScene" path="res://entities/orbiting_paddle/orbiting_paddle.tscn" id="16_paddle"]
 [ext_resource type="PackedScene" uid="uid://cfa0qifwfg51f" path="res://entities/red_bouncy_ball/red_bouncy_ball.tscn" id="18_ball"]
 [ext_resource type="PackedScene" path="res://ui/inventory_ui.tscn" id="18_inventory"]
@@ -863,6 +864,9 @@ dialogue_resource = ExtResource("23_brain_dlg")
 
 [node name="SpinningTrinket" parent="Objects/BrainInVat" unique_id=2004641828 instance=ExtResource("24_trinket")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 0.4, 0.3)
+
+[node name="Interactable" parent="Objects/BrainInVat/SpinningTrinket" unique_id=259501128 instance=ExtResource("14_gqmmt")]
+dialogue_resource = ExtResource("15_yc10j")
 
 [node name="Speaker" parent="Objects" instance=ExtResource("26_speaker")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 6)

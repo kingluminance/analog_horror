@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" path="res://entities/speaker/box.png" id="2_box_tex"]
 [ext_resource type="Texture2D" path="res://entities/speaker/horn.png" id="3_horn_tex"]
 [ext_resource type="PackedScene" path="res://entities/shared/interactable.tscn" id="4_interactable"]
-[ext_resource type="Resource" uid="uid://tsceqafuuvvt" path="res://entities/floating_photo/photos/speaker.dialogue" id="5_dialogue"]
+[ext_resource type="Resource" path="res://entities/speaker/gramophone.dialogue" id="5_dialogue"]
 
 [node name="Speaker" type="Node3D"]
 script = ExtResource("1_script")

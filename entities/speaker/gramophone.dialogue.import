@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://drxynvb0db4ht"
+path="res://.godot/imported/gramophone.dialogue-c5e85fa28e246da14b8923e8f17cef1a.tres"
+
+[deps]
+
+source_file="res://entities/speaker/gramophone.dialogue"
+dest_files=["res://.godot/imported/gramophone.dialogue-c5e85fa28e246da14b8923e8f17cef1a.tres"]
+
+[params]
+
+defaults=true
