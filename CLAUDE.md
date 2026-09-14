@@ -223,7 +223,12 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
   거리가 반경 안으로 들어와도 재추격 안 함) — 이 래치(latch)가 없으면 반경 경계에서 매 프레임
   추격↔귀환이 뒤바뀌면서 제자리에 멈춰버리는 버그가 남(실제로 겪음, 헤드리스 테스트로 재현·수정 확인).
   Box/Horn/Interactable/GramophoneAudio가 전부 `Speaker`의 자식이라 이동하면 E 범위랑 3D 오디오
-  패닝도 같이 따라감.
+  패닝도 같이 따라감. **`chase_stop_distance`(기본 2m)까지만 다가가고 거기서 멈춤** — 원래 플레이어
+  바로 코앞(0.05m)까지 붙어서 `[E]` 힌트가 카메라에 거의 파묻히던 문제 수정. 이 거리 판정은
+  `chase_radius`(집에서 얼마나 멀어질 수 있는지)랑 독립적인 별개 제약이라, 둘 다 걸리는 위치에서
+  테스트하면 어느 쪽이 실제로 막고 있는지 헷갈릴 수 있음(실제로 헷갈렸음 — 플레이어를 `chase_radius`
+  경계 근처에 둔 첫 테스트에서 애매한 값이 나와서, `chase_radius` 안쪽 깊숙한 곳으로 옮겨서 다시
+  테스트해 확인함).
 
 ## 개발 환경 메모
 - **Godot 4.7 헤드리스 바이너리**: `C:\Users\my\Downloads\Godot_v4.7-stable_win64.exe\
