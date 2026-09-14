@@ -155,7 +155,15 @@ $> StoryFlags.set_visual_state("<entity_id>", "visible", true)   # 다시 보임
   대화는 `entities/speaker/gramophone.dialogue`(아직 대사 비어있는 스텁) — **`entities/floating_photo/
   photos/speaker.dialogue`("나는 왜 휴일인데 일하지...")를 쓰는 `BrainInVat/SpinningTrinket` 밑의 "스피커"
   NPC와는 완전히 다른 별개의 캐릭터**임에 주의. 폴더/노드 이름이 둘 다 "speaker" 계열이라 헷갈리기 쉬움 —
-  처음에 실수로 둘을 같은 대화로 합쳐버린 적 있어서(바로 되돌림) 기록해둠
+  처음에 실수로 둘을 같은 대화로 합쳐버린 적 있어서(바로 되돌림) 기록해둠. `GramophoneAudio`
+  (`AudioStreamPlayer3D`, `gramophone_audio.gd`)가 `audio/gramophone_song.wav`를 이 오브젝트 근처에서
+  계속 재생함(`audio/looping_player.gd`와 같은 종료 시 재생 트릭, 3D 버전). 이 트랙 자체도 외부 에셋
+  없이 Python stdlib(wave/math/random)로 합성함 — Daisy Bell 피아노(리드) + 한 옥타브 내려서 살짝
+  디튠한 Twinkle Twinkle Little Star(언더레이)를 겹치고, 히스/럼블/크래클 노이즈 + 두 레이어가 같이
+  흔들리는 wow 피치 LFO까지 더함. **레코드 튀는(스킵) 연출은 오디오 파일에 안 구워져 있고 런타임에
+  구현**: `skip_loop_end_sec`(기본 9.6초)를 넘으면 `skip_loop_start_sec`(기본 9.0초)로 계속
+  `seek()`해서 그 구간을 무한 반복하다가, `gramophone.dialogue`의 "고쳐볼게" 선택지가
+  `StoryFlags.set_flag("gramophone_loop_fixed", true)`를 호출하면 멈춤
 
 ## 개발 환경 메모
 - **Godot 4.7 헤드리스 바이너리**: `C:\Users\my\Downloads\Godot_v4.7-stable_win64.exe\
