@@ -157,6 +157,15 @@ $> StoryFlags.set_visual_state("<entity_id>", "visible", true)   # 다시 보임
   `res://.claude/worktrees/...`로 시작하는 항목들을 수동으로 지워야 함
 - Git worktree 여러 개를 병렬로 쓸 때, 각 워크트리는 자기만의 `.godot/` 캐시를 가짐 — 한 워크트리에서
   임포트해도 다른 워크트리/메인 체크아웃에는 반영 안 됨
+- **임시 헤드리스 테스트(`--headless --script res://_tmp_test_*.gd`)는 반드시 셸 레벨 `timeout`으로 감쌀 것**
+  (예: `timeout 60 "$GODOT" --headless --script res://_tmp_test_x.gd`), 스크립트 자체가 금방 끝날 것 같아
+  보여도 예외 없이. 실제로 겪은 사고: 진단용 테스트 스크립트가 마지막 출력 줄에서 `%` 포맷 문자열 인자
+  개수를 잘못 넣어 `SCRIPT ERROR`로 죽었는데, 그 에러 경로에서 `get_tree().quit()`을 안 불러서 프로세스가
+  안 죽고 30분 넘게 실제 CPU를 계속 태우며 백그라운드에 방치됨(사용자가 먼저 의문의 백그라운드 작업을
+  발견하고 직접 강제종료해야 했음). 그래서: (1) 테스트 GDScript의 **모든** 종료 경로(정상 종료뿐 아니라
+  에러 핸들러 안에서도)에서 명시적으로 `get_tree().quit()`/`quit(1)`을 부를 것, (2) 그래도 이중 안전장치로
+  호출 자체를 `timeout`으로 감쌀 것, (3) 백그라운드로 돌린 테스트는 예상 시간이 지나면 방치하지 말고
+  상태를 확인할 것, (4) `_tmp_test_*.gd`는 결과 확인 즉시 삭제할 것
 - **인스턴스된 씬의 중첩 자식 노드에 오버라이드를 걸 때는 `[editable path="..."]`가 반드시 필요함**
   (예: `main.tscn`에서 `Objects/John`처럼 인스턴스한 노드 밑의 `Interactable` 자식에
   `dialogue_resource`를 걸 때). 이 마커 없이 텍스트로만 `[node name="Interactable"
