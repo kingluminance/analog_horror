@@ -40,6 +40,24 @@ func get_stat(id: String) -> float:
 func get_max(id: String) -> float:
 	return _definitions[id].max if _definitions.has(id) else 10.0
 
+## Raises/lowers the ceiling itself -- e.g. a "level up" dialogue choice
+## bumping max HP. Only re-clamps the current value if this stat clamps
+## to its max (a lower max on a resource stat can push the current
+## value back down; raising it never auto-fills the value, that's a
+## separate set_stat/add_stat call if that's what's wanted too).
+func set_max(id: String, max_value: float) -> void:
+	if not _definitions.has(id):
+		return
+	_definitions[id].max = max_value
+	if _definitions[id].clamp:
+		var clamped := clampf(get_stat(id), 0.0, max_value)
+		if clamped != get_stat(id):
+			_values[id] = clamped
+			stat_changed.emit(id, clamped)
+
+func add_max(id: String, delta: float) -> void:
+	set_max(id, get_max(id) + delta)
+
 func set_stat(id: String, value: float) -> void:
 	if _definitions.has(id) and _definitions[id].clamp:
 		value = clampf(value, 0.0, _definitions[id].max)
