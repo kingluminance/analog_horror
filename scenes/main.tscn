@@ -21,7 +21,7 @@
 [ext_resource type="Resource" uid="uid://dg5y33dh1h0e8" path="res://entities/floating_photo/photos/brain_in_vat.dialogue" id="23_brain_dlg"]
 [ext_resource type="PackedScene" uid="uid://c2fp1ylvau0qp" path="res://entities/spinning_trinket/spinning_trinket.tscn" id="24_trinket"]
 [ext_resource type="PackedScene" path="res://ui/item_toast.tscn" id="25_toast"]
-[ext_resource type="PackedScene" path="res://entities/speaker/speaker.tscn" id="26_speaker"]
+[ext_resource type="PackedScene" uid="uid://d1xhbiif8egkt" path="res://entities/speaker/speaker.tscn" id="26_speaker"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.35, 0.65, 1, 1)
@@ -868,8 +868,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 0.4, 0.3)
 [node name="Interactable" parent="Objects/BrainInVat/SpinningTrinket" unique_id=259501128 instance=ExtResource("14_gqmmt")]
 dialogue_resource = ExtResource("15_yc10j")
 
-[node name="Speaker" parent="Objects" instance=ExtResource("26_speaker")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 6)
+[node name="Speaker" parent="Objects" unique_id=969417477 instance=ExtResource("26_speaker")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 30.774786)
 
 [node name="WindAmbience" type="AudioStreamPlayer" parent="." unique_id=1326488122]
 stream = ExtResource("9_wind")

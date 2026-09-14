@@ -1,28 +1,49 @@
 using StoryFlags
 
 ~ start
-축음기: (대사 필요 — 아직 안 정해짐)
 $> locals.playing = StoryFlags.get_flag("gramophone_playing")
 $> locals.stuck = StoryFlags.get_flag("gramophone_stuck")
+$> locals.visits = StoryFlags.get_visit_count("gramophone")
 if not locals.playing
 	=> not_playing_yet
 elif locals.stuck
 	=> stuck
+elif locals.visits >= 6
+	=> repeat
 else
-	=> END
+	=> playing
 
 
 ~ not_playing_yet
-- 노래를 틀어볼게.
+축음기를 작동시키겠습니까.
+- 작동시킨다.
 	$> StoryFlags.set_flag("gramophone_playing", true)
 	=> END
 - 그냥 둘게.
 	=> END
 
 
+~ playing
+짜증나는 음악이다.
+되돌릴 수 없다.
+if StoryFlags.get_flag("gramophone_loop_fixed")
+	$> StoryFlags.increment_visit_count("gramophone")
+=> END
+
+
 ~ stuck
-- 레코드가 계속 튀는 것 같은데... 고쳐볼게.
+레코드가 계속 튀고 있다.
+- 고친다.
 	$> StoryFlags.set_flag("gramophone_loop_fixed", true)
 	=> END
 - 그냥 둘게.
+	=> END
+
+
+~ repeat
+노래를 그만 듣고 싶습니까?
+- 그만 듣는다.
+	$> StoryFlags.set_flag("gramophone_playing", false)
+	=> END
+- 계속 듣는다.
 	=> END
