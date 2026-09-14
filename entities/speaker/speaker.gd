@@ -1,21 +1,30 @@
 extends Node3D
-## Novelty gramophone-style prop: a large box body with a brass horn
-## spinning on top. Only the horn moves -- the box is static.
+## Novelty gramophone-style prop: a large box body with a brass horn on
+## top, flipped upside-down and pumping in size like it's talking/pulsing
+## along with music that plays near it. No real audio analysis -- just a
+## fast repeating scale envelope, since it only needs to feel roughly in
+## time, not be exact.
 
-@export var spin_speed := 2.5 # radians per second
+@export var pump_interval := 0.28 # seconds per pump cycle -- fast on purpose
+@export var pump_scale := 1.4 # peak scale multiplier at the top of each pump
+@export var pump_attack := 0.05 # seconds to snap up to peak scale (fast)
+
+var _time_offset: float
 
 @onready var _horn: Sprite3D = $Horn
 
 func _ready() -> void:
 	_horn.rotation_degrees.z = 180.0
+	_time_offset = randf() * pump_interval
 
-func _process(delta: float) -> void:
-	# Horn's billboard is deliberately OFF (unlike floating_photo/trash_angel):
-	# a billboarded Sprite3D recomputes its whole basis to face the camera
-	# every frame and discards manual rotation entirely (see
-	# spinning_trinket.gd, which has to fake spin via a scale.x flip
-	# because of this). Horn instead stays flat and genuinely rotates
-	# around its own local Z axis -- the quad's face-on plane -- which reads
-	# as a real clockwise spin as long as the player is roughly in front of
-	# it (billboard would fight this rotation, not help it).
-	_horn.rotation.z -= spin_speed * delta
+func _process(_delta: float) -> void:
+	var t := fmod(Time.get_ticks_msec() / 1000.0 + _time_offset, pump_interval)
+	var s: float
+	if t < pump_attack:
+		# quick snap up to the exaggerated peak
+		s = lerp(1.0, pump_scale, t / pump_attack)
+	else:
+		# ease back down to normal size for the rest of the cycle
+		var f := (t - pump_attack) / (pump_interval - pump_attack)
+		s = lerp(pump_scale, 1.0, smoothstep(0.0, 1.0, f))
+	_horn.scale = Vector3.ONE * s
