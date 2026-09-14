@@ -20,6 +20,11 @@ var _step_distance := 0.0
 
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	# Starting RPG-ish stats -- values/roster are placeholders, add more
+	# with another register_stat() call whenever a new one is needed.
+	Stats.register_stat("hp", "HP", 10.0)
+	Stats.register_stat("aggression", "공격성", 5.0)
+	Stats.register_stat("flexibility", "유연성", 5.0)
 	DialogueManager.dialogue_started.connect(func(_res):
 		_dialogue_active = true
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
