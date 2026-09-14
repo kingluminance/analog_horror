@@ -7,17 +7,28 @@ extends Node
 ## get_stat/set_stat/add_stat freely from anywhere, including
 ## `$> Stats.add_stat("aggression", 1)` in a .dialogue file.
 ##
+## Two kinds of stat, chosen per-register_stat call via clamp_to_max:
+## - "Resource" stats (HP, aggression, flexibility) have a real ceiling
+##   AND floor -- clamp_to_max=true keeps the actual value pinned to
+##   [0, max] on every write, so the gauge needle and the number never
+##   disagree (hitting the visual max really does mean "full").
+## - "Growth" stats (level) have no real ceiling -- clamp_to_max=false
+##   lets the value climb past max_value forever; max_value there is
+##   just the gauge's needle scale, so the needle pins at full once
+##   you're past it while the number keeps climbing. That's accepted
+##   as fine for a stat that's just "however far you've gotten".
+##
 ## Session-only, same as StoryFlags/Inventory -- no save/load yet.
 
 signal stat_changed(stat_id: String, value: float)
 
-var _definitions: Dictionary = {}  # id -> {display_name, description, default, max}
+var _definitions: Dictionary = {}  # id -> {display_name, description, default, max, clamp}
 var _values: Dictionary = {}       # id -> float
 
-func register_stat(id: String, display_name: String, default: float = 0.0, max_value: float = 10.0, description: String = "") -> void:
-	_definitions[id] = {"display_name": display_name, "description": description, "default": default, "max": max_value}
+func register_stat(id: String, display_name: String, default: float = 0.0, max_value: float = 10.0, clamp_to_max: bool = true, description: String = "") -> void:
+	_definitions[id] = {"display_name": display_name, "description": description, "default": default, "max": max_value, "clamp": clamp_to_max}
 	if not _values.has(id):
-		_values[id] = default
+		_values[id] = clampf(default, 0.0, max_value) if clamp_to_max else default
 
 func get_stat(id: String) -> float:
 	if _values.has(id):
@@ -30,6 +41,8 @@ func get_max(id: String) -> float:
 	return _definitions[id].max if _definitions.has(id) else 10.0
 
 func set_stat(id: String, value: float) -> void:
+	if _definitions.has(id) and _definitions[id].clamp:
+		value = clampf(value, 0.0, _definitions[id].max)
 	_values[id] = value
 	stat_changed.emit(id, value)
 
