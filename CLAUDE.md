@@ -237,14 +237,23 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
   나무 위 트리하우스 아님). `Body`(StaticBody3D, 충돌 있음 — 벽을 그냥 뚫고 지나갈 수 없게)/`Roof`
   (`PrismMesh`, 뾰족지붕)/`Door` 전부 나무·땅 공용 `curved_world` 셰이더 + 단색 `albedo_color`로 만듦
   (사진 에셋 없음, 이 프로젝트가 나무/땅에 쓰는 것과 같은 저폴리 프리미티브 스타일). 자체 대화/NPC 없음
-  — 순수 장식 + `DoorInteractable`(`Interactable`의 `scene_to_load`, 위 참고)이 현관문 역할. E 누르면
-  `scenes/log_cabin_interior.tscn`으로 씬 전체가 바뀜 — **겉보다 훨씬 큰 방 하나**(34x34, 벽 높이 10m,
-  전부 충돌 있음)로 이어짐, 어두운 조명 + 안개(`fog_depth_begin=6`)로 먼 벽이 바로 안 보이게 해서
-  "생각보다 크다"는 느낌을 강화함. 자체 `Player`(`entities/player/player.tscn` 재사용)/`PostProcess`/
-  `PauseMenu`/`InventoryUI` 다 갖추고 있어서 ESC/Tab 그대로 동작함, `ExitDoor`가 같은 방식으로
-  `scenes/main.tscn`으로 되돌려보냄(플레이어 위치는 저장 안 해서 나가면 원래 스폰 지점에서 다시 시작).
-  아직은 안이 텅 빈 분위기용 공간 — NPC/아이템/스토리 요소는 아직 없음(사용자가 이번엔 딱 여기까지만
-  요청함).
+  — 순수 장식. `scenes/log_cabin_interior.tscn`으로 이어짐 — **겉보다 훨씬 큰 방 하나**(34x34, 벽 높이
+  10m, 전부 충돌 있음), **일부러 거의 안 보일 정도로 어둡게** 만듦(조명 없음, `ambient_light_energy
+  =0.05`, 짙은 안개 `fog_depth_begin=1.5`) — 이유는 바로 아래. 자체 `Player`(`entities/player/
+  player.tscn` 재사용)/`PostProcess`/`PauseMenu`/`InventoryUI` 다 갖추고 있어서 ESC/Tab 그대로 동작함,
+  `ExitDoor`가 `scene_to_load`로 `scenes/main.tscn`에 되돌려보냄(플레이어 위치는 저장 안 해서 나가면
+  원래 스폰 지점에서 다시 시작). 아직 안이 텅 빈 분위기용 공간 — NPC/아이템/스토리는 다음 단계.
+
+  **문 상호작용은 대화 기반**(`entities/log_cabin/cabin_door.dialogue`) — `DoorInteractable`은
+  `scene_to_load` 대신 다시 `dialogue_resource`를 씀: `Inventory.has_item("발광체")`(빛나는 물건, 아직
+  어디서도 안 주어짐 — 등록 안 된 아이템도 `has_item`은 안전하게 false라 게이트 자체는 문제없이 작동)가
+  없으면 "너무 어두워서 못 들어간다" 하고 끝, 있으면 "이동하시겠습니까?" 선택지("그래."/"아니.")를 물어봄.
+  **`.dialogue`의 `$>`는 `get_tree()`를 못 부름(오토로드/게임state 객체 메서드만 가능)이라 "그래."를
+  골라도 씬 전환 자체는 대화 안에서 못 함** — 대신 `StoryFlags.set_flag("cabin_wants_enter", true)`만
+  세워두고, 옆에 붙어있는 `CabinDoorWatcher`(`entities/log_cabin/cabin_door_watcher.gd`)가
+  `DialogueManager.dialogue_ended`를 구독하고 있다가 그 플래그가 서 있으면 그때 실제로
+  `get_tree().change_scene_to_file()`을 부르고 플래그를 다시 끔 — "대화로 시작해서 코드로 마무리"하는
+  패턴, 비슷한 게 또 필요하면 재사용 가능.
 
 ## 개발 환경 메모
 - **Godot 4.7 헤드리스 바이너리**: `C:\Users\my\Downloads\Godot_v4.7-stable_win64.exe\
