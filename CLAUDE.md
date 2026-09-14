@@ -21,10 +21,12 @@
 project.godot
 scenes/
   ├─ title_screen.tscn      아무 키나 눌러 시작하는 타이틀 화면
-  └─ main.tscn               공간(레벨) 씬 — 나무 고정 배치, WorldBoundary로 이탈 방지,
-                              Objects/ 밑에 NPC·오브젝트 전부 인스턴스
+  ├─ main.tscn               공간(레벨) 씬 — 나무 고정 배치, WorldBoundary로 이탈 방지,
+  │                           Objects/ 밑에 NPC·오브젝트 전부 인스턴스 (나무집도 여기 포함)
+  └─ log_cabin_interior.tscn 나무집 문으로 들어가면 나오는 별도 씬 — 겉보다 훨씬 큰 방 하나
 entities/
-  ├─ player/player.gd                    1인칭 이동 + 마우스룩 (CharacterBody3D)
+  ├─ player/player.gd, player.tscn        1인칭 이동 + 마우스룩 (CharacterBody3D) — main.tscn과
+  │                                       log_cabin_interior.tscn이 같은 player.tscn을 인스턴스해서 씀
   ├─ shared/interactable.gd/.tscn        공용 E-상호작용 컴포넌트 (아래 참고) — 모든 대화형
   │                                       오브젝트가 이걸 자식 노드로 인스턴스해서 씀
   ├─ floating_photo/                     실사진 빌보드 베이스
@@ -231,6 +233,18 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
   테스트해 확인함). **단, 처음 한 번은 예외** — `_has_closed_in_once`가 false인 동안(=한 번도 플레이어
   코앞까지 닿아본 적 없는 동안)은 옛날처럼 0.05m까지 바짝 붙음(한 번의 깜짝 연출 용도). 한 번이라도
   닿으면 그 뒤로는(노래를 껐다 다시 켜도) 계속 `chase_stop_distance`를 지킴.
+- **나무집(로그캐빈)** (`Objects/LogCabin`, `(20, 0, -20)`) — 지면에 지은 통나무집 스타일(사용자 요청:
+  나무 위 트리하우스 아님). `Body`(StaticBody3D, 충돌 있음 — 벽을 그냥 뚫고 지나갈 수 없게)/`Roof`
+  (`PrismMesh`, 뾰족지붕)/`Door` 전부 나무·땅 공용 `curved_world` 셰이더 + 단색 `albedo_color`로 만듦
+  (사진 에셋 없음, 이 프로젝트가 나무/땅에 쓰는 것과 같은 저폴리 프리미티브 스타일). 자체 대화/NPC 없음
+  — 순수 장식 + `DoorInteractable`(`Interactable`의 `scene_to_load`, 위 참고)이 현관문 역할. E 누르면
+  `scenes/log_cabin_interior.tscn`으로 씬 전체가 바뀜 — **겉보다 훨씬 큰 방 하나**(34x34, 벽 높이 10m,
+  전부 충돌 있음)로 이어짐, 어두운 조명 + 안개(`fog_depth_begin=6`)로 먼 벽이 바로 안 보이게 해서
+  "생각보다 크다"는 느낌을 강화함. 자체 `Player`(`entities/player/player.tscn` 재사용)/`PostProcess`/
+  `PauseMenu`/`InventoryUI` 다 갖추고 있어서 ESC/Tab 그대로 동작함, `ExitDoor`가 같은 방식으로
+  `scenes/main.tscn`으로 되돌려보냄(플레이어 위치는 저장 안 해서 나가면 원래 스폰 지점에서 다시 시작).
+  아직은 안이 텅 빈 분위기용 공간 — NPC/아이템/스토리 요소는 아직 없음(사용자가 이번엔 딱 여기까지만
+  요청함).
 
 ## 개발 환경 메모
 - **Godot 4.7 헤드리스 바이너리**: `C:\Users\my\Downloads\Godot_v4.7-stable_win64.exe\
