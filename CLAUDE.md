@@ -147,10 +147,11 @@ $> StoryFlags.set_visual_state("<entity_id>", "visible", true)   # 다시 보임
 - **축음기(박스+나팔)** (`Objects/Speaker`, `entities/speaker/`) — 상자(Box, billboard) 위에 축음기
   나팔(Horn)이 얹혀있는 오브젝트. 처음엔 계속 회전시켰었는데, 사용자 피드백으로 회전은 빼고 대신
   **근처에서 재생될 노래에 맞춰 말하는/펌핑하는 느낌**으로 바꿈 — 정확한 박자 동기화는 필요 없다고
-  해서(`speaker.gd`) 실제 오디오 분석 없이 그냥 빠르게 반복되는 스케일 엔벨로프로 구현: `pump_attack`
-  (기본 0.05초) 동안 `pump_scale`(기본 1.4배)까지 확 커졌다가, 남은 `pump_interval`(기본 0.28초) 동안
-  `smoothstep`으로 부드럽게 원래 크기로 돌아옴 — 셋 다 `@export`라 실제 노래 넣고 귀로 들으면서 다시
-  튜닝하면 됨. Horn은 `billboard=0`(항상 카메라를 보지 않음)이고 `_ready()`에서 180도 뒤집힌 채로 고정.
+  해서(`speaker.gd`) 실제 오디오 분석 없이 그냥 빠르게 반복되는 엔벨로프로 구현: `pump_attack`
+  (기본 0.05초) 동안 좌우로(`pump_scale_x`, 기본 1.7배) 확 찢어지듯 늘어나면서 동시에 위아래는
+  살짝 눌리고(`pump_scale_y`, 기본 0.8배 — 스퀴시&스트레치 반대 방향 움직임), 남은 `pump_interval`
+  (기본 0.28초) 동안 `smoothstep`으로 부드럽게 원래 비율로 돌아옴 — 넷 다 `@export`라 실제 노래
+  넣고 귀로 들으면서 다시 튜닝하면 됨. Horn은 `billboard=0`(항상 카메라를 보지 않음)이고 `_ready()`에서 180도 뒤집힌 채로 고정.
   대화는 `entities/speaker/gramophone.dialogue`(아직 대사 비어있는 스텁) — **`entities/floating_photo/
   photos/speaker.dialogue`("나는 왜 휴일인데 일하지...")를 쓰는 `BrainInVat/SpinningTrinket` 밑의 "스피커"
   NPC와는 완전히 다른 별개의 캐릭터**임에 주의. 폴더/노드 이름이 둘 다 "speaker" 계열이라 헷갈리기 쉬움 —
