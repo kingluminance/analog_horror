@@ -256,6 +256,16 @@ display_name, default=0.0, max_value=10.0, description="")`로 한 번 등록해
 - ~~VHS/라디오 정적 글리치~~ — `main.tscn`에서 `StaticGlitch` 노드 제거해서 비활성화됨 (거슬린다는
   피드백). 스크립트(`audio/static_glitch.gd`)와 사운드는 남아있어서 나중에 필요하면 노드만 다시
   추가하면 됨
+- **`Interactable`을 계속 회전/변형하는 노드(예: `spinning_trinket.gd`처럼 `scale.x`를 매 프레임
+  오실레이션하는 빌보드 플립 트릭) 밑에 자식으로 달지 말 것.** 자식 노드는 부모의 스케일을 그대로
+  상속받는데, 그게 매 프레임 -1~1 사이를 오가면 `CollisionShape3D`가 계속 음수/비균일 스케일이 되고,
+  Jolt Physics가 그때마다 "Failed to correctly scale body..." ERROR를 로그에 계속 찍음(초당 거의
+  프레임 수만큼, 게임 자체는 정상 동작하지만 디버그 콘솔이 스팸으로 도배됨). 실제로 겪음 — 사용자가
+  에디터에서 `BrainInVat/SpinningTrinket` 밑에 "스피커" NPC용 `Interactable`을 자식으로 달아놨었는데,
+  한참 뒤에야 이게 원인인 걸 발견함(그 전까진 "원인 불명의 사소한 pre-existing 경고"로만 취급하고
+  넘어갔었음). 고칠 때는 그 `Interactable`을 트링켓의 형제 노드로 옮기고(`Objects/BrainInVat` 밑,
+  `SpeakerInteractable`로 개명) 같은 월드 위치가 되도록 `transform`을 직접 지정해서 해결 —
+  `BrainInVat`엔 이미 `[editable path="Objects/BrainInVat"]`가 있어서 마커 추가는 불필요했음.
 - **`.dialogue`의 `locals.x`는 Dialogue Manager 내장 기능이 아니라, 대화창(`analog_dialogue_balloon.gd`
   등)이 자기 자신을 `extra_game_states`로 넘길 때 그 스크립트가 갖고 있는 평범한 `var locals: Dictionary`
   프로퍼티를 찾아서 읽고 쓰는 것뿐임**. 그래서 실제 게임(Interactable → `show_dialogue_balloon()`)에서는
