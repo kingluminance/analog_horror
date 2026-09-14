@@ -34,7 +34,7 @@ entities/
   ├─ orbiting_paddle/          물병 주위를 기울어진 원으로 빠르게 도는 탁구채
   ├─ spinning_trinket/         통속의 뇌 옆에서 제자리 자전하는 오브젝트 (상호작용 없음)
   ├─ red_bouncy_ball/          빨간 통통볼 NPC — 스크립트 기반 바운스+찌부 애니메이션
-  ├─ speaker/                 스피커 — 상자+회전하는 나팔 오브젝트
+  ├─ speaker/                 축음기 — 상자+펌핑하는 나팔 오브젝트, 노래 재생
   ├─ trash_angel/              쓰레기 천사 — 대화로 몸통 형태가 바뀜
   ├─ trash_angel_wing_animation/  위 캐릭터의 원본 에셋(2D 스프라이트+날개 애니메이션 리소스)
   └─ dialogue_ui/analog_dialogue_balloon.gd/.tscn   세피아/모노스페이스 커스텀 대화창
