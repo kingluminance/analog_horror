@@ -13,7 +13,11 @@ extends Node3D
 ## group exists in this project) up to chase_radius away from its own
 ## spawn point, then walks back home once that leash is hit (or the
 ## song stops). Interactable/GramophoneAudio are children, so the E
-## range and the 3D audio panning move along with it for free.
+## range and the 3D audio panning move along with it for free. The very
+## first time it ever reaches the player it closes in all the way (a
+## one-time jump-scare beat) -- every chase after that keeps
+## chase_stop_distance away instead, since crowding the camera every
+## single time just made the [E] hint hard to see.
 
 @export var pump_interval := 0.28 # seconds per pump cycle -- fast on purpose
 @export var pump_attack := 0.05 # seconds to snap up to peak scale (fast)
@@ -30,8 +34,7 @@ extends Node3D
 @export var chase_speed := 3.0 # m/s while giving chase
 @export var chase_radius := 8.0 # how far from home it'll stray before giving up
 @export var chase_stop_distance := 2.0 # keeps at least this far from the
-	# player while chasing -- closing all the way to the player hid the
-	# [E] hint (box/horn right up in the camera's face)
+	# player on every chase after the first
 @export var return_speed := 2.0 # m/s while walking back home
 
 var _time_offset: float
@@ -40,6 +43,9 @@ var _home_position: Vector3
 # chasing again -- without this, hovering right at chase_radius
 # flip-flops chase/return every single frame and gets stuck in place.
 var _returning_home := false
+# Set once it ever actually reaches the player (closes to near 0m) --
+# from then on chase_stop_distance applies instead of closing all the way.
+var _has_closed_in_once := false
 
 @onready var _horn: Sprite3D = $Horn
 @onready var _box: Sprite3D = $Box
@@ -77,8 +83,11 @@ func _update_chase(delta: float) -> void:
 	if not _returning_home and cam and StoryFlags.get_flag("gramophone_playing") and dist_from_home < chase_radius:
 		var to_player := cam.global_position - global_position
 		to_player.y = 0.0
-		if to_player.length() > chase_stop_distance:
+		var stop_at := 0.05 if not _has_closed_in_once else chase_stop_distance
+		if to_player.length() > stop_at:
 			global_position += to_player.normalized() * chase_speed * delta
+		else:
+			_has_closed_in_once = true
 		if global_position.distance_to(_home_position) >= chase_radius:
 			_returning_home = true
 		return
