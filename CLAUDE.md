@@ -34,6 +34,7 @@ entities/
   ├─ orbiting_paddle/          물병 주위를 기울어진 원으로 빠르게 도는 탁구채
   ├─ spinning_trinket/         통속의 뇌 옆에서 제자리 자전하는 오브젝트 (상호작용 없음)
   ├─ red_bouncy_ball/          빨간 통통볼 NPC — 스크립트 기반 바운스+찌부 애니메이션
+  ├─ speaker/                 스피커 — 상자+회전하는 나팔 오브젝트
   ├─ trash_angel/              쓰레기 천사 — 대화로 몸통 형태가 바뀜
   ├─ trash_angel_wing_animation/  위 캐릭터의 원본 에셋(2D 스프라이트+날개 애니메이션 리소스)
   └─ dialogue_ui/analog_dialogue_balloon.gd/.tscn   세피아/모노스페이스 커스텀 대화창
@@ -143,6 +144,12 @@ $> StoryFlags.set_visual_state("<entity_id>", "visible", true)   # 다시 보임
   `"body"`, 값 `open_lid_eyes`/`closed_lid_eyes`/`closed_lid_noeyes`)로 몸통 전환
 - **빨간 통통볼** (`Objects/RedBouncyBall`) — 첫 실사진이 아닌 실제 3D 메쉬(SphereMesh) NPC. 물리
   아님, 스크립트 포물선(`y = 4h(t/T)(1-t/T)`)으로 바운스 + 접지 시 찌부(squash) 스케일
+- **스피커** (`Objects/Speaker`, `entities/speaker/`) — 상자(Box, billboard) 위에 축음기 나팔(Horn)이
+  얹혀서 계속 도는 오브젝트. Horn은 일부러 `billboard=0`으로 둠 — billboard 켜진 Sprite3D는 매 프레임
+  카메라를 향해 베이시스를 통째로 재계산해서 `rotation`을 무시하기 때문(트링켓이 `scale.x = cos(...)`
+  플립 트릭을 쓰는 이유와 동일한 제약). billboard를 끄면 로컬 Z축 회전이 그대로 반영돼서 정면에서 볼 때
+  진짜 "시계방향 회전"으로 보임 — 대신 극단적인 측면 각도에서는 부자연스러울 수 있음(요구사항 자체가
+  "정면 기준"이라 의도된 트레이드오프)
 
 ## 개발 환경 메모
 - **Godot 4.7 헤드리스 바이너리**: `C:\Users\my\Downloads\Godot_v4.7-stable_win64.exe\
