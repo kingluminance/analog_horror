@@ -177,7 +177,14 @@ $> StoryFlags.set_visual_state("<entity_id>", "visible", true)   # 다시 보임
   `"gramophone_stuck"` 플래그를 세움 — `gramophone.dialogue`는 이 플래그가 true일 때만(재생 중이면서
   튀고 있을 때만) "고쳐볼게" 선택지를 보여주고, 그걸 고르면 `"gramophone_loop_fixed"`를 세워서 멈춤(동시에
   `"gramophone_stuck"`도 다시 false로 정리됨). 트랙이 길어져서 스킵 기본값이 곡 초반부(1번째 줄 안)에
-  해당하니, 중간쯤으로 옮기고 싶으면 이 두 값만 조정하면 됨
+  해당하니, 중간쯤으로 옮기고 싶으면 이 두 값만 조정하면 됨. `GramophoneAudio`는 매 프레임
+  `"gramophone_playing"` 플래그를 그대로 따라감(true면 재생 시작, false면 `stop()`) — 껐다가 다시
+  선택지로 켤 수 있음. **방문 횟수 카운트는 고친 뒤부터만**: `gramophone.dialogue`의 `~playing`에서
+  `StoryFlags.increment_visit_count("gramophone")`를 부르는데, `StoryFlags.get_flag(
+  "gramophone_loop_fixed")`가 true일 때만 부르도록 가드해둠 — 안 그러면 한 번도 안 고쳤어도(스킵을
+  만나기 전에) "재생 중" 방문이 쌓여서 6번 채워질 수 있음(실제로 사용자가 발견한 버그). 6번(고친 뒤부터)
+  채우면 `~repeat`로 빠져서 "그만 듣는다."/"계속 듣는다." 선택지가 나오고, 그만 듣기를 고르면
+  `"gramophone_playing"`을 다시 false로 돌려서 실제로 음악이 멈춤
 
 ## 개발 환경 메모
 - **Godot 4.7 헤드리스 바이너리**: `C:\Users\my\Downloads\Godot_v4.7-stable_win64.exe\
