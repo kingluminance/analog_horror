@@ -29,6 +29,9 @@ extends Node3D
 
 @export var chase_speed := 3.0 # m/s while giving chase
 @export var chase_radius := 8.0 # how far from home it'll stray before giving up
+@export var chase_stop_distance := 2.0 # keeps at least this far from the
+	# player while chasing -- closing all the way to the player hid the
+	# [E] hint (box/horn right up in the camera's face)
 @export var return_speed := 2.0 # m/s while walking back home
 
 var _time_offset: float
@@ -74,7 +77,7 @@ func _update_chase(delta: float) -> void:
 	if not _returning_home and cam and StoryFlags.get_flag("gramophone_playing") and dist_from_home < chase_radius:
 		var to_player := cam.global_position - global_position
 		to_player.y = 0.0
-		if to_player.length() > 0.05:
+		if to_player.length() > chase_stop_distance:
 			global_position += to_player.normalized() * chase_speed * delta
 		if global_position.distance_to(_home_position) >= chase_radius:
 			_returning_home = true
