@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://ct5yejfl1j6n2"]
 
 [ext_resource type="Script" uid="uid://cli8h3btmkntl" path="res://entities/player/player.gd" id="1_player"]
+[ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player_scene"]
 [ext_resource type="Shader" uid="uid://keged1jvrqem" path="res://shaders/curved_world.gdshader" id="3_shader"]
 [ext_resource type="PackedScene" path="res://entities/floating_photo/floating_photo.tscn" id="5_photo"]
 [ext_resource type="Texture2D" uid="uid://ds1amgwebd7rx" path="res://entities/floating_photo/photos/john_180.png" id="6_john_tex"]
@@ -234,20 +235,8 @@ shape = SubResource("BoxShape3D_boundary_segment")
 transform = Transform3D(0.19509, 0, -0.980785, 0, 1, 0, 0.980785, 0, 0.19509, 49.039265, 10, -9.754516)
 shape = SubResource("BoxShape3D_boundary_segment")
 
-[node name="Player" type="CharacterBody3D" parent="." unique_id=1647718008]
+[node name="Player" parent="." unique_id=1647718008 instance=ExtResource("2_player_scene")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 5)
-script = ExtResource("1_player")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=74698118]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
-shape = SubResource("CapsuleShape3D_player")
-
-[node name="Camera3D" type="Camera3D" parent="Player" unique_id=1976780151]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
-fov = 90.0
-
-[node name="FootstepPlayer" type="AudioStreamPlayer" parent="Player" unique_id=1984211317]
-volume_db = -10.0
 
 [node name="Trees" type="Node3D" parent="." unique_id=1679648827]
 
