@@ -1,4 +1,4 @@
-extends PanelContainer
+extends Control
 ## One save slot card in the "세이브/로드" page -- either an empty slot
 ## with just a 기록 (save) button, or an occupied slot showing its
 ## screenshot thumbnail + note/timestamp with both 기록(overwrite) and

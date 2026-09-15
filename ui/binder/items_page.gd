@@ -31,6 +31,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		_move_focus(1)
 
 func refresh() -> void:
+	# Deferred one frame: on the very first-ever open, the container
+	# chain above this page (BookWrap/BookColumn/BinderFrame/PagesRoot)
+	# hasn't finished its layout pass yet (the whole binder was hidden
+	# until just now), so `size` below would still read as whatever it
+	# was before ever being shown -- cards ended up scattered near the
+	# top-left corner, overlapping the tab bar, instead of centered in
+	# the page. Waiting a frame lets that layout settle first.
+	await get_tree().process_frame
 	_rebuild()
 	_rebuild_gauges()
 

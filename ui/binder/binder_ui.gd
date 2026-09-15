@@ -176,8 +176,14 @@ func _update_tab_buttons() -> void:
 		# down into the frame instead.
 		btn.pivot_offset = Vector2(btn.size.x / 2.0, btn.size.y)
 		btn.scale = Vector2(1.0, 1.12) if selected else Vector2.ONE
+		# The current tab reads as "the front page" -- pin it to the
+		# LEFT end of the tab bar (not the right) and make sure it draws
+		# over its neighbors even though it's now the first child, not
+		# the last (z_index overrides tree order the same way it does
+		# against BinderFrame below).
+		btn.z_index = 1 if selected else 0
 		if selected:
-			tab_bar.move_child(btn, tab_bar.get_child_count() - 1)
+			tab_bar.move_child(btn, 0)
 
 ## Hides the whole binder panel for a couple of frames so a "세이브"
 ## screenshot captures the game world underneath, not this UI -- then

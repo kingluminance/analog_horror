@@ -9,6 +9,7 @@ extends Control
 
 const SaveSlotCardScene := preload("res://ui/binder/save_slot_card.tscn")
 const SaveSound := preload("res://audio/record_save.wav")
+const ClickSound := preload("res://audio/record_click.wav")
 
 @onready var slots_row: Control = %SlotsRow
 @onready var record_frame: Control = %RecordFrame
@@ -69,6 +70,13 @@ func _on_load_pressed(slot: int) -> void:
 	if binder and binder.has_method("close_ui"):
 		binder.close_ui()
 
+## The "기록지"(record_paper.png) card fades its screenshot in and types
+## its note out (RichTextLabel's visible_ratio does that for free) with
+## a paper-settling sound, travels toward the slot it's headed for
+## while shrinking down near card size, then finishes with one short
+## rightward slide "into" that slot's 회색틀(slot_frame.png) art and a
+## click -- the actual "끼워 넣는" beat, independent of which direction
+## the earlier travel happened to go in.
 func _play_record_animation(screenshot: Image, note: String, slot: int) -> void:
 	record_frame.show()
 	record_frame.modulate.a = 1.0
@@ -88,10 +96,20 @@ func _play_record_animation(screenshot: Image, note: String, slot: int) -> void:
 	await get_tree().create_timer(0.5).timeout
 
 	var target: Control = _slot_cards[slot] if slot < _slot_cards.size() else null
-	var settle := create_tween()
 	if target:
-		settle.tween_property(record_frame, "global_position", target.global_position, 0.35).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
-		settle.parallel().tween_property(record_frame, "scale", Vector2(0.15, 0.15), 0.35).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
-	settle.parallel().tween_property(record_frame, "modulate:a", 0.0, 0.3).set_delay(0.15)
-	await settle.finished
+		var travel := create_tween()
+		travel.tween_property(record_frame, "global_position", target.global_position, 0.35).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+		travel.parallel().tween_property(record_frame, "scale", Vector2(0.42, 0.42), 0.35).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+		await travel.finished
+
+		var insert := create_tween()
+		insert.tween_property(record_frame, "global_position:x", record_frame.global_position.x + 16.0, 0.12).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+		await insert.finished
+		sound_player.stream = ClickSound
+		sound_player.play()
+		await get_tree().create_timer(0.15).timeout
+
+	var fade := create_tween()
+	fade.tween_property(record_frame, "modulate:a", 0.0, 0.2)
+	await fade.finished
 	record_frame.hide()

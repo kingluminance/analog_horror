@@ -1,46 +1,64 @@
 [gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://ui/binder/save_slot_card.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://ui/binder/slot_frame.png" id="2_frame"]
 
 [sub_resource type="SystemFont" id="SystemFont_mono"]
 font_names = PackedStringArray("Menlo", "Courier New", "Consolas", "monospace")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
-content_margin_left = 10.0
-content_margin_top = 10.0
-content_margin_right = 10.0
-content_margin_bottom = 10.0
-bg_color = Color(0.09, 0.075, 0.055, 0.92)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.75, 0.55, 0.25, 0.55)
-
-[node name="SaveSlotCard" type="PanelContainer"]
-custom_minimum_size = Vector2(170, 230)
+[node name="SaveSlotCard" type="Control"]
+custom_minimum_size = Vector2(210, 168)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_card")
 script = ExtResource("1_script")
 
 [node name="Box" type="VBoxContainer" parent="."]
-layout_mode = 2
-theme_override_constants/separation = 6
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 4
 
-[node name="Thumbnail" type="TextureRect" parent="Box"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 96)
+[node name="FrameWrap" type="Control" parent="Box"]
+custom_minimum_size = Vector2(0, 78)
 layout_mode = 2
+
+[node name="FrameArt" type="TextureRect" parent="Box/FrameWrap"]
+texture = ExtResource("2_frame")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Thumbnail" type="TextureRect" parent="Box/FrameWrap"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.08
+anchor_top = 0.15
+anchor_right = 0.92
+anchor_bottom = 0.85
+grow_horizontal = 2
+grow_vertical = 2
 expand_mode = 1
 stretch_mode = 6
 
-[node name="EmptyLabel" type="Label" parent="Box"]
+[node name="EmptyLabel" type="Label" parent="Box/FrameWrap"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 96)
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_fonts/font = SubResource("SystemFont_mono")
-theme_override_font_sizes/font_size = 14
-theme_override_colors/font_color = Color(0.55, 0.48, 0.4, 0.8)
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.4, 0.4, 0.4, 0.85)
 horizontal_alignment = 1
 vertical_alignment = 1
 text = "빈 슬롯"
@@ -49,7 +67,7 @@ text = "빈 슬롯"
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_fonts/font = SubResource("SystemFont_mono")
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 13
 theme_override_colors/font_color = Color(0.9, 0.75, 0.5, 1)
 horizontal_alignment = 1
 autowrap_mode = 2
@@ -59,7 +77,7 @@ text = ""
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_fonts/font = SubResource("SystemFont_mono")
-theme_override_font_sizes/font_size = 11
+theme_override_font_sizes/font_size = 10
 theme_override_colors/font_color = Color(0.6, 0.5, 0.38, 0.85)
 horizontal_alignment = 1
 text = ""
