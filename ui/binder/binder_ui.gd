@@ -25,6 +25,7 @@ const SLOT_HEIGHT := TAB_HEIGHT + TAB_POP  # every slot is this tall, fixed,
 	# so every button's BOTTOM edge (see _update_tab_buttons) lands on the
 	# same line no matter its own height
 const TAB_H_PADDING := 40.0  # content margins (18+18) plus a little slack
+const TAB_SPINE_LENGTH := 16.0  # how far each tab's own accent strip runs
 
 @onready var panel: Control = %Panel
 @onready var tab_bar: HBoxContainer = %TabBar
@@ -90,15 +91,16 @@ func _ready() -> void:
 		slot.custom_minimum_size = Vector2(btn_width, SLOT_HEIGHT)
 		tab_bar.add_child(slot)
 
-		# A short accent line of its own, sitting right at SLOT_HEIGHT
-		# under each tab -- added before the button so the button (drawn
-		# after, i.e. on top) covers the sliver that overlaps its own
-		# bottom border, leaving only the couple of pixels below that
-		# border visible. Reads as "3 tabs, 3 index lines" instead of
-		# one undifferentiated line the whole row happens to share.
+		# Each tab's own accent "spine" -- not a thin underline but a
+		# tall enough strip to actually read as a sheet of paper the tab
+		# is attached to (feedback: a short 4px sliver just looked like
+		# one shared hairline under the whole row, not "3 overlapping
+		# sheets"). Added before the button so the button (drawn after,
+		# i.e. on top) covers the part that overlaps its own body,
+		# leaving the rest visible as a long strip below the tab.
 		var underline := ColorRect.new()
 		underline.position = Vector2(0.0, SLOT_HEIGHT - 2.0)
-		underline.size = Vector2(btn_width, 4.0)
+		underline.size = Vector2(btn_width, TAB_SPINE_LENGTH)
 		underline.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		slot.add_child(underline)
 
