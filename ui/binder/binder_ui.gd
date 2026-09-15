@@ -265,7 +265,17 @@ func _update_tab_buttons() -> void:
 		btn.add_theme_color_override("font_hover_color", Color(0.97, 0.85, 0.55, 1.0))
 		btn.add_theme_font_size_override("font_size", 16 if selected else 13)
 
-		var offset: Vector2 = RANK_OFFSETS[rank] if rank < RANK_OFFSETS.size() else RANK_OFFSETS[RANK_OFFSETS.size() - 1]
+		# Only the horizontal component of RANK_OFFSETS applies to the tab
+		# itself -- it still needs to sit UP at the top of the stack (just
+		# shifted right, toward wherever its ghost sheet peeks out), not
+		# sink down by the sheet's own y-offset too. Applying the full
+		# offset (tried first) dragged rank1/2's tabs down below the
+		# front tab's own bottom line, reading as "fallen off" instead of
+		# "tucked behind" -- caught by the user from a screenshot ("뒤쪽
+		#으로 보내야지 좀 올리고"). Only _update_ghost_sheets uses the
+		# y-offset, for the big page body that actually is meant to sit
+		# lower/behind.
+		var offset_x: float = RANK_OFFSETS[rank].x if rank < RANK_OFFSETS.size() else RANK_OFFSETS[RANK_OFFSETS.size() - 1].x
 
 		var desired_height: float = (TAB_HEIGHT + TAB_POP) if selected else maxf(TAB_HEIGHT - rank * TAB_STEP, TAB_MIN_HEIGHT)
 		btn.size.y = desired_height
@@ -274,12 +284,11 @@ func _update_tab_buttons() -> void:
 		# minimum, so whatever it settled on (possibly taller than asked
 		# for) is what position has to be based on, or the bottom edge
 		# drifts off SLOT_HEIGHT for exactly the ranks that got clamped.
-		btn.position = Vector2(offset.x, SLOT_HEIGHT - btn.size.y + offset.y)
+		btn.position = Vector2(offset_x, SLOT_HEIGHT - btn.size.y)
 		btn.z_index = total - rank
 
 		var underline: ColorRect = _tab_underlines[id]
-		underline.position.x = offset.x
-		underline.position.y = SLOT_HEIGHT - 2.0 + offset.y
+		underline.position = Vector2(offset_x, SLOT_HEIGHT - 2.0)
 		underline.color = Color(0.95, 0.8, 0.45, 0.95) if selected else Color(0.6, 0.45, 0.25, 0.6)
 		underline.z_index = total - rank
 
