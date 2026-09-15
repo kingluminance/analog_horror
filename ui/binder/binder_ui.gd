@@ -17,7 +17,13 @@ const TAB_DEFS := [
 	{"id": "settings", "label": "설정"},
 ]
 
-const TAB_HEIGHT := 40.0
+const TAB_HEIGHT := 40.0     # baseline (unselected) tab height
+const TAB_POP := 6.0         # px the front/selected tab grows above baseline
+const TAB_STEP := 6.0        # px shorter per rank behind the front tab
+const TAB_MIN_HEIGHT := 24.0
+const SLOT_HEIGHT := TAB_HEIGHT + TAB_POP  # every slot is this tall, fixed,
+	# so every button's BOTTOM edge (see _update_tab_buttons) lands on the
+	# same line no matter its own height
 const TAB_H_PADDING := 40.0  # content margins (18+18) plus a little slack
 
 @onready var panel: Control = %Panel
@@ -27,7 +33,7 @@ const TAB_H_PADDING := 40.0  # content margins (18+18) plus a little slack
 var _dialogue_active := false
 var _open := false
 var _current_tab := ""
-var _tab_buttons: Dictionary = {}  # id -> Button (the visual, freely scaled)
+var _tab_buttons: Dictionary = {}  # id -> Button (the visual, freely resized)
 var _tab_slots: Dictionary = {}    # id -> Control (the HBoxContainer child that actually gets positioned)
 var _pages: Dictionary = {}        # id -> Control
 
@@ -74,20 +80,20 @@ func _ready() -> void:
 		# rect turned out to also reset that child's `scale` back to
 		# Vector2.ONE every time (found by testing -- no combination of
 		# assignment order around move_child survived it), so the thing
-		# that actually gets scaled/pivoted for the cascading-tabs look
-		# has to sit one level below whatever the container manages.
+		# that actually gets resized for the cascading-tabs look has to
+		# sit one level below whatever the container manages.
 		var text_width: float = _tab_font.get_string_size(def.label, HORIZONTAL_ALIGNMENT_LEFT, -1, 16).x
-		var btn_size := Vector2(text_width + TAB_H_PADDING, TAB_HEIGHT)
+		var btn_width: float = text_width + TAB_H_PADDING
 
 		var slot := Control.new()
-		slot.custom_minimum_size = btn_size
+		slot.custom_minimum_size = Vector2(btn_width, SLOT_HEIGHT)
 		tab_bar.add_child(slot)
 
 		var btn := Button.new()
 		btn.text = def.label
 		btn.focus_mode = Control.FOCUS_NONE
-		btn.position = Vector2.ZERO
-		btn.size = btn_size
+		btn.position = Vector2(0.0, 0.0)
+		btn.size = Vector2(btn_width, TAB_HEIGHT)
 		btn.add_theme_font_override("font", _tab_font)
 		btn.add_theme_font_size_override("font_size", 16)
 		btn.pressed.connect(_switch_tab.bind(def.id, true))
@@ -187,8 +193,15 @@ func _build_tab_styles() -> void:
 	_style_tab_normal.corner_radius_top_right = 8
 	_style_tab_normal.content_margin_left = 18
 	_style_tab_normal.content_margin_right = 18
-	_style_tab_normal.content_margin_top = 8
-	_style_tab_normal.content_margin_bottom = 8
+	# Kept small on purpose -- a Button's own content-driven minimum size
+	# (font line height + these margins) sets a hard floor under
+	# btn.size.y that a smaller explicit assignment gets silently
+	# clamped back up past (found by testing: requested rank1/2 heights
+	# of 34/28 were coming out as ~39/38 instead). Smaller margins here
+	# plus a smaller font for non-selected tabs (_update_tab_buttons)
+	# lower that floor enough for the cascade to actually show.
+	_style_tab_normal.content_margin_top = 5
+	_style_tab_normal.content_margin_bottom = 5
 
 	_style_tab_selected = _style_tab_normal.duplicate()
 	_style_tab_selected.bg_color = Color(0.24, 0.18, 0.09, 0.98)
@@ -197,11 +210,16 @@ func _build_tab_styles() -> void:
 
 ## Lays every tab out by its rank in _tab_order (0 = current/frontmost):
 ## the slot's left-to-right position (move_child) follows rank directly,
-## the button's height steps down a little per rank (pivot pinned to its
-## own bottom edge, so a shorter scale reads as sitting further back,
-## not just smaller), and z_index falls with rank so each tab still
-## visibly overlaps the ones behind it regardless of container draw
-## order.
+## the button's height steps down a little per rank -- but only by
+## moving its TOP edge; its BOTTOM edge always lands on SLOT_HEIGHT, the
+## same fixed line for every rank, so the whole row still meets the
+## binder frame's top border flush instead of leaving a gap under the
+## shorter/receded tabs (an earlier scale-based version grew/shrank
+## around a bottom pivot, which looked right in theory but a Button
+## living in an HBoxContainer turned out to silently reset its own
+## `scale` on every re-sort -- see the "알려진 함정" note in CLAUDE.md).
+## z_index falls with rank so each tab still visibly overlaps the ones
+## behind it regardless of container draw order.
 func _update_tab_buttons() -> void:
 	var total := _tab_order.size()
 	for rank in total:
@@ -217,9 +235,16 @@ func _update_tab_buttons() -> void:
 			btn.add_theme_stylebox_override(state, style)
 		btn.add_theme_color_override("font_color", Color(0.97, 0.85, 0.55, 1.0) if selected else Color(0.62, 0.55, 0.45, 0.9))
 		btn.add_theme_color_override("font_hover_color", Color(0.97, 0.85, 0.55, 1.0))
-		btn.pivot_offset = Vector2(btn.size.x / 2.0, btn.size.y)
-		var scale_y: float = 1.12 if selected else maxf(0.7, 1.0 - rank * 0.12)
-		btn.scale = Vector2(1.0, scale_y)
+		btn.add_theme_font_size_override("font_size", 16 if selected else 13)
+
+		var desired_height: float = (TAB_HEIGHT + TAB_POP) if selected else maxf(TAB_HEIGHT - rank * TAB_STEP, TAB_MIN_HEIGHT)
+		btn.size.y = desired_height
+		# Read the size back instead of trusting `desired_height` -- a
+		# Button won't actually shrink past its own content-driven
+		# minimum, so whatever it settled on (possibly taller than asked
+		# for) is what position has to be based on, or the bottom edge
+		# drifts off SLOT_HEIGHT for exactly the ranks that got clamped.
+		btn.position.y = SLOT_HEIGHT - btn.size.y
 		btn.z_index = total - rank
 
 ## Hides the whole binder panel for a couple of frames so a "세이브"
