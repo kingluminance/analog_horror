@@ -17,6 +17,9 @@ const TAB_DEFS := [
 	{"id": "settings", "label": "설정"},
 ]
 
+const TAB_HEIGHT := 40.0
+const TAB_H_PADDING := 40.0  # content margins (18+18) plus a little slack
+
 @onready var panel: Control = %Panel
 @onready var tab_bar: HBoxContainer = %TabBar
 @onready var pages_root: Control = %PagesRoot
@@ -24,8 +27,17 @@ const TAB_DEFS := [
 var _dialogue_active := false
 var _open := false
 var _current_tab := ""
-var _tab_buttons: Dictionary = {}  # id -> Button
+var _tab_buttons: Dictionary = {}  # id -> Button (the visual, freely scaled)
+var _tab_slots: Dictionary = {}    # id -> Control (the HBoxContainer child that actually gets positioned)
 var _pages: Dictionary = {}        # id -> Control
+
+# Front-to-back stacking order (index 0 = current/frontmost tab, drawn
+# leftmost and on top; each id after that cascades further right and
+# further "back"). Selecting a tab moves it to the front of this list --
+# a most-recently-used order, not TAB_DEFS' fixed order -- so the whole
+# row reads as tabs stacked in sequence with the active one on top, the
+# way real overlapping index tabs in a physical binder look.
+var _tab_order: Array = []
 
 var _tab_font: SystemFont
 var _style_tab_normal: StyleBoxFlat
@@ -55,15 +67,35 @@ func _ready() -> void:
 		if page.has_method("set_binder"):
 			page.set_binder(self)
 
+		# Each tab is a plain Control "slot" (an HBoxContainer child, so
+		# the bar still lays slots out left-to-right with the usual
+		# negative-separation overlap) holding a Button that is NOT
+		# itself a Container child. HBoxContainer re-sorting a child's
+		# rect turned out to also reset that child's `scale` back to
+		# Vector2.ONE every time (found by testing -- no combination of
+		# assignment order around move_child survived it), so the thing
+		# that actually gets scaled/pivoted for the cascading-tabs look
+		# has to sit one level below whatever the container manages.
+		var text_width: float = _tab_font.get_string_size(def.label, HORIZONTAL_ALIGNMENT_LEFT, -1, 16).x
+		var btn_size := Vector2(text_width + TAB_H_PADDING, TAB_HEIGHT)
+
+		var slot := Control.new()
+		slot.custom_minimum_size = btn_size
+		tab_bar.add_child(slot)
+
 		var btn := Button.new()
 		btn.text = def.label
 		btn.focus_mode = Control.FOCUS_NONE
-		btn.custom_minimum_size = Vector2(0, 40)
+		btn.position = Vector2.ZERO
+		btn.size = btn_size
 		btn.add_theme_font_override("font", _tab_font)
 		btn.add_theme_font_size_override("font_size", 16)
 		btn.pressed.connect(_switch_tab.bind(def.id, true))
-		tab_bar.add_child(btn)
+		slot.add_child(btn)
+
 		_tab_buttons[def.id] = btn
+		_tab_slots[def.id] = slot
+		_tab_order.append(def.id)
 	_update_tab_buttons()
 
 func is_modal_open() -> bool:
@@ -114,6 +146,8 @@ func _switch_tab(tab_id: String, animate: bool) -> void:
 	var old_page: Control = _pages.get(_current_tab)
 	var new_page: Control = _pages[tab_id]
 	_current_tab = tab_id
+	_tab_order.erase(tab_id)
+	_tab_order.push_front(tab_id)
 	_update_tab_buttons()
 
 	if new_page.has_method("refresh"):
@@ -161,29 +195,32 @@ func _build_tab_styles() -> void:
 	_style_tab_selected.border_color = Color(0.95, 0.8, 0.45, 0.95)
 	_style_tab_selected.border_width_top = 3
 
+## Lays every tab out by its rank in _tab_order (0 = current/frontmost):
+## the slot's left-to-right position (move_child) follows rank directly,
+## the button's height steps down a little per rank (pivot pinned to its
+## own bottom edge, so a shorter scale reads as sitting further back,
+## not just smaller), and z_index falls with rank so each tab still
+## visibly overlaps the ones behind it regardless of container draw
+## order.
 func _update_tab_buttons() -> void:
-	for id in _tab_buttons:
+	var total := _tab_order.size()
+	for rank in total:
+		var id: String = _tab_order[rank]
 		var btn: Button = _tab_buttons[id]
-		var selected: bool = id == _current_tab
+		var slot: Control = _tab_slots[id]
+		var selected: bool = rank == 0
+
+		tab_bar.move_child(slot, rank)
+
 		var style: StyleBoxFlat = _style_tab_selected if selected else _style_tab_normal
 		for state in ["normal", "hover", "pressed", "focus"]:
 			btn.add_theme_stylebox_override(state, style)
 		btn.add_theme_color_override("font_color", Color(0.97, 0.85, 0.55, 1.0) if selected else Color(0.62, 0.55, 0.45, 0.9))
 		btn.add_theme_color_override("font_hover_color", Color(0.97, 0.85, 0.55, 1.0))
-		# Grow upward (not sideways) when selected, like a real tab
-		# popping up above its neighbors -- needs the pivot pinned to
-		# the button's own bottom edge or scaling would push it further
-		# down into the frame instead.
 		btn.pivot_offset = Vector2(btn.size.x / 2.0, btn.size.y)
-		btn.scale = Vector2(1.0, 1.12) if selected else Vector2.ONE
-		# The current tab reads as "the front page" -- pin it to the
-		# LEFT end of the tab bar (not the right) and make sure it draws
-		# over its neighbors even though it's now the first child, not
-		# the last (z_index overrides tree order the same way it does
-		# against BinderFrame below).
-		btn.z_index = 1 if selected else 0
-		if selected:
-			tab_bar.move_child(btn, 0)
+		var scale_y: float = 1.12 if selected else maxf(0.7, 1.0 - rank * 0.12)
+		btn.scale = Vector2(1.0, scale_y)
+		btn.z_index = total - rank
 
 ## Hides the whole binder panel for a couple of frames so a "세이브"
 ## screenshot captures the game world underneath, not this UI -- then
