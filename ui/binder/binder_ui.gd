@@ -26,6 +26,13 @@ const SLOT_HEIGHT := TAB_HEIGHT + TAB_POP  # every slot is this tall, fixed,
 	# same line no matter its own height
 const TAB_H_PADDING := 40.0  # content margins (18+18) plus a little slack
 const TAB_SPINE_LENGTH := 16.0  # how far each tab's own accent strip runs
+# Shared by tabs AND ghost sheets (see _update_ghost_sheets) -- one
+# source of truth for "how far behind is rank N" so a tab's label
+# actually lines up with its own page peeking out behind the front
+# one, instead of the two drifting apart (requested: "진짜 그 페이지에
+# 인덱스 붙어 있는거처럼" -- looks like the tab is physically attached
+# to that specific sheet, not just floating above the stack).
+const RANK_OFFSETS := [Vector2.ZERO, Vector2(12.0, 10.0), Vector2(24.0, 20.0)]
 
 @onready var panel: Control = %Panel
 @onready var tab_bar: HBoxContainer = %TabBar
@@ -258,6 +265,8 @@ func _update_tab_buttons() -> void:
 		btn.add_theme_color_override("font_hover_color", Color(0.97, 0.85, 0.55, 1.0))
 		btn.add_theme_font_size_override("font_size", 16 if selected else 13)
 
+		var offset: Vector2 = RANK_OFFSETS[rank] if rank < RANK_OFFSETS.size() else RANK_OFFSETS[RANK_OFFSETS.size() - 1]
+
 		var desired_height: float = (TAB_HEIGHT + TAB_POP) if selected else maxf(TAB_HEIGHT - rank * TAB_STEP, TAB_MIN_HEIGHT)
 		btn.size.y = desired_height
 		# Read the size back instead of trusting `desired_height` -- a
@@ -265,10 +274,12 @@ func _update_tab_buttons() -> void:
 		# minimum, so whatever it settled on (possibly taller than asked
 		# for) is what position has to be based on, or the bottom edge
 		# drifts off SLOT_HEIGHT for exactly the ranks that got clamped.
-		btn.position.y = SLOT_HEIGHT - btn.size.y
+		btn.position = Vector2(offset.x, SLOT_HEIGHT - btn.size.y + offset.y)
 		btn.z_index = total - rank
 
 		var underline: ColorRect = _tab_underlines[id]
+		underline.position.x = offset.x
+		underline.position.y = SLOT_HEIGHT - 2.0 + offset.y
 		underline.color = Color(0.95, 0.8, 0.45, 0.95) if selected else Color(0.6, 0.45, 0.25, 0.6)
 		underline.z_index = total - rank
 
@@ -286,7 +297,6 @@ func _update_ghost_sheets() -> void:
 	if frame_size == Vector2.ZERO:
 		return  # layout hasn't run yet this frame -- try again next update
 	var ghosts := [ghost_sheet_1, ghost_sheet_2]
-	var offsets := [Vector2(12.0, 10.0), Vector2(24.0, 20.0)]
 	var colors := [Color(0.15, 0.12, 0.08, 0.95), Color(0.1, 0.08, 0.055, 0.95)]
 	for i in ghosts.size():
 		var rank := i + 1
@@ -295,7 +305,7 @@ func _update_ghost_sheets() -> void:
 			g.hide()
 			continue
 		g.show()
-		g.global_position = frame_pos + offsets[i]
+		g.global_position = frame_pos + RANK_OFFSETS[rank]
 		g.size = frame_size
 		g.color = colors[i]
 
