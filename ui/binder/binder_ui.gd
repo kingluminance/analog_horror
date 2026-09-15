@@ -198,7 +198,7 @@ func _switch_tab(tab_id: String, animate: bool) -> void:
 	if pulled_ghost:
 		var pull := create_tween()
 		pull.tween_property(pulled_ghost, "global_position", binder_frame.global_position, 0.22).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-		pull.parallel().tween_property(pulled_ghost, "color", Color(0.06, 0.05, 0.035, 0.97), 0.22)
+		pull.parallel().tween_property(pulled_ghost, "color", Color(0.11, 0.09, 0.06, 0.97), 0.22)
 		await pull.finished
 		pulled_ghost.hide()
 
@@ -318,13 +318,20 @@ func _update_tab_buttons() -> void:
 ## BinderFrame's actual on-screen rect (only known once layout has
 ## settled -- called via call_deferred, never inline) rather than
 ## hardcoding an offset from the CenterContainer's dynamic centering.
+##
+## Colors step DARKER with rank (further back = dimmer), same "front is
+## brighter" rule the tab labels already followed -- BinderFrame's own
+## bg_color was brightened to match (it used to be the darkest thing on
+## screen, backwards from the tabs' own bright-front/dim-back pattern;
+## caught from a screenshot: "인덱스 맨 앞에만 밝잖아 그거에 맞춰서 탭도
+## 맨 앞에거가 더 밝게").
 func _update_ghost_sheets() -> void:
 	var frame_pos := binder_frame.global_position
 	var frame_size := binder_frame.size
 	if frame_size == Vector2.ZERO:
 		return  # layout hasn't run yet this frame -- try again next update
 	var ghosts := [ghost_sheet_1, ghost_sheet_2]
-	var colors := [Color(0.15, 0.12, 0.08, 0.95), Color(0.1, 0.08, 0.055, 0.95)]
+	var colors := [Color(0.08, 0.065, 0.045, 0.95), Color(0.05, 0.04, 0.028, 0.95)]
 	for i in ghosts.size():
 		var rank := i + 1
 		var g: ColorRect = ghosts[i]
