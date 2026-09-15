@@ -8,14 +8,13 @@
 [ext_resource type="Script" uid="uid://3qdox47ogfjl" path="res://audio/looping_player.gd" id="8_loop_audio"]
 [ext_resource type="AudioStream" uid="uid://1rjqqnevvvpt" path="res://audio/wind_ambience.wav" id="9_wind"]
 [ext_resource type="PackedScene" path="res://ui/post_process.tscn" id="12_post"]
-[ext_resource type="PackedScene" path="res://ui/pause_menu.tscn" id="13_pause"]
+[ext_resource type="PackedScene" path="res://ui/binder/binder_ui.tscn" id="13_binder"]
 [ext_resource type="PackedScene" path="res://entities/shared/interactable.tscn" id="14_gqmmt"]
 [ext_resource type="Texture2D" uid="uid://utg5el48mm3c" path="res://entities/floating_photo/photos/ping_pong_bottle.png" id="14_ppb_tex"]
 [ext_resource type="Resource" uid="uid://rv6o3uu6mjn6" path="res://entities/floating_photo/photos/ping_pong_bottle.dialogue" id="15_ppb_dlg"]
 [ext_resource type="Resource" uid="uid://tsceqafuuvvt" path="res://entities/floating_photo/photos/speaker.dialogue" id="15_yc10j"]
 [ext_resource type="PackedScene" path="res://entities/orbiting_paddle/orbiting_paddle.tscn" id="16_paddle"]
 [ext_resource type="PackedScene" uid="uid://cfa0qifwfg51f" path="res://entities/red_bouncy_ball/red_bouncy_ball.tscn" id="18_ball"]
-[ext_resource type="PackedScene" path="res://ui/inventory_ui.tscn" id="18_inventory"]
 [ext_resource type="PackedScene" uid="uid://cro4e40sxusd8" path="res://entities/trash_angel/trash_angel.tscn" id="20_trash_angel"]
 [ext_resource type="Texture2D" uid="uid://b6hoxc516sp3s" path="res://entities/floating_photo/photos/brain_in_vat.png" id="22_brain_tex"]
 [ext_resource type="Resource" uid="uid://dg5y33dh1h0e8" path="res://entities/floating_photo/photos/brain_in_vat.dialogue" id="23_brain_dlg"]
@@ -930,9 +929,7 @@ script = ExtResource("8_loop_audio")
 
 [node name="PostProcess" parent="." unique_id=1554422126 instance=ExtResource("12_post")]
 
-[node name="PauseMenu" parent="." unique_id=1460182729 instance=ExtResource("13_pause")]
-
-[node name="InventoryUI" parent="." unique_id=1509137938 instance=ExtResource("18_inventory")]
+[node name="BinderUI" parent="." unique_id=1460182729 instance=ExtResource("13_binder")]
 
 [node name="ItemToast" parent="." unique_id=1216048891 instance=ExtResource("25_toast")]
 

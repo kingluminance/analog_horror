@@ -1,25 +1,9 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=5 format=3]
 
-[ext_resource type="Script" path="res://ui/pause_menu.gd" id="1_script"]
+[ext_resource type="Script" path="res://ui/binder/settings_page.gd" id="1_script"]
 
 [sub_resource type="SystemFont" id="SystemFont_mono"]
 font_names = PackedStringArray("Menlo", "Courier New", "Consolas", "monospace")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
-content_margin_left = 32.0
-content_margin_top = 24.0
-content_margin_right = 32.0
-content_margin_bottom = 24.0
-bg_color = Color(0.05, 0.04, 0.03, 0.95)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.75, 0.55, 0.25, 0.5)
-corner_radius_top_left = 0
-corner_radius_top_right = 0
-corner_radius_bottom_right = 0
-corner_radius_bottom_left = 0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
 bg_color = Color(0.75, 0.55, 0.25, 0.12)
@@ -39,30 +23,16 @@ content_margin_top = 6.0
 content_margin_right = 10.0
 content_margin_bottom = 6.0
 
-[node name="PauseMenu" type="CanvasLayer"]
-layer = 50
-script = ExtResource("1_script")
-
-[node name="Panel" type="Control" parent="."]
-unique_name_in_owner = true
+[node name="SettingsPage" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 20
+script = ExtResource("1_script")
 
-[node name="Dim" type="ColorRect" parent="Panel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 0.55)
-
-[node name="CenterContainer" type="CenterContainer" parent="Panel"]
+[node name="CenterContainer" type="CenterContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -70,24 +40,20 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="Panel/CenterContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Panel/CenterContainer/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
 layout_mode = 2
 theme_override_constants/separation = 16
-custom_minimum_size = Vector2(260, 0)
+custom_minimum_size = Vector2(280, 0)
 
-[node name="Title" type="Label" parent="Panel/CenterContainer/PanelContainer/VBoxContainer"]
+[node name="Title" type="Label" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = SubResource("SystemFont_mono")
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 22
 theme_override_colors/font_color = Color(0.85, 0.65, 0.3, 0.95)
-text = "일시정지"
+text = "설정"
 horizontal_alignment = 1
 
-[node name="ResumeButton" type="Button" parent="Panel/CenterContainer/PanelContainer/VBoxContainer"]
+[node name="ResumeButton" type="Button" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = SubResource("SystemFont_mono")
 theme_override_colors/font_color = Color(0.65, 0.52, 0.32, 0.9)
@@ -96,19 +62,19 @@ theme_override_colors/font_focus_color = Color(0.95, 0.78, 0.42, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_button")
 theme_override_styles/hover = SubResource("StyleBoxFlat_button_active")
 theme_override_styles/focus = SubResource("StyleBoxFlat_button_active")
-text = "계속하기"
+text = "닫기"
 
-[node name="VolumeRow" type="HBoxContainer" parent="Panel/CenterContainer/PanelContainer/VBoxContainer"]
+[node name="VolumeRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="VolumeLabel" type="Label" parent="Panel/CenterContainer/PanelContainer/VBoxContainer/VolumeRow"]
+[node name="VolumeLabel" type="Label" parent="CenterContainer/VBoxContainer/VolumeRow"]
 layout_mode = 2
 theme_override_fonts/font = SubResource("SystemFont_mono")
 theme_override_colors/font_color = Color(0.65, 0.52, 0.32, 0.9)
 text = "볼륨"
 
-[node name="VolumeSlider" type="HSlider" parent="Panel/CenterContainer/PanelContainer/VBoxContainer/VolumeRow"]
+[node name="VolumeSlider" type="HSlider" parent="CenterContainer/VBoxContainer/VolumeRow"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
@@ -117,7 +83,7 @@ max_value = 1.0
 step = 0.01
 value = 1.0
 
-[node name="QuitButton" type="Button" parent="Panel/CenterContainer/PanelContainer/VBoxContainer"]
+[node name="QuitButton" type="Button" parent="CenterContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = SubResource("SystemFont_mono")
 theme_override_colors/font_color = Color(0.65, 0.52, 0.32, 0.9)
@@ -128,5 +94,5 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_button_active")
 theme_override_styles/focus = SubResource("StyleBoxFlat_button_active")
 text = "타이틀로 나가기"
 
-[connection signal="pressed" from="Panel/CenterContainer/PanelContainer/VBoxContainer/ResumeButton" to="." method="_on_resume_pressed"]
-[connection signal="pressed" from="Panel/CenterContainer/PanelContainer/VBoxContainer/QuitButton" to="." method="_on_quit_to_title_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/ResumeButton" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/QuitButton" to="." method="_on_quit_to_title_pressed"]

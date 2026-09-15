@@ -36,7 +36,7 @@ func _ready() -> void:
 	)
 
 func _unhandled_input(event: InputEvent) -> void:
-	# Escape/mouse-mode while playing is the pause menu's job now (ui/pause_menu.gd).
+	# Escape/mouse-mode while playing is the binder UI's job now (ui/binder/binder_ui.gd).
 	if _dialogue_active:
 		return
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:

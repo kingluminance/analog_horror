@@ -42,12 +42,20 @@ entities/
   └─ dialogue_ui/analog_dialogue_balloon.gd/.tscn   세피아/모노스페이스 커스텀 대화창
 data/
   ├─ story_flags.gd    방문 횟수 + "대화가 외형을 바꾸는" 범용 메커니즘 (아래 참고)
-  └─ inventory.gd       인벤토리 (아래 참고)
+  ├─ inventory.gd       인벤토리 (아래 참고)
+  ├─ stats.gd            RPG식 스탯 (아래 참고)
+  └─ save_system.gd      세이브/로드 (아래 참고)
 ui/
   ├─ post_process.tscn         레트로 포스트프로세싱 셰이더, 타이틀/메인 씬이 공유
-  ├─ pause_menu.gd/.tscn       ESC 일시정지 메뉴
-  ├─ inventory_ui.gd/.tscn, inventory_polaroid.gd/.tscn   인벤토리 UI (아래 참고)
-  └─ stat_gauge.gd/.tscn       아날로그 바늘 게이지 하나(인벤토리 패널의 StatsRow가 씀, 아래 참고)
+  ├─ inventory_polaroid.gd/.tscn, stat_gauge.gd/.tscn   아이템 카드 한 장 / 스탯 게이지 하나
+  │                             (둘 다 binder/items_page.gd가 재사용하는 부품)
+  └─ binder/                   Tab·Esc로 여는 단일 모달 UI (아래 참고) -- 예전에 따로였던
+                                inventory_ui.gd/pause_menu.gd를 탭 3개로 통합
+      ├─ binder_ui.gd/.tscn         탭(아이템/세이브·로드/설정)을 관리하는 루트, Tab/Esc 처리
+      ├─ items_page.gd/.tscn        [아이템] 탭 -- 옛 inventory_ui.gd 내용을 그대로 이전
+      ├─ save_load_page.gd/.tscn    [세이브/로드] 탭
+      ├─ save_slot_card.gd/.tscn    세이브 슬롯 한 칸(빈 슬롯 / 기록된 슬롯)
+      └─ settings_page.gd/.tscn     [설정] 탭 -- 옛 pause_menu.gd 내용을 그대로 이전
 shaders/
   ├─ curved_world.gdshader     땅+나무+오브젝트 공용, 세계가 살짝 구형으로 휘어 보임
   └─ dither_overlay.gdshader   화면 전체 포스트프로세싱(디더링/비네트/스캔라인/그레인/CA)
@@ -121,18 +129,22 @@ $> StoryFlags.set_visual_state("<entity_id>", "visible", true)   # 다시 보임
 통통볼에 데모로 연결돼 있음("이제 그만 튀어도 돼." 선택지). 세이브 없음 — 재시작하면 초기화.
 - 세이브/로드 없음, 게임 재시작하면 초기화됨 (doda 프로젝트도 동일 상태)
 
-### `Inventory` (오토로드, `data/inventory.gd`) + `ui/inventory_ui.*`
-`register_item(id, display_name, texture, description)` / `give_item(id, count=1)` /
+### `Inventory` (오토로드, `data/inventory.gd`) + `ui/binder/items_page.*`
+`register_item(id, display_name, texture, description="", max_count=-1)` / `give_item(id, count=1)` /
 `remove_item(id, count=1) -> bool` / `has_item(id, count=1)` / `get_count(id)` /
 `get_owned_items() -> Array`, `item_added`/`item_removed` 시그널. `.dialogue` 파일에서
 `using Inventory` + `$> Inventory.give_item("id")`로 아이템을 줄 수 있음 (`ping_pong_bottle.dialogue`에
-스모크테스트용 예시 있음). UI는 **흩뿌려진 폴라로이드 더미**(그리드 아님) + 위쪽에 스탯 게이지 한
-줄(아래 `Stats` 참고) — `KEY_TAB`으로 토글(원래 `KEY_I`였는데 변경됨), `←→`로 아이템 넘기기.
-`"modal_ui"` 그룹으로 일시정지 메뉴와 상호 배타적(동시에 못 열림). 이 프로젝트엔 `project.godot`에
-`[input]` 섹션이 없다 — 모든 키는 `event.keycode == KEY_X` 식으로 하드코딩되어 있음(E, Tab 등),
-InputMap 액션을 새로 추가하지 말고 이 관례를 따를 것. **아이템 설명 표시**는 카드 클릭/호버/`←→`
-포커스 이동 셋 다 결국 `InventoryPolaroid.show_description()`으로 모여서 트리거됨(각 경로에서 따로
-구현 안 함, `inventory_ui.gd`의 `_update_focus()`가 포커스된 카드에 대해 매번 불러줌).
+스모크테스트용 예시 있음). **`max_count`**(기본 -1 = 무제한)는 한 번에 최대 몇 개까지 지닐 수 있는지
+제한 — `give_item`이 그 이상은 조용히 잘라냄(에러 안 냄, 그냥 그 이상 안 늘어남). "기록지"(`record_paper`,
+아래 `SaveSystem` 참고)가 `max_count=1`로 등록되는 실사용 예시. `get_all_counts()`/`set_all_counts()`는
+세이브/로드 전용(전체 스냅샷을 통째로 교체해서, 로드할 때마다 아이템 하나하나에 대해
+`item_added`/`item_removed` 토스트가 뜨지 않게 함).
+
+UI는 [아이템] 탭 안에서 **흩뿌려진 폴라로이드 더미**(그리드 아님) + 위쪽에 스탯 게이지 한 줄(아래
+`Stats` 참고) — `KEY_TAB`으로 바인더 전체를 토글(아래 `binder_ui.gd` 참고). **아이템 설명 표시**는
+카드 클릭/호버/`←→` 포커스 이동 셋 다 결국 `InventoryPolaroid.show_description()`으로 모여서
+트리거됨(각 경로에서 따로 구현 안 함, `items_page.gd`의 `_update_focus()`가 포커스된 카드에 대해
+매번 불러줌).
 
 ### `Stats` (오토로드, `data/stats.gd`) + `ui/stat_gauge.*` — RPG식 스탯
 HP/공격성/유연성/레벨 등, 나중에 이벤트(전투일지는 미정)에 쓰일 플레이어 스탯. `StoryFlags`/`Inventory`처럼
@@ -151,12 +163,56 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
   눈금 기준일 뿐이고 값 자체는 그 이상 계속 오름. 넘으면 바늘은 꽉 찬 자리에 고정되고 숫자만 계속
   올라가는 상태가 되는데, "그냥 어쩔 수 없고 평범한 레벨 시스템"이라 의도적으로 그대로 둠
 
-**표시는 인벤토리 패널(Tab) 안, 별도 HUD 아님** — 처음엔 화면 구석에 항상 떠있는 별도 HUD로
-만들었었는데, "Tab 눌러야 나오게" 피드백으로 인벤토리 패널의 `StatsRow`로 옮겨서 같은 열고/닫는
-생명주기를 씀(패널 열 때마다 다시 그림). 각 스탯은 **바 대신 아날로그 바늘 게이지**(`ui/stat_gauge.gd`,
-`_draw()`로 직접 그린 눈금+바늘, 이미지 에셋 없음 — 이 프로젝트 오디오처럼 "직접 합성"하는 관례를 UI에도
-적용) — `Stats.stat_changed`가 뜨면 해당 게이지만 바늘을 트윈으로 부드럽게 움직임. 여기도 스탯 이름을
-하나도 하드코딩 안 해서 새 스탯을 `register_stat()`으로 추가하면 다음에 패널 열 때 자동으로 같이 뜸.
+**표시는 [아이템] 탭 안, 별도 HUD 아님** — 처음엔 화면 구석에 항상 떠있는 별도 HUD로 만들었었는데,
+"Tab 눌러야 나오게" 피드백으로 인벤토리 패널의 `StatsRow`로 옮겼고, 지금은 그 인벤토리 패널 자체가
+바인더의 [아이템] 탭이 되어 같은 열고/닫는 생명주기를 씀(탭이 앞으로 나올 때마다 다시 그림). 각
+스탯은 **바 대신 아날로그 바늘 게이지**(`ui/stat_gauge.gd`, `_draw()`로 직접 그린 눈금+바늘, 이미지
+에셋 없음 — 이 프로젝트 오디오처럼 "직접 합성"하는 관례를 UI에도 적용) — `Stats.stat_changed`가 뜨면
+해당 게이지만 바늘을 트윈으로 부드럽게 움직임. 여기도 스탯 이름을 하나도 하드코딩 안 해서 새 스탯을
+`register_stat()`으로 추가하면 다음에 탭 열 때 자동으로 같이 뜸.
+
+### 바인더 UI (`ui/binder/binder_ui.gd` 등) — Tab·Esc 통합 모달
+"상단에 라벨이 겹쳐 있는 L홀더 파일첩" 컨셉의 단일 모달 — 예전에 따로 떠 있던 인벤토리 패널
+(`inventory_ui.gd`)과 일시정지 메뉴(`pause_menu.gd`)를 [아이템]/[세이브·로드]/[설정] 3탭으로
+합침. `KEY_TAB`을 누르면 [아이템] 탭으로, `ui_cancel`(Esc)을 누르면 [설정] 탭으로 열리지만 **일단
+열리고 나면 탭은 자유롭게 클릭해서 전환** 가능 — 이미 열려 있는 상태에서 Tab/Esc를 다시 누르면
+탭과 무관하게 그냥 닫힘(기존 토글 관례 유지). 탭을 고르면 이전 페이지가 `scale.x`를 0으로 줄였다가
+새 페이지가 0에서 1로 펼쳐지는 짧은 트윈으로 전환됨 — 이 프로젝트가 이미 스피너류에 쓰던 것과 같은
+"빌보드 플립" 스케일 트릭을 페이지 전환에도 재사용한 것. 선택된 탭 버튼은 밝아지고 살짝 커지면서
+`TabBar`의 맨 뒤(=맨 위 그리기 순서)로 옮겨져서 "겹친 라벨 중 이게 맨 앞" 효과를 냄.
+
+**탭은 데이터, 하드코딩 아님** — `binder_ui.gd`의 `TAB_DEFS` 배열에 `{id, label}` 하나 추가하고
+`%PagesRoot` 밑에 그 id와 이름이 같은 페이지 씬을 인스턴스해두면 새 탭이 그냥 생김(코드 수정 불필요).
+각 페이지 스크립트는 선택사항으로 `refresh()`(탭이 맨 앞으로 올 때마다 호출됨)와 `set_binder(binder)`
+(자기 자신을 닫거나 스크린샷을 찍어야 하는 페이지용)를 구현할 수 있음. [아이템] 탭은 `items_page.gd`
+(옛 `inventory_ui.gd` 그대로), [설정] 탭은 `settings_page.gd`(옛 `pause_menu.gd` 그대로), [세이브/로드]
+탭은 아래 `SaveSystem` 참고.
+
+### `SaveSystem` (오토로드, `data/save_system.gd`) + `ui/binder/save_load_page.*` — 세이브/로드
+[세이브/로드] 탭의 백엔드. **세이브는 "기록지"(`record_paper`) 아이템 1장을 소모해야만 실행됨** —
+`Inventory`에 `max_count=1`로 등록돼 있어 한 번에 한 장만 지닐 수 있음(`SaveSystem.can_save()` ==
+`Inventory.has_item("record_paper")`). **로드는 제한 없이 언제든 가능.** 아직 게임 어디에도 기록지를
+실제로 주는 이벤트/NPC가 없어서 — 발광체와 같은 상황("게이트는 진짜, 획득 경로는 나중 콘텐츠") —
+지금은 `SaveSystem._ready()`에서 시작할 때 1장을 임시로 지급해 둠(실제 배포 전에 진짜 획득 경로로
+옮기거나 지울 것).
+
+세이브를 누르면: ① `binder_ui.gd`의 `capture_world_screenshot()`이 바인더 패널을 한두 프레임 숨기고
+`get_viewport().get_texture().get_image()`로 UI가 아니라 실제 게임 화면을 찍음 → ② 중앙의 직사각형
+`RecordFrame`에 그 스크린샷이 페이드인 + 위치/시간 텍스트가 `RichTextLabel.visible_ratio`로 타자
+치듯 나타나며 `audio/record_save.wav`(Python stdlib로 합성한 종이 서걱임 + 낮은 정착음) 재생 → ③
+잠깐 멈췄다가 그 카드가 실제로 저장된 슬롯 위치로 줄어들며 이동해 안착. 실제 저장은
+`user://saves/slot_<n>.json`(플래그/방문횟수/외형상태/인벤토리/스탯/현재 씬/플레이어 트랜스폼/메모/
+시각) + `slot_<n>.png`(스크린샷) 두 파일로 이뤄짐 — `StoryFlags`/`Inventory`/`Stats`는 평소엔
+세션 메모리에만 있다가 이 순간에만 실제로 디스크에 쓰여짐. 로드는 그 반대로 전부 복원하고, 저장된
+씬이 지금 있는 씬과 다르면 `change_scene_to_file()`로 이동한 뒤 플레이어 위치를 복원함(`cabin_door_watcher.gd`가
+`dialogue_ended`를 기다리는 것과 같은 이유로 프레임을 한두 번 기다렸다가 적용).
+
+**세이브 슬롯 개수는 고정이 아니라 `SaveSystem.get_max_slots()`가 매번 계산** — 시작은 1개, `StoryFlags`
+플래그("기록된 날개와의 계약" 같은 스토리 진행)에 따라 3개 → 4개까지 늘어나도록 만들어 둠(지금은
+`wings_contract_stage1`/`wings_contract_stage2`라는 자리표시자 플래그 — 실제로 그 플래그를 세워주는
+스토리 콘텐츠는 아직 없음, 나중에 그 이벤트가 생기면 `StoryFlags.set_flag(...)` 한 줄만 추가하면 됨).
+`save_load_page.gd`는 탭이 맨 앞으로 올 때마다 이 값을 다시 물어서 슬롯 카드(`save_slot_card.gd/.tscn`)를
+다시 그리므로, 슬롯이 늘어나도 UI 쪽은 따로 손댈 필요 없음.
 
 ## NPC / 오브젝트 목록
 - **존** (`Objects/John`) — 첫 실사진 NPC, 얼굴 크롭. 예전 이름 "몽클가이"
@@ -349,6 +405,12 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
 - [ ] 쓰레기 천사 대화문은 예시 수준 — 다듬기
 - [ ] 세계 규칙 명문화
 - [ ] 엔딩 / 구조 설계
+- [ ] 바인더 UI(Tab/아이템, 세이브·로드, 설정)를 실제 에디터로 열어서 탭 전환 애니메이션/
+      겹친 탭 라벨 레이아웃/세이브 카드 연출이 의도대로 보이는지 확인 (헤드리스 검증은 로직만 확인함)
+- [ ] "기록지"(record_paper)를 실제로 주는 이벤트/NPC/줍기 추가 -- 지금은 SaveSystem._ready()가
+      시작할 때 1장을 임시로 지급함 (발광체와 같은 임시 상태)
+- [ ] "기록된 날개와의 계약" 스토리 이벤트 만들어서 wings_contract_stage1/stage2
+      StoryFlags를 실제로 세워주기 (지금은 세이브 슬롯이 영원히 1개로 고정된 상태)
 
 ## 새 오브젝트 추가할 때
 1. `entities/<새이름>/` 폴더 생성

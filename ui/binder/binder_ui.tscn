@@ -1,0 +1,92 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://ui/binder/binder_ui.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://ui/binder/items_page.tscn" id="2_items"]
+[ext_resource type="PackedScene" path="res://ui/binder/save_load_page.tscn" id="3_save"]
+[ext_resource type="PackedScene" path="res://ui/binder/settings_page.tscn" id="4_settings"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_binder"]
+content_margin_left = 6.0
+content_margin_top = 6.0
+content_margin_right = 6.0
+content_margin_bottom = 6.0
+bg_color = Color(0.06, 0.05, 0.035, 0.97)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.75, 0.55, 0.25, 0.6)
+
+[node name="BinderUI" type="CanvasLayer"]
+layer = 50
+script = ExtResource("1_script")
+
+[node name="Panel" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.65)
+
+[node name="BookWrap" type="CenterContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BookColumn" type="VBoxContainer" parent="Panel/BookWrap"]
+layout_mode = 2
+theme_override_constants/separation = -20
+alignment = 0
+
+[node name="TabBar" type="HBoxContainer" parent="Panel/BookWrap/BookColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_constants/separation = -16
+
+[node name="BinderFrame" type="PanelContainer" parent="Panel/BookWrap/BookColumn"]
+layout_mode = 2
+custom_minimum_size = Vector2(920, 580)
+theme_override_styles/panel = SubResource("StyleBoxFlat_binder")
+
+[node name="PagesRoot" type="Control" parent="Panel/BookWrap/BookColumn/BinderFrame"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="items" parent="Panel/BookWrap/BookColumn/BinderFrame/PagesRoot" instance=ExtResource("2_items")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="save_load" parent="Panel/BookWrap/BookColumn/BinderFrame/PagesRoot" instance=ExtResource("3_save")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="settings" parent="Panel/BookWrap/BookColumn/BinderFrame/PagesRoot" instance=ExtResource("4_settings")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

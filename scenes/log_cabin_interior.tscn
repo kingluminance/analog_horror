@@ -3,8 +3,7 @@
 [ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="1_player"]
 [ext_resource type="PackedScene" path="res://entities/shared/interactable.tscn" id="2_interactable"]
 [ext_resource type="PackedScene" path="res://ui/post_process.tscn" id="3_post"]
-[ext_resource type="PackedScene" path="res://ui/pause_menu.tscn" id="4_pause"]
-[ext_resource type="PackedScene" path="res://ui/inventory_ui.tscn" id="5_inventory"]
+[ext_resource type="PackedScene" path="res://ui/binder/binder_ui.tscn" id="4_binder"]
 
 [sub_resource type="Environment" id="Environment_interior"]
 background_mode = 1
@@ -103,6 +102,4 @@ range_radius = 2.2
 
 [node name="PostProcess" parent="." instance=ExtResource("3_post")]
 
-[node name="PauseMenu" parent="." instance=ExtResource("4_pause")]
-
-[node name="InventoryUI" parent="." instance=ExtResource("5_inventory")]
+[node name="BinderUI" parent="." instance=ExtResource("4_binder")]

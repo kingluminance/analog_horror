@@ -21,6 +21,7 @@ DialogueManager="*res://addons/dialogue_manager/dialogue_manager.gd"
 StoryFlags="*res://data/story_flags.gd"
 Inventory="*res://data/inventory.gd"
 Stats="*res://data/stats.gd"
+SaveSystem="*res://data/save_system.gd"
 
 [dialogue_manager]
 
@@ -37,7 +38,7 @@ enabled=PackedStringArray("res://addons/dialogue_manager/plugin.cfg")
 
 [internationalization]
 
-locale/translations_pot_files=PackedStringArray("res://entities/floating_photo/photos/john.dialogue", "res://entities/floating_photo/photos/ping_pong_bottle.dialogue", "res://entities/orbiting_paddle/paddle.dialogue", "res://entities/red_bouncy_ball/ball.dialogue", "res://entities/trash_angel/trash_angel.dialogue", "res://entities/floating_photo/photos/brain_in_vat.dialogue", "res://entities/floating_photo/photos/speaker.dialogue", "res://entities/speaker/gramophone.dialogue", "res://.claude/worktrees/global-skill-addition-15d907/entities/floating_photo/photos/john.dialogue", "res://.claude/worktrees/global-skill-addition-15d907/entities/floating_photo/photos/ping_pong_bottle.dialogue", "res://.claude/worktrees/global-skill-addition-15d907/entities/orbiting_paddle/paddle.dialogue", "res://.claude/worktrees/obsidian-analog-horror-setup-c380df/entities/floating_photo/photos/john.dialogue", "res://.claude/worktrees/obsidian-analog-horror-setup-c380df/entities/floating_photo/photos/ping_pong_bottle.dialogue", "res://.claude/worktrees/obsidian-analog-horror-setup-c380df/entities/orbiting_paddle/paddle.dialogue")
+locale/translations_pot_files=PackedStringArray("res://entities/floating_photo/photos/john.dialogue", "res://entities/floating_photo/photos/ping_pong_bottle.dialogue", "res://entities/orbiting_paddle/paddle.dialogue", "res://entities/red_bouncy_ball/ball.dialogue", "res://entities/trash_angel/trash_angel.dialogue", "res://entities/floating_photo/photos/brain_in_vat.dialogue", "res://entities/floating_photo/photos/speaker.dialogue", "res://entities/speaker/gramophone.dialogue", "res://.claude/worktrees/global-skill-addition-15d907/entities/floating_photo/photos/john.dialogue", "res://.claude/worktrees/global-skill-addition-15d907/entities/floating_photo/photos/ping_pong_bottle.dialogue", "res://.claude/worktrees/global-skill-addition-15d907/entities/orbiting_paddle/paddle.dialogue", "res://.claude/worktrees/obsidian-analog-horror-setup-c380df/entities/floating_photo/photos/john.dialogue", "res://.claude/worktrees/obsidian-analog-horror-setup-c380df/entities/floating_photo/photos/ping_pong_bottle.dialogue", "res://.claude/worktrees/obsidian-analog-horror-setup-c380df/entities/orbiting_paddle/paddle.dialogue", "res://entities/log_cabin/cabin_door.dialogue")
 
 [physics]
 
