@@ -25,7 +25,6 @@ const SLOT_HEIGHT := TAB_HEIGHT + TAB_POP  # every slot is this tall, fixed,
 	# so every button's BOTTOM edge (see _update_tab_buttons) lands on the
 	# same line no matter its own height
 const TAB_H_PADDING := 40.0  # content margins (18+18) plus a little slack
-const TAB_SPINE_LENGTH := 16.0  # how far each tab's own accent strip runs
 # Shared by tabs AND ghost sheets (see _update_ghost_sheets) -- one
 # source of truth for "how far behind is rank N" so a tab's label
 # actually lines up with its own page peeking out behind the front
@@ -50,7 +49,6 @@ var _open := false
 var _current_tab := ""
 var _tab_buttons: Dictionary = {}  # id -> Button (the visual, freely resized)
 var _tab_slots: Dictionary = {}    # id -> Control (the HBoxContainer child that actually gets positioned)
-var _tab_underlines: Dictionary = {}  # id -> ColorRect, each tab's own little accent line at SLOT_HEIGHT
 var _pages: Dictionary = {}        # id -> Control
 
 # Front-to-back stacking order (index 0 = current/frontmost tab, drawn
@@ -113,19 +111,10 @@ func _ready() -> void:
 		slot.custom_minimum_size = Vector2(btn_width, SLOT_HEIGHT)
 		tab_bar.add_child(slot)
 
-		# Each tab's own accent "spine" -- not a thin underline but a
-		# tall enough strip to actually read as a sheet of paper the tab
-		# is attached to (feedback: a short 4px sliver just looked like
-		# one shared hairline under the whole row, not "3 overlapping
-		# sheets"). Added before the button so the button (drawn after,
-		# i.e. on top) covers the part that overlaps its own body,
-		# leaving the rest visible as a long strip below the tab.
-		var underline := ColorRect.new()
-		underline.position = Vector2(0.0, SLOT_HEIGHT - 2.0)
-		underline.size = Vector2(btn_width, TAB_SPINE_LENGTH)
-		underline.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		slot.add_child(underline)
-
+		# (Tried a per-tab accent "spine" -- a strip below each tab meant
+		# to read as a sheet of paper -- but it just looked like a big
+		# ugly bar, not the intended paper edges; removed. The ghost
+		# sheets below the frame carry that idea instead.)
 		var btn := Button.new()
 		btn.text = def.label
 		btn.focus_mode = Control.FOCUS_NONE
@@ -138,7 +127,6 @@ func _ready() -> void:
 
 		_tab_buttons[def.id] = btn
 		_tab_slots[def.id] = slot
-		_tab_underlines[def.id] = underline
 		_tab_order.append(def.id)
 	_update_tab_buttons()
 	call_deferred("_update_ghost_sheets")
@@ -321,11 +309,6 @@ func _update_tab_buttons() -> void:
 		# drifts off SLOT_HEIGHT for exactly the ranks that got clamped.
 		btn.position = Vector2(offset_x, SLOT_HEIGHT - btn.size.y)
 		btn.z_index = Z_FRONT_TAB if selected else Z_BACK_TAB
-
-		var underline: ColorRect = _tab_underlines[id]
-		underline.position = Vector2(offset_x, SLOT_HEIGHT - 2.0)
-		underline.color = Color(0.95, 0.8, 0.45, 0.95) if selected else Color(0.6, 0.45, 0.25, 0.6)
-		underline.z_index = Z_FRONT_TAB if selected else Z_BACK_TAB
 
 ## The other two pages aren't just hidden behind the front one -- their
 ## own big "sheet" peeks out from behind it, offset a little further
