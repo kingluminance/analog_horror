@@ -35,6 +35,7 @@ var _open := false
 var _current_tab := ""
 var _tab_buttons: Dictionary = {}  # id -> Button (the visual, freely resized)
 var _tab_slots: Dictionary = {}    # id -> Control (the HBoxContainer child that actually gets positioned)
+var _tab_underlines: Dictionary = {}  # id -> ColorRect, each tab's own little accent line at SLOT_HEIGHT
 var _pages: Dictionary = {}        # id -> Control
 
 # Front-to-back stacking order (index 0 = current/frontmost tab, drawn
@@ -89,6 +90,18 @@ func _ready() -> void:
 		slot.custom_minimum_size = Vector2(btn_width, SLOT_HEIGHT)
 		tab_bar.add_child(slot)
 
+		# A short accent line of its own, sitting right at SLOT_HEIGHT
+		# under each tab -- added before the button so the button (drawn
+		# after, i.e. on top) covers the sliver that overlaps its own
+		# bottom border, leaving only the couple of pixels below that
+		# border visible. Reads as "3 tabs, 3 index lines" instead of
+		# one undifferentiated line the whole row happens to share.
+		var underline := ColorRect.new()
+		underline.position = Vector2(0.0, SLOT_HEIGHT - 2.0)
+		underline.size = Vector2(btn_width, 4.0)
+		underline.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		slot.add_child(underline)
+
 		var btn := Button.new()
 		btn.text = def.label
 		btn.focus_mode = Control.FOCUS_NONE
@@ -101,6 +114,7 @@ func _ready() -> void:
 
 		_tab_buttons[def.id] = btn
 		_tab_slots[def.id] = slot
+		_tab_underlines[def.id] = underline
 		_tab_order.append(def.id)
 	_update_tab_buttons()
 
@@ -246,6 +260,10 @@ func _update_tab_buttons() -> void:
 		# drifts off SLOT_HEIGHT for exactly the ranks that got clamped.
 		btn.position.y = SLOT_HEIGHT - btn.size.y
 		btn.z_index = total - rank
+
+		var underline: ColorRect = _tab_underlines[id]
+		underline.color = Color(0.95, 0.8, 0.45, 0.95) if selected else Color(0.6, 0.45, 0.25, 0.6)
+		underline.z_index = total - rank
 
 ## Hides the whole binder panel for a couple of frames so a "세이브"
 ## screenshot captures the game world underneath, not this UI -- then
