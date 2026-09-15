@@ -179,7 +179,9 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
 탭과 무관하게 그냥 닫힘(기존 토글 관례 유지). 탭을 고르면 이전 페이지가 `scale.x`를 0으로 줄였다가
 새 페이지가 0에서 1로 펼쳐지는 짧은 트윈으로 전환됨 — 이 프로젝트가 이미 스피너류에 쓰던 것과 같은
 "빌보드 플립" 스케일 트릭을 페이지 전환에도 재사용한 것. 선택된 탭 버튼은 밝아지고 살짝 커지면서
-`TabBar`의 맨 뒤(=맨 위 그리기 순서)로 옮겨져서 "겹친 라벨 중 이게 맨 앞" 효과를 냄.
+`TabBar`의 맨 앞(0번 인덱스)으로 옮겨지고 z_index로 그리기 순서도 같이 앞세워서 "이 탭이 파일첩 맨
+앞장" 효과를 냄(처음엔 맨 뒤로 옮겼었는데 "그게 아니라 맨 왼쪽 탭이 현재 고른 탭이어야" 한다는
+피드백으로 방향을 바꿈).
 
 **탭은 데이터, 하드코딩 아님** — `binder_ui.gd`의 `TAB_DEFS` 배열에 `{id, label}` 하나 추가하고
 `%PagesRoot` 밑에 그 id와 이름이 같은 페이지 씬을 인스턴스해두면 새 탭이 그냥 생김(코드 수정 불필요).
@@ -197,10 +199,15 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
 옮기거나 지울 것).
 
 세이브를 누르면: ① `binder_ui.gd`의 `capture_world_screenshot()`이 바인더 패널을 한두 프레임 숨기고
-`get_viewport().get_texture().get_image()`로 UI가 아니라 실제 게임 화면을 찍음 → ② 중앙의 직사각형
-`RecordFrame`에 그 스크린샷이 페이드인 + 위치/시간 텍스트가 `RichTextLabel.visible_ratio`로 타자
-치듯 나타나며 `audio/record_save.wav`(Python stdlib로 합성한 종이 서걱임 + 낮은 정착음) 재생 → ③
-잠깐 멈췄다가 그 카드가 실제로 저장된 슬롯 위치로 줄어들며 이동해 안착. 실제 저장은
+`get_viewport().get_texture().get_image()`로 UI가 아니라 실제 게임 화면을 찍음 → ② 중앙의 `RecordFrame`
+(사용자가 준 그린스크린 사진 두 장을 Pillow로 크로마키 + 크롭한 실제 아트 -- `ui/binder/record_paper.png`,
+찢어진 줄노트 종이 = "기록지" 그 자체)에 그 스크린샷이 페이드인 + 위치/시간 텍스트가
+`RichTextLabel.visible_ratio`로 타자 치듯 나타나며 `audio/record_save.wav`(Python stdlib로 합성한
+종이 서걱임 + 낮은 정착음) 재생 → ③ 잠깐 멈췄다가 대상 슬롯 쪽으로 이동하며 카드 크기로 줄어들고,
+마지막에 순수하게 오른쪽으로만 짧게 한 번 더 밀려 들어가면서(`insert` 트윈, 그 전 이동이 어느 방향이었든
+무관하게 "끼워 넣는" 동작 자체는 항상 오른쪽) `audio/record_click.wav`(합성한 딸깍 소리) 재생 후 사라짐.
+각 세이브 슬롯(`save_slot_card.gd/.tscn`)의 배경도 같은 방식으로 만든 `ui/binder/slot_frame.png`
+(회색 플라스틱 틀 사진)이고, 점유된 슬롯은 그 틀 안쪽 칸에 스크린샷 썸네일이 앉아있는 모양. 실제 저장은
 `user://saves/slot_<n>.json`(플래그/방문횟수/외형상태/인벤토리/스탯/현재 씬/플레이어 트랜스폼/메모/
 시각) + `slot_<n>.png`(스크린샷) 두 파일로 이뤄짐 — `StoryFlags`/`Inventory`/`Stats`는 평소엔
 세션 메모리에만 있다가 이 순간에만 실제로 디스크에 쓰여짐. 로드는 그 반대로 전부 복원하고, 저장된
@@ -407,6 +414,13 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
   무관하게 그리기 순서만 따로 바꿀 수 있어서, 탭바에 `z_index = 5`를 줘서 프레임보다 항상 위에
   그려지도록 고침 -- 겹치는 시각 효과를 negative separation으로 낼 때는 항상 위에 그려져야 하는
   쪽에 z_index를 명시적으로 줄 것.
+- **처음부터 숨겨져 있던 `Control`은 그 조상 컨테이너 체인이 레이아웃을 한 번도 안 돌렸을 수 있어서,
+  그 시점에 자기 `size`를 읽으면 값이 틀릴 수 있음** -- 바인더를 맨 처음 여는 순간(`Panel.show()`
+  직후) `items_page.gd`의 `refresh()`가 곧바로 `size`로 카드 위치를 계산했는데, 그 위의
+  `BookWrap/BookColumn/BinderFrame/PagesRoot` 체인이 지금까지 한 번도 화면에 나온 적이 없어서 실제
+  레이아웃이 아직 확정 안 된 상태였음 -- 카드가 화면 왼쪽 위(탭바와 겹치는 자리)에 뭉쳐서 나타나는
+  버그로 나타남(사용자가 스크린샷으로 신고). `refresh()` 맨 앞에 `await get_tree().process_frame`
+  하나만 넣어서 컨테이너들이 한 번 정렬될 시간을 준 뒤에 `size`를 읽도록 고침.
 
 ## TODO
 - [ ] 게임 에디터로 직접 열어서 존/물병/탁구채/통속의뇌/트링켓/쓰레기천사/통통볼/인벤토리 전부
