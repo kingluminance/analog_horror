@@ -34,6 +34,10 @@ const TAB_SPINE_LENGTH := 16.0  # how far each tab's own accent strip runs
 # to that specific sheet, not just floating above the stack).
 const RANK_OFFSETS := [Vector2.ZERO, Vector2(12.0, 10.0), Vector2(24.0, 20.0)]
 
+const Z_BACK_TAB := 1   # rank >= 1 tabs -- above the ghost sheets, below the frame
+const Z_FRAME := 2      # BinderFrame (and everything in PagesRoot)
+const Z_FRONT_TAB := 3  # rank 0's tab -- has to clear the frame's own top border
+
 @onready var panel: Control = %Panel
 @onready var tab_bar: HBoxContainer = %TabBar
 @onready var pages_root: Control = %PagesRoot
@@ -69,14 +73,22 @@ func _ready() -> void:
 	DialogueManager.dialogue_ended.connect(func(_r): _dialogue_active = false)
 
 	_build_tab_styles()
-	# Tabs must always draw over the binder frame below them in the
-	# VBoxContainer, even though the frame is a later sibling (and later
-	# siblings normally draw on top) -- otherwise the tabs render mostly
-	# UNDER the frame's opaque top border wherever BookColumn's negative
-	# separation makes them overlap, which is what made them look cut
-	# off/illegible. z_index overrides tree draw order without touching
-	# layout.
-	tab_bar.z_index = 5
+	# Layering, back to front: ghost sheets (0, default) -> back tabs
+	# (Z_BACK_TAB) -> the frame/front page (Z_FRAME) -> the front tab
+	# (Z_FRONT_TAB). Two different bugs shaped this:
+	# - BookColumn's negative separation makes the tab row overlap
+	#   BinderFrame's top edge, and a later sibling normally draws over
+	#   an earlier one -- without a z boost EVERY tab renders mostly
+	#   under the frame's opaque border, illegible (the first version of
+	#   this feature hit exactly that).
+	# - the opposite bug came later: giving every tab the SAME z boost
+	#   put the back tabs (rank >= 1) above the frame too, so they never
+	#   looked like they were tucked behind the front page's body at all
+	#   ("당연히 맨 앞장보다 레이어가 뒤어야지"). Back tabs need to sit
+	#   ABOVE the ghost sheets they belong to but BELOW the front page,
+	#   so the front page's own body visibly covers the part of them it
+	#   overlaps.
+	binder_frame.z_index = Z_FRAME
 
 	for def in TAB_DEFS:
 		var page: Control = pages_root.get_node(def.id)
@@ -178,10 +190,33 @@ func _switch_tab(tab_id: String, animate: bool) -> void:
 		return
 	var old_page: Control = _pages.get(_current_tab)
 	var new_page: Control = _pages[tab_id]
+
+	# If the tab being picked was a back tab, it had its own ghost sheet
+	# peeking out behind the frame -- pull that specific sheet out and
+	# slide it into the frame's own spot before doing anything else
+	# ("뒷종이 꺼내서 넘기는 듯한 애니메이션", requested alongside the
+	# z-index fix above). Only for an actual click (animate=true), not
+	# the instant first-open path.
+	var old_rank := _tab_order.find(tab_id)
+	var pulled_ghost: ColorRect = null
+	if animate and old_rank >= 1 and old_rank <= 2:
+		pulled_ghost = [ghost_sheet_1, ghost_sheet_2][old_rank - 1]
+
 	_current_tab = tab_id
 	_tab_order.erase(tab_id)
 	_tab_order.push_front(tab_id)
 	_update_tab_buttons()
+
+	if pulled_ghost:
+		var pull := create_tween()
+		pull.tween_property(pulled_ghost, "global_position", binder_frame.global_position, 0.22).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		pull.parallel().tween_property(pulled_ghost, "color", Color(0.06, 0.05, 0.035, 0.97), 0.22)
+		await pull.finished
+		pulled_ghost.hide()
+
+	# Re-settles both ghost sheets onto whichever tabs are now rank 1/2
+	# (the one just pulled forward included -- it gets reassigned to
+	# whichever back rank it landed on, or hidden if there's no rank 2).
 	call_deferred("_update_ghost_sheets")
 
 	if new_page.has_method("refresh"):
@@ -285,12 +320,12 @@ func _update_tab_buttons() -> void:
 		# for) is what position has to be based on, or the bottom edge
 		# drifts off SLOT_HEIGHT for exactly the ranks that got clamped.
 		btn.position = Vector2(offset_x, SLOT_HEIGHT - btn.size.y)
-		btn.z_index = total - rank
+		btn.z_index = Z_FRONT_TAB if selected else Z_BACK_TAB
 
 		var underline: ColorRect = _tab_underlines[id]
 		underline.position = Vector2(offset_x, SLOT_HEIGHT - 2.0)
 		underline.color = Color(0.95, 0.8, 0.45, 0.95) if selected else Color(0.6, 0.45, 0.25, 0.6)
-		underline.z_index = total - rank
+		underline.z_index = Z_FRONT_TAB if selected else Z_BACK_TAB
 
 ## The other two pages aren't just hidden behind the front one -- their
 ## own big "sheet" peeks out from behind it, offset a little further
