@@ -219,6 +219,11 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
 매 탭 전환마다 `call_deferred`로 다시 계산함(레이아웃이 그 프레임에 이미 끝났다는 보장이 없어서 —
 위 "숨겨져 있던 Control" 함정과 같은 이유).
 
+**탭 라벨도 자기 고스트 시트랑 같은 오프셋으로 같이 밀림** -- "위에 인덱스도 그거 맞춰서
+진짜 그 페이지에 인덱스 붙어 있는거처럼" 피드백으로, rank1/2 오프셋을 `RANK_OFFSETS` 상수
+하나로 통일해서 `_update_tab_buttons()`(버튼+밑줄)와 `_update_ghost_sheets()`가 같은 값을 씀 --
+따로 하드코딩해뒀으면 나중에 둘이 어긋날 수 있었음.
+
 **탭은 데이터, 하드코딩 아님** — `binder_ui.gd`의 `TAB_DEFS` 배열에 `{id, label}` 하나 추가하고
 `%PagesRoot` 밑에 그 id와 이름이 같은 페이지 씬을 인스턴스해두면 새 탭이 그냥 생김(코드 수정 불필요).
 각 페이지 스크립트는 선택사항으로 `refresh()`(탭이 맨 앞으로 올 때마다 호출됨)와 `set_binder(binder)`
