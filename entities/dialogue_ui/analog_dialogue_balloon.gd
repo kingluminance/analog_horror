@@ -21,6 +21,30 @@ class_name AnalogDialogueBalloon extends CanvasLayer
 ## The action to use to skip typing the dialogue
 @export var skip_action: StringName = &"ui_cancel"
 
+## If true, the player cannot skip-to-end a typing line (click / skip_action
+## does nothing while dialogue_label.is_typing) -- e.g. for a line meant to be
+## read at its own pace rather than clicked through. Plain top-level @export,
+## settable from any .dialogue file the same way locals.x already is -- see
+## CLAUDE.md's dialogue-extension section for the extra_game_states caveat.
+@export var unskippable: bool = false
+
+## Trembling-text intensity forwarded to the DialogueLabel (AnalogDialogueLabel
+## own tremble_level, wrapped in built-in [shake] BBCode) for every line shown
+## until changed again. 0 = off (default, byte-identical to today rendering).
+@export var tremble_level: float = 0.0
+
+## Overrides DialogueLabel.seconds_per_step for every line shown until changed
+## again, expressed as characters/second instead of seconds/character (0 = leave
+## the label own configured speed alone -- the default, so unset means unchanged
+## behavior). [speed=]/[wait=] inline tags from the addon still work as-is on
+## top of whatever this sets.
+@export var reveal_chars_per_second: float = 0.0
+
+## The label own seconds_per_step as configured in the scene, captured once in
+## _ready() before anything overrides it, so reveal_chars_per_second can be
+## un-set (reset to 0) later and fall back to this instead of a hardcoded value.
+var _default_seconds_per_step: float = 0.02
+
 ## A sound player for voice lines (if they exist).
 @onready var audio_stream_player: AudioStreamPlayer = %AudioStreamPlayer
 
@@ -79,6 +103,7 @@ func _ready() -> void:
 	balloon.hide()
 	Engine.get_singleton("DialogueManager").mutated.connect(_on_mutated)
 	dialogue_label.spoke.connect(_on_spoke)
+	_default_seconds_per_step = dialogue_label.seconds_per_step
 
 	# If the responses menu doesn't have a next action set, use this one
 	if responses_menu.next_action.is_empty():
@@ -139,6 +164,12 @@ func apply_dialogue_line() -> void:
 	character_label.text = "[" + tr(dialogue_line.character, "dialogue") + "]"
 
 	dialogue_label.hide()
+	# Push our export overrides onto the label before assigning dialogue_line,
+	# since assigning dialogue_line triggers DialogueLabel._update_text() (and
+	# AnalogDialogueLabel reads tremble_level from inside that override).
+	if dialogue_label is AnalogDialogueLabel:
+		dialogue_label.tremble_level = tremble_level
+	dialogue_label.seconds_per_step = (1.0 / reveal_chars_per_second) if reveal_chars_per_second > 0.0 else _default_seconds_per_step
 	dialogue_label.dialogue_line = dialogue_line
 
 	responses_menu.hide()
@@ -194,8 +225,10 @@ func _on_mutated(mutation: Dictionary) -> void:
 
 
 func _on_balloon_gui_input(event: InputEvent) -> void:
-	# See if we need to skip typing of the dialogue
-	if dialogue_label.is_typing:
+	# See if we need to skip typing of the dialogue (unless unskippable is on,
+	# in which case this whole block is a no-op and the line has to finish
+	# typing itself out).
+	if dialogue_label.is_typing and not unskippable:
 		var mouse_was_clicked: bool = event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed()
 		var skip_button_was_pressed: bool = event.is_action_pressed(skip_action)
 		if mouse_was_clicked or skip_button_was_pressed:
