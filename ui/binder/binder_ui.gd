@@ -30,6 +30,9 @@ const TAB_SPINE_LENGTH := 16.0  # how far each tab's own accent strip runs
 @onready var panel: Control = %Panel
 @onready var tab_bar: HBoxContainer = %TabBar
 @onready var pages_root: Control = %PagesRoot
+@onready var binder_frame: Control = %BinderFrame
+@onready var ghost_sheet_1: ColorRect = %GhostSheet1  # rank 1's sheet, peeking out behind the frame
+@onready var ghost_sheet_2: ColorRect = %GhostSheet2  # rank 2's sheet, peeking out further behind that
 
 var _dialogue_active := false
 var _open := false
@@ -119,6 +122,7 @@ func _ready() -> void:
 		_tab_underlines[def.id] = underline
 		_tab_order.append(def.id)
 	_update_tab_buttons()
+	call_deferred("_update_ghost_sheets")
 
 func is_modal_open() -> bool:
 	return _open
@@ -171,6 +175,7 @@ func _switch_tab(tab_id: String, animate: bool) -> void:
 	_tab_order.erase(tab_id)
 	_tab_order.push_front(tab_id)
 	_update_tab_buttons()
+	call_deferred("_update_ghost_sheets")
 
 	if new_page.has_method("refresh"):
 		new_page.refresh()
@@ -266,6 +271,33 @@ func _update_tab_buttons() -> void:
 		var underline: ColorRect = _tab_underlines[id]
 		underline.color = Color(0.95, 0.8, 0.45, 0.95) if selected else Color(0.6, 0.45, 0.25, 0.6)
 		underline.z_index = total - rank
+
+## The other two pages aren't just hidden behind the front one -- their
+## own big "sheet" peeks out from behind it, offset a little further
+## down-right per rank, the same idea as the tab spines but for the
+## whole page instead of just its label ("이 전체 큰 탭들이 종이들처럼
+## 있는거 처럼" -- the file-folder-viewed-from-the-front request). Reads
+## BinderFrame's actual on-screen rect (only known once layout has
+## settled -- called via call_deferred, never inline) rather than
+## hardcoding an offset from the CenterContainer's dynamic centering.
+func _update_ghost_sheets() -> void:
+	var frame_pos := binder_frame.global_position
+	var frame_size := binder_frame.size
+	if frame_size == Vector2.ZERO:
+		return  # layout hasn't run yet this frame -- try again next update
+	var ghosts := [ghost_sheet_1, ghost_sheet_2]
+	var offsets := [Vector2(12.0, 10.0), Vector2(24.0, 20.0)]
+	var colors := [Color(0.15, 0.12, 0.08, 0.95), Color(0.1, 0.08, 0.055, 0.95)]
+	for i in ghosts.size():
+		var rank := i + 1
+		var g: ColorRect = ghosts[i]
+		if rank >= _tab_order.size():
+			g.hide()
+			continue
+		g.show()
+		g.global_position = frame_pos + offsets[i]
+		g.size = frame_size
+		g.color = colors[i]
 
 ## Hides the whole binder panel for a couple of frames so a "세이브"
 ## screenshot captures the game world underneath, not this UI -- then
