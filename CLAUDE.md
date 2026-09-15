@@ -210,6 +210,15 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
 "한 줄을 다 같이 쓰는 것처럼 보인다"는 피드백으로 `TAB_SPINE_LENGTH`(16px)만큼 길게 늘여서 진짜
 종이 조각처럼 보이게 함.
 
+**탭 라벨뿐 아니라 페이지 전체를 종이 뭉치처럼**("아코디언 파일철을 앞에서 본 것처럼"
+— 참고 사진까지 받음) -- rank 1/2 페이지의 "몸통" 전체도 `BinderFrame` 뒤에서 살짝(12/10px,
+24/20px) 오른쪽 아래로 밀려 삐져나와 보이도록 `GhostSheet1`/`GhostSheet2`(`ColorRect`) 두 장을
+추가함(`_update_ghost_sheets()`). `BookWrap`(중앙 정렬 `CenterContainer`) 형제로 둬서 `BookColumn`의
+레이아웃과 무관하게 자유롭게 위치·크기를 줄 수 있게 하고, `BinderFrame`의 **실제 화면 좌표**
+(`global_position`/`size`, `CenterContainer`가 매 프레임 다시 정렬하므로 고정값 아님)를 읽어서
+매 탭 전환마다 `call_deferred`로 다시 계산함(레이아웃이 그 프레임에 이미 끝났다는 보장이 없어서 —
+위 "숨겨져 있던 Control" 함정과 같은 이유).
+
 **탭은 데이터, 하드코딩 아님** — `binder_ui.gd`의 `TAB_DEFS` 배열에 `{id, label}` 하나 추가하고
 `%PagesRoot` 밑에 그 id와 이름이 같은 페이지 씬을 인스턴스해두면 새 탭이 그냥 생김(코드 수정 불필요).
 각 페이지 스크립트는 선택사항으로 `refresh()`(탭이 맨 앞으로 올 때마다 호출됨)와 `set_binder(binder)`
