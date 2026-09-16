@@ -453,8 +453,14 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
   테스트해 확인함). **단, 처음 한 번은 예외** — `_has_closed_in_once`가 false인 동안(=한 번도 플레이어
   코앞까지 닿아본 적 없는 동안)은 옛날처럼 0.05m까지 바짝 붙음(한 번의 깜짝 연출 용도). 한 번이라도
   닿으면 그 뒤로는(노래를 껐다 다시 켜도) 계속 `chase_stop_distance`를 지킴.
-- **엘리콘티** (`entities/ellikonti/`) — **아직 `scenes/main.tscn`에 배치 안 됨, 파일만 존재**(다음
-  단계에서 배치). 항상 몸을 떠는(지면 고정, 대화 없이도 계속) NPC — `Visual`(Sprite3D, billboard)에만
+- **엘리콘티** (`entities/ellikonti/`) — `scenes/main.tscn`의 `Objects/Ellikonti`에 배치됨(사용자가
+  직접 에디터에서 위치 조정, 현재 `(-31.97, 0, -31.26)`). **아트 교체**: 처음엔 대포 장식이 달린
+  귀여운 애니메 치비 캐릭터였는데, "너무 유아틱하고 애니메이션틱하다, 그냥 퍼리잖아" 피드백으로
+  완전히 다시 감. 마도카 마기카 마녀(게키단 이누카레) 스타일의 종이공예/콜라주 질감, 비대칭
+  비율, 줄무늬 눈동자로 방향을 바꾸고, 표정도 "수줍음"이 아니라 식은땀 줄줄 흐르는 완전한 패닉
+  상태로 밀어붙임 — 여전히 이 프로젝트의 밝고 채도 높은 색감은 유지해서 "밝은 색인데 표정은
+  공포"인 부조화를 의도적으로 냄(그린스크린으로 받아서 크로마키 처리, 원본은 리포에 안 넣음).
+  항상 몸을 떠는(지면 고정, 대화 없이도 계속) NPC — `Visual`(Sprite3D, billboard)에만
   위치/z회전 저크(sum-of-incommensurate-sines, `speaker.gd`의 펌핑 엔벨로프와 같은 "여러 사인파를
   안 맞는 주파수로 겹쳐서 반복 안 느껴지게" 발상, 단 여긴 엔벨로프가 아니라 연속 흔들림)를 매 프레임
   적용하고, 루트 노드와 `Interactable`은 완전히 정지 상태로 둠(`interactable.gd`의 range/facing 판정이
@@ -651,9 +657,8 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
       시작할 때 1장을 임시로 지급함 (발광체와 같은 임시 상태)
 - [ ] "기록된 날개와의 계약" 스토리 이벤트 만들어서 wings_contract_stage1/stage2
       StoryFlags를 실제로 세워주기 (지금은 세이브 슬롯이 영원히 1개로 고정된 상태)
-- [ ] 엘리콘티(`entities/ellikonti/`)를 `scenes/main.tscn`에 실제로 배치하고, 에디터로 열어서
-      스케일/월드 위치/`tremble_intensity`·`tremble_rotation_degrees` 기본 강도가 의도대로
-      보이는지 확인 (헤드리스 검증은 로직만 확인함, 지금은 파일만 존재하고 씬엔 안 들어가 있음)
+- [ ] 엘리콘티 새 아트(마도카 마녀 스타일)에 맞춰 `Visual`의 `pixel_size`/스케일/기존 위치가 여전히
+      맞는지 에디터에서 확인 — 몸통 실루엣이 이전 치비 디자인이랑 많이 달라져서 재조정 필요할 수 있음
 
 ## 새 오브젝트 추가할 때
 1. `entities/<새이름>/` 폴더 생성
