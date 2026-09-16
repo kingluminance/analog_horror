@@ -34,6 +34,11 @@ func _ready() -> void:
 	# dialogue reward exists.
 	Inventory.give_item(RECORD_PAPER_ID, 1)
 
+	# 너(Currency) -- same "gate is real, real acquisition path is future
+	# content" placeholder situation as the 기록지 grant right above.
+	# See Currency.register_and_seed() in data/currency.gd.
+	Currency.register_and_seed()
+
 ## 1 to start; +2 once the first stage of "기록된 날개와의 계약" is done,
 ## +1 more on the second stage -- 1 -> 3 -> 4, matching the "3~4개까지
 ## 동적으로 확장" request. Neither flag is set by any content yet; wire
