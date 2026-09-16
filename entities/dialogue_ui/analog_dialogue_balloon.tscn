@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://entities/dialogue_ui/analog_dialogue_balloon.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://addons/dialogue_manager/nodes/dialogue_label/dialogue_label.tscn" id="2_label"]
 [ext_resource type="Script" path="res://addons/dialogue_manager/nodes/responses_menu/dialogue_responses_menu.gd" id="3_responses"]
 [ext_resource type="AudioStream" path="res://audio/dialogue_blip.wav" id="4_blip"]
+[ext_resource type="Script" path="res://entities/dialogue_ui/analog_dialogue_label.gd" id="5_analog_label"]
 
 [sub_resource type="SystemFont" id="SystemFont_mono"]
 font_names = PackedStringArray("Menlo", "Courier New", "Consolas", "monospace")
@@ -112,6 +113,7 @@ scroll_active = false
 
 [node name="DialogueLabel" parent="Balloon/MarginContainer/PanelContainer/MarginContainer/HBoxContainer/VBoxContainer" instance=ExtResource("2_label")]
 unique_name_in_owner = true
+script = ExtResource("5_analog_label")
 theme_override_colors/default_color = Color(0.92, 0.85, 0.72, 0.95)
 layout_mode = 2
 size_flags_vertical = 3
