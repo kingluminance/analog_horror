@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://ct5yejfl1j6n2"]
+[gd_scene format=3 uid="uid://bh2tthbxp3wqb"]
 
 [ext_resource type="PackedScene" path="res://entities/player/player.tscn" id="2_player_scene"]
 [ext_resource type="Shader" uid="uid://keged1jvrqem" path="res://shaders/curved_world.gdshader" id="3_shader"]
@@ -23,7 +23,7 @@
 [ext_resource type="PackedScene" uid="uid://d1xhbiif8egkt" path="res://entities/speaker/speaker.tscn" id="26_speaker"]
 [ext_resource type="Resource" uid="uid://bvsucdl5uq5w0" path="res://entities/log_cabin/cabin_door.dialogue" id="28_cabin_dlg"]
 [ext_resource type="Script" uid="uid://df35dx5g0r08c" path="res://entities/log_cabin/cabin_door_watcher.gd" id="29_cabin_watcher"]
-[ext_resource type="PackedScene" path="res://entities/recorded_wings/recorded_wings.tscn" id="30_wings"]
+[ext_resource type="PackedScene" uid="uid://wclmemrygmw8" path="res://entities/recorded_wings/recorded_wings.tscn" id="30_wings"]
 [ext_resource type="PackedScene" path="res://entities/ellikonti/ellikonti.tscn" id="31_ellikonti"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
@@ -923,6 +923,12 @@ hint_offset = Vector3(0, 0.3, 0.3)
 script = ExtResource("29_cabin_watcher")
 scene_to_load = "res://scenes/log_cabin_interior.tscn"
 
+[node name="RecordedWings" parent="Objects" unique_id=998710502 instance=ExtResource("30_wings")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.940994, 7.5517554, 15)
+
+[node name="Ellikonti" parent="Objects" unique_id=1232599269 instance=ExtResource("31_ellikonti")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.966066, 0, -31.255821)
+
 [node name="WindAmbience" type="AudioStreamPlayer" parent="." unique_id=1326488122]
 stream = ExtResource("9_wind")
 volume_db = -14.0
@@ -934,12 +940,6 @@ script = ExtResource("8_loop_audio")
 [node name="BinderUI" parent="." unique_id=1460182729 instance=ExtResource("13_binder")]
 
 [node name="ItemToast" parent="." unique_id=1216048891 instance=ExtResource("25_toast")]
-
-[node name="RecordedWings" parent="Objects" instance=ExtResource("30_wings")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 2.5, 15)
-
-[node name="Ellikonti" parent="Objects" instance=ExtResource("31_ellikonti")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, -8)
 
 [editable path="Objects/PingPongBottle"]
 [editable path="Objects/John"]

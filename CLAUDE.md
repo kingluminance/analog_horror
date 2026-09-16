@@ -491,20 +491,28 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
   `DialogueManager.dialogue_ended`를 구독하고 있다가 그 플래그가 서 있으면 그때 실제로
   `get_tree().change_scene_to_file()`을 부르고 플래그를 다시 끔 — "대화로 시작해서 코드로 마무리"하는
   패턴, 비슷한 게 또 필요하면 재사용 가능.
-- **기록된 날개** (`entities/recorded_wings/`) — **아직 `scenes/main.tscn`에 안 놓임, 파일로만 존재**
-  (통합은 별도 단계). 가운데 눈(`Eye`) + 그 주위에 같은 찢어진 줄노트 날개 스프라이트 3장(`WingRight`/
-  `WingTop`/`WingLeft`, 아래는 일부러 비움) — SaveSystem의 "기록지"(`record_paper.png`) 모티프를 저장
-  카드가 아니라 날개 모양으로 재활용한 것. 대화/`Interactable` 없음 — 순수 장식.
-  **그룹 전체가 한 방향을 보는 트릭**: 네 스프라이트(눈+날개 3장) 전부 `billboard = 1`만 걸어두면 끝 —
-  `spinning_trinket.gd`가 이미 문서화했듯 billboard는 매 프레임 카메라 기준으로 노드의 회전을 통째로
-  재계산해서 자기 `rotation`을 무시하는데, 네 스프라이트가 같은 카메라를 상대로 정확히 같은 계산을
-  독립적으로 돌리니 결과적으로 넷 다 똑같은 방향을 보게 됨(따로 동기화 코드 필요 없음) — 실제로 궤도
-  카메라를 도는 테스트 씬에서 확인함. 몸 전체 bob은 루트 레벨 sine 하나로(`trash_angel.gd`와 같은
-  방식), 개별 스프라이트는 자기 bob을 따로 안 가짐.
-  **날개 3장은 각자 독립적으로 랜덤 간격(`wing_interval_min`~`wing_interval_max`, 기본 2.5~6초)마다
-  TREMBLE(짧은 떨림)/PUMP(스케일 펄스 5회)/STRETCH(세로로 늘어났다 복귀) 셋 중 하나를 무작위로 골라
-  실행**하고 끝나면 원래 위치/스케일로 정확히 복귀한 뒤 다음 간격을 다시 뽑음 — `speaker.gd`의 pump
-  엔벨로프와 같은 정신이지만 스프라이트별·랜덤이라는 점이 다름. 테스트에서 관찰하기 쉽도록
+- **기록된 날개** (`entities/recorded_wings/`) — `scenes/main.tscn`의 `Objects/RecordedWings`에 배치됨.
+  가운데 눈(`Eye`) + 그 주위에 같은 찢어진 줄노트 날개 스프라이트 4장(`WingRight`/`WingTop`/`WingLeft`/
+  `WingBottom` — 처음엔 아래를 일부러 비웠다가 나중에 `WingBottom` 추가로 사방이 다 채워짐) —
+  SaveSystem의 "기록지"(`record_paper.png`) 모티프를 저장 카드가 아니라 날개 모양으로 재활용한 것.
+  대화/`Interactable` 없음 — 순수 장식.
+  **그룹 전체가 한 방향을 보는 트릭 (업데이트됨)**: 원래는 날개 3장이 서로 회전 없이(위치만 다르게)
+  대칭 배치돼 있어서 네 스프라이트 전부 `billboard = 1`만 걸면 끝이었음 — `spinning_trinket.gd`가
+  문서화했듯 billboard는 매 프레임 카메라 기준으로 노드의 회전을 통째로 재계산해서 자기 `rotation`을
+  무시하는데, 네 스프라이트가 같은 카메라를 상대로 정확히 같은 계산을 독립적으로 돌리니 결과적으로
+  넷 다 똑같은 방향을 보게 됨(실제로 궤도 카메라 도는 테스트 씬에서 확인함). **이후 날개들을 비대칭
+  부채꼴로 손으로 재배치**하면서 이 트릭이 깨짐 — billboard를 켜두면 매 프레임 그 손으로 맞춘 회전을
+  카메라 기준으로 지워버리기 때문. 그래서 지금은 **다섯 스프라이트(눈+날개 4장) 전부 billboard OFF**,
+  대신 `recorded_wings.gd`의 루트가 `_process()`에서 카메라를 향해 `look_at()` 한 번만 해줌 — 부모의
+  basis만 바뀌니까 자식들(눈+부채꼴 날개 4장)의 로컬 회전(=날개 모양)은 그대로 유지된 채 전체가
+  한 덩어리로 카메라를 따라 돎. 몸 전체 bob은 루트 레벨 sine 하나로(`trash_angel.gd`와 같은 방식),
+  개별 스프라이트는 자기 bob을 따로 안 가짐.
+  **날개 4장은 각자 독립적으로 랜덤 간격(`wing_interval_min`~`wing_interval_max`, 기본 1.0~2.5초 —
+  원래 2.5~6초였는데 더 자주 나오라고 줄임)마다 TREMBLE(짧은 떨림)/PUMP(스케일 펄스 5회)/STRETCH
+  (세로로 늘어났다 복귀) 셋 중 하나를 무작위로 골라 실행**하고 끝나면 원래 위치/스케일로 정확히
+  복귀한 뒤 다음 간격을 다시 뽑음 — `speaker.gd`의 pump 엔벨로프와 같은 정신이지만 스프라이트별·
+  랜덤이라는 점이 다름. **날개끼리 "하나만 동시에" 같은 잠금이 전혀 없어서 여러 날개가 동시에
+  behavior를 돌리는 것도 정상**(원래부터 그랬음, 4번째 날개 추가로 바뀐 건 없음). 테스트에서 관찰하기 쉽도록
   `wing_behavior_started`/`wing_behavior_finished(wing, behavior)` 시그널을 냄(헤드리스 테스트가
   내부 상태를 몰래 훔쳐보지 않고 이 시그널만으로 3가지 행동이 실제로 도는지 확인함 — 실제 카메라 있는
   더미 씬 + `--quit-after`로 18초 시뮬레이션해서 검증).

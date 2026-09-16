@@ -1,45 +1,48 @@
 extends Node3D
-## Root of "기록된 날개" (Recorded Wings): a centered eye with three copies of
+## Root of "기록된 날개" (Recorded Wings): a centered eye with four copies of
 ## the same torn-notebook-paper wing sprite arranged around it (right/top/
-## left -- bottom deliberately skipped). A nice echo of this game's existing
-## "기록지"(record-paper) motif from SaveSystem: same torn-lined-paper idea,
-## repurposed here as a wing shape instead of the save-card art.
+## left/bottom -- all four sides now covered). A nice echo of this game's
+## existing "기록지"(record-paper) motif from SaveSystem: same torn-lined-paper
+## idea, repurposed here as a wing shape instead of the save-card art.
 ##
-## Not yet placed in scenes/main.tscn -- exists only as files under
-## entities/recorded_wings/ until a separate integration pass wires it in.
+## Placed in scenes/main.tscn at Objects/RecordedWings.
 ## No dialogue/Interactable: this entity is purely ambient/visual.
 ##
-## Group facing: every sprite here (Eye + all 3 wings) has billboard = 1.
-## Per spinning_trinket.gd's note, billboard fully recomputes a Sprite3D's
-## rotation from the camera every frame and discards the node's own
-## `rotation` entirely. Since all four sprites run that *exact same* math
-## against the *exact same* camera each frame, they end up with an
-## identical facing basis for free -- there is nothing to keep in sync, so
-## it reads as one rigid group turning together with zero custom facing
-## code. (Verified in a real scene with an orbiting camera rather than
-## just trusted from the reasoning -- see CLAUDE.md.) This also happens to
-## satisfy "one consistent orientation, not individually mirrored" for the
-## wings automatically: billboard ignores per-node rotation/mirroring of
-## the *frame*, so the 3 wing copies can only ever differ by position, never
-## by orientation.
+## Group facing (UPDATED): the wings used to sit at identical (zero)
+## relative rotation, differing only by position, which let every sprite
+## just billboard (=1) independently -- per spinning_trinket.gd's note,
+## billboard recomputes a Sprite3D's rotation from the camera every frame
+## and discards the node's own `rotation` entirely, but since all four
+## sprites ran that *same* math against the *same* camera they landed on
+## an identical facing basis for free. The wings are now hand-posed into
+## an asymmetric fan (see the transforms in recorded_wings.tscn), so that
+## trick would erase the fan the instant billboard recomputed each sprite
+## from the camera -- billboard is OFF on every sprite now. Instead this
+## root does a single look_at() toward the active camera in _process()
+## below: only the parent's basis changes each frame, so the whole
+## assembly (eye + fan of 3 wings) turns together as one rigid unit while
+## each child's local (fan) rotation stays exactly as posed.
 ##
 ## The whole assembly bobs as ONE unit -- root-level sine bob, same idiom as
 ## trash_angel.gd -- individual sprites never move under their own bob.
 ##
-## Each wing (WingRight/WingTop/WingLeft) independently runs its own random
-## timer + one-of-three short behavior, in the spirit of speaker.gd's pump
-## envelope math but per-sprite and randomized instead of driven by one
-## shared flag:
+## Each wing (WingRight/WingTop/WingLeft/WingBottom) independently runs its
+## own random timer + one-of-three short behavior, in the spirit of
+## speaker.gd's pump envelope math but per-sprite and randomized instead of
+## driven by one shared flag:
 ##   1. TREMBLE -- fast small local-position jitter for a moment
 ##   2. PUMP    -- ~5 scale pulses then stops
 ##   3. STRETCH -- elongates along local Y, eases back to normal
 ## then returns to rest and re-rolls its own next interval + next choice.
+## Wings never coordinate with each other -- no shared "only one at a time"
+## lock -- so it's normal (and fine) for two or more to be mid-behavior
+## simultaneously.
 
 @export var bob_height := 0.12
 @export var bob_speed := 0.5
 
-@export var wing_interval_min := 2.5 # seconds -- shortest gap between behaviors
-@export var wing_interval_max := 6.0 # seconds -- longest gap between behaviors
+@export var wing_interval_min := 1.0 # seconds -- shortest gap between behaviors
+@export var wing_interval_max := 2.5 # seconds -- longest gap between behaviors
 
 @export var tremble_duration := 0.35
 @export var tremble_speed := 40.0 # rad/s, how fast the jitter oscillates
@@ -76,7 +79,7 @@ var _wings: Array[WingState] = []
 func _ready() -> void:
 	_base_y = position.y
 	_time_offset = randf() * TAU
-	for wing_node in [$WingRight, $WingTop, $WingLeft]:
+	for wing_node in [$WingRight, $WingTop, $WingLeft, $WingBottom]:
 		var w := WingState.new()
 		w.sprite = wing_node
 		w.base_position = wing_node.position
@@ -85,8 +88,19 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	position.y = _base_y + sin(Time.get_ticks_msec() / 1000.0 * bob_speed + _time_offset) * bob_height
+	_face_camera()
 	for w in _wings:
 		_update_wing(w, delta)
+
+func _face_camera() -> void:
+	var cam := get_viewport().get_camera_3d()
+	if not cam:
+		return
+	var to_cam := cam.global_position - global_position
+	# look_at() errors if the target direction is parallel to the up vector
+	# (camera dead-on above/below) -- skip that one frame rather than crash.
+	if to_cam.length() > 0.001 and absf(to_cam.normalized().dot(Vector3.UP)) < 0.999:
+		look_at(cam.global_position, Vector3.UP)
 
 func _update_wing(w: WingState, delta: float) -> void:
 	if w.behavior == -1:
