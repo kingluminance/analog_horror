@@ -1,0 +1,23 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://entities/ellikonti/ellikonti.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://entities/ellikonti/ellikonti.png" id="2_texture"]
+[ext_resource type="PackedScene" path="res://entities/shared/interactable.tscn" id="3_interactable"]
+[ext_resource type="Resource" path="res://entities/ellikonti/ellikonti.dialogue" id="4_dialogue"]
+[ext_resource type="PackedScene" path="res://entities/shared/mutter_label.tscn" id="5_mutter"]
+
+[node name="Ellikonti" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="Visual" type="Sprite3D" parent="."]
+position = Vector3(0, 0.475, 0)
+billboard = 1
+pixel_size = 0.0009
+texture = ExtResource("2_texture")
+
+[node name="Interactable" parent="." instance=ExtResource("3_interactable")]
+dialogue_resource = ExtResource("4_dialogue")
+range_radius = 1.6
+hint_offset = Vector3(0, 0.44, 0)
+
+[node name="MutterLabel" parent="." instance=ExtResource("5_mutter")]
