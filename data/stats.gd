@@ -21,6 +21,13 @@ extends Node
 ## Session-only, same as StoryFlags/Inventory -- no save/load yet.
 
 signal stat_changed(stat_id: String, value: float)
+## Purely additive on top of stat_changed above -- same "value changed"
+## moments, but also carries the old value so listeners (e.g. a
+## stat-loss popup) can tell a decrease from an increase without
+## tracking their own previous-value cache. Only emitted when the value
+## actually changed. stat_changed's own behavior/signature is untouched;
+## existing listeners (items_page.gd) don't need to know this exists.
+signal stat_delta_changed(stat_id: String, old_value: float, new_value: float)
 
 var _definitions: Dictionary = {}  # id -> {display_name, description, default, max, clamp}
 var _values: Dictionary = {}       # id -> float
@@ -50,10 +57,12 @@ func set_max(id: String, max_value: float) -> void:
 		return
 	_definitions[id].max = max_value
 	if _definitions[id].clamp:
-		var clamped := clampf(get_stat(id), 0.0, max_value)
-		if clamped != get_stat(id):
+		var old_value := get_stat(id)
+		var clamped := clampf(old_value, 0.0, max_value)
+		if clamped != old_value:
 			_values[id] = clamped
 			stat_changed.emit(id, clamped)
+			stat_delta_changed.emit(id, old_value, clamped)
 
 func add_max(id: String, delta: float) -> void:
 	set_max(id, get_max(id) + delta)
@@ -61,8 +70,11 @@ func add_max(id: String, delta: float) -> void:
 func set_stat(id: String, value: float) -> void:
 	if _definitions.has(id) and _definitions[id].clamp:
 		value = clampf(value, 0.0, _definitions[id].max)
+	var old_value := get_stat(id)
 	_values[id] = value
 	stat_changed.emit(id, value)
+	if value != old_value:
+		stat_delta_changed.emit(id, old_value, value)
 
 func add_stat(id: String, delta: float) -> void:
 	set_stat(id, get_stat(id) + delta)
