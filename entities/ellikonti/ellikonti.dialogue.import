@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://k27nbhoajw8p"
+path="res://.godot/imported/ellikonti.dialogue-30e951a13fae16b7da2efcfb93e412d6.tres"
+
+[deps]
+
+source_file="res://entities/ellikonti/ellikonti.dialogue"
+dest_files=["res://.godot/imported/ellikonti.dialogue-30e951a13fae16b7da2efcfb93e412d6.tres"]
+
+[params]
+
+defaults=true

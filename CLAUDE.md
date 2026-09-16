@@ -453,6 +453,23 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
   테스트해 확인함). **단, 처음 한 번은 예외** — `_has_closed_in_once`가 false인 동안(=한 번도 플레이어
   코앞까지 닿아본 적 없는 동안)은 옛날처럼 0.05m까지 바짝 붙음(한 번의 깜짝 연출 용도). 한 번이라도
   닿으면 그 뒤로는(노래를 껐다 다시 켜도) 계속 `chase_stop_distance`를 지킴.
+- **엘리콘티** (`entities/ellikonti/`) — **아직 `scenes/main.tscn`에 배치 안 됨, 파일만 존재**(다음
+  단계에서 배치). 항상 몸을 떠는(지면 고정, 대화 없이도 계속) NPC — `Visual`(Sprite3D, billboard)에만
+  위치/z회전 저크(sum-of-incommensurate-sines, `speaker.gd`의 펌핑 엔벨로프와 같은 "여러 사인파를
+  안 맞는 주파수로 겹쳐서 반복 안 느껴지게" 발상, 단 여긴 엔벨로프가 아니라 연속 흔들림)를 매 프레임
+  적용하고, 루트 노드와 `Interactable`은 완전히 정지 상태로 둠(`interactable.gd`의 range/facing 판정이
+  이 루트의 `global_position`을 기준으로 삼으므로 — "`Interactable`을 계속 회전/변형하는 노드 밑에
+  자식으로 달지 말 것" 항목과 같은 이유로 `Visual`을 `Interactable`의 형제로 둠). 대화와 무관하게
+  주기적으로(불규칙한 간격, 고정 `Timer.wait_time` 아님) 자식 `MutterLabel`로 짧은 혼잣말을 띄움.
+  `.dialogue`가 대화창 연출 확장(`unskippable`/`tremble_level`/`reveal_chars_per_second` +
+  인라인 `[wait=]`)을 실제로 쓰는 첫 사례 — `first_meet`/`repeat` 두 분기 모두 끝에서 셋 다 명시적으로
+  0/0/false로 되돌림. 플레이어가 "기록된 날개"(다른 브랜치에서 만들어지는 별개의 존재 — 이 스크립트는
+  그쪽 구현을 전혀 모르고 대사상으로만 언급)를 데려온 건 아닌지 두려워한다는 설정. 헤드리스 테스트로
+  검증: 실제 `Interactable`을 통해 진짜 `AnalogDialogueBalloon`을 띄우고 `first_meet` 분기를 진행하며
+  `tremble_level`/`unskippable`/`reveal_chars_per_second`가 라이브 balloon 인스턴스에서 실제로 비기본값에
+  도달하는지, `Visual`의 position/rotation이 몇 프레임 사이에 실제로 바뀌는지(떨림이 살아있는지),
+  `MutterLabel.say()`가 대화 없이도 자기 타이머로 최소 한 번 발화하는지 확인함. **에디터로 직접 열어서
+  스케일/월드 배치/떨림 강도 기본값을 아직 눈으로 확인 못 함** — 위 TODO 항목 참고.
 - **나무집(로그캐빈)** (`Objects/LogCabin`, `(20, 0, -20)`) — 지면에 지은 통나무집 스타일(사용자 요청:
   나무 위 트리하우스 아님). `Body`(StaticBody3D, 충돌 있음 — 벽을 그냥 뚫고 지나갈 수 없게)/`Roof`
   (`PrismMesh`, 뾰족지붕)/`Door` 전부 나무·땅 공용 `curved_world` 셰이더 + 단색 `albedo_color`로 만듦
@@ -609,6 +626,9 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
       시작할 때 1장을 임시로 지급함 (발광체와 같은 임시 상태)
 - [ ] "기록된 날개와의 계약" 스토리 이벤트 만들어서 wings_contract_stage1/stage2
       StoryFlags를 실제로 세워주기 (지금은 세이브 슬롯이 영원히 1개로 고정된 상태)
+- [ ] 엘리콘티(`entities/ellikonti/`)를 `scenes/main.tscn`에 실제로 배치하고, 에디터로 열어서
+      스케일/월드 위치/`tremble_intensity`·`tremble_rotation_degrees` 기본 강도가 의도대로
+      보이는지 확인 (헤드리스 검증은 로직만 확인함, 지금은 파일만 존재하고 씬엔 안 들어가 있음)
 
 ## 새 오브젝트 추가할 때
 1. `entities/<새이름>/` 폴더 생성
