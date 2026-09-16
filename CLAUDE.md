@@ -258,6 +258,62 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
 해당 게이지만 바늘을 트윈으로 부드럽게 움직임. 여기도 스탯 이름을 하나도 하드코딩 안 해서 새 스탯을
 `register_stat()`으로 추가하면 다음에 탭 열 때 자동으로 같이 뜸.
 
+### 스탯 소모 피드백 UI (`ui/stat_loss_toast.*` + `ui/stat_loss_gauge.gd`)
+`Stats.set_stat`/`add_stat`이 아무 스탯이든 실제로 "줄이면"(늘어날 땐 안 뜸) 화면 정중앙 상단에 잠깐
+떴다 사라지는 팝업 — `ui/item_toast.gd`와 같은 생명주기(페이드인→유지→페이드아웃, 큐 없음, 표시
+도중 또 뜨면 그냥 끊고 새로 시작)를 따르되 위치만 상단 중앙. `data/stats.gd`에 새로 추가한
+`stat_delta_changed(stat_id, old_value, new_value)` 시그널(기존 `stat_changed(stat_id, value)`는
+그대로 — `items_page.gd`가 그걸 계속 씀, 순수 추가) 하나만 듣고 동작함. 이번에 줄어든 스탯 개수만큼만
+(1개일 수도 여러 개일 수도) `ui/stat_loss_gauge.gd`(`ui/stat_gauge.gd`를 상속한 서브클래스 —
+`ui/shop/shop_item_card.gd`가 `inventory_polaroid.tscn`을 상속한 것과 같은 패턴) 게이지가 나란히
+뜨고, 각 게이지 밑에 `"유연성 -4"`처럼 부호 있는 숫자가 붙음. 바늘은 부드러운 트윈이 아니라 **정수
+1칸당 한 번씩 딸깍 끊어지는 스텝 애니메이션**으로 옛 값에서 새 값까지 움직이고, 매 스텝마다 새로
+합성한 `audio/stat_tick.wav`가 남(2개 이상 동시에 줄면 완전히 같은 타이밍이 아니라 살짝 엇갈리게
+스태거해서 더 또렷하게 들림). 같은 프레임에 스탯이 여러 개 줄면(대화 한 블록에서 `$>`를 여러 번
+부르는 경우 등) `await get_tree().process_frame`으로 한 번에 묶어서 팝업 하나로 합침. `layer=110`으로
+대화창(`layer=100`)보다 위에 그려서, 대화 중 `$> Stats.add_stat(...)`로 생긴 감소도 balloon에 가려지지
+않고 바로 보임. 스탯 이름을 하나도 하드코딩 안 해서 `register_stat()`으로 새 스탯이 생기면 자동으로
+이 팝업 대상에도 포함됨(레벨처럼 `clamp_to_max=false`인 성장형 스탯이 줄어도 예외 없이 뜸 — 스탯
+이름을 어디도 하드코딩 안 하는 이 프로젝트 전체 철학을 그대로 따름).
+
+### `Currency`/상점 시스템 — 화폐 "너" + 재사용 가능한 상점 UI
+새 오토로드를 또 만드는 대신("재사용... 새 오토로드 만들지 말 것" 관례를 그대로 따름), 화폐 "너"는
+`data/currency.gd`(오토로드 아님, 그냥 `class_name Currency`)가 `Currency.ID`/`Currency.DISPLAY_NAME`
+상수만 들고 있고, 실제 보유량은 그냥 `Inventory.get_count(Currency.ID)`임 — `Stats.register_stat()`으로
+등록하지 않은 이유는, 그러면 [아이템] 탭 스탯 게이지 줄에 화폐가 RPG 바늘처럼 같이 떠버려서 "돈"
+느낌과 안 맞기 때문. `Currency.register_and_seed(starting_amount=10)`을 `SaveSystem._ready()`에서
+한 번 불러 테스트용으로 10을 임시 지급함(기록지/발광체와 같은 "게이트는 진짜, 획득 경로는 나중"
+상태) — 부작용으로 [아이템] 탭 폴라로이드 더미에 "너"도 그냥 아이템처럼 같이 보이는데, 의도한 건
+아니지만 잔액 확인용으로 나쁘지 않아서 그대로 둠.
+
+상점 자체는 상인마다 다른 목록을 가질 수 있게 완전히 데이터 기반으로 설계됨:
+- `data/shop/shop_item.gd` — `class_name ShopItem extends Resource`, `item_id`/`display_name`/
+  `texture`/`description`/`price`. 상인 하나당 이 리소스 여러 개(`.tres` 파일 또는 씬 안에 인라인)로
+  자기 판매 목록을 가짐.
+- `entities/shared/shop_watcher.gd`/`.tscn` — `interactable.tscn`/`mutter_label.tscn`처럼 아무 NPC에나
+  자식으로 드롭인하는 재사용 컴포넌트. `@export shop_items`/`shop_title`/`open_flag`만 채우면 끝 —
+  `cabin_door_watcher.gd`와 완전히 같은 "대화가 플래그를 세우고, 옆의 감시 노드가 실제 동작(여기선
+  상점 UI 열기)을 함" 패턴을 그대로 재사용(`Interactable`은 평범한 `dialogue_resource`만 쓰고 전혀
+  안 건드림). **`open_flag`는 상인마다 반드시 서로 다른 고유 문자열이어야 함** — 여러 상인이 같은
+  플래그를 공유하면 한 상인과의 대화가 끝나는 순간 다른 상인의 `ShopWatcher`도 동시에 반응해버릴 수
+  있음(수동 유일성 관례, `StoryFlags`의 `visit_counts`/`visual_states` id들과 같은 종류의 규칙).
+- `ui/shop/shop_ui.gd`/`.tscn` — `class_name ShopUI extends CanvasLayer`, 딱 하나만 씬에 존재
+  (`scenes/main.tscn`의 `ShopUI` 노드, `layer=55`). `open_shop(items, title)`/`close_shop()`/
+  `is_modal_open()` + `purchase_succeeded`/`purchase_failed` 시그널. `ShopWatcher`는
+  `get_tree().get_first_node_in_group("shop_ui")`로 이 인스턴스를 찾음. 아이템 카드를 **플레이어
+  앞쪽으로 펼쳐진 반원(부채꼴)** 모양으로 배치(2D 화면 좌표 오버레이, 3D 월드 배치 아님) — 클릭하면
+  `Inventory.has_item(Currency.ID, price)`를 검사해서 살 수 있으면 차감+지급, 없으면 "돈 부족" 피드백만
+  주고 끝. 바인더처럼 열려있는 동안 `get_tree().paused = true`이고, `binder_ui.gd`와 같은 `"modal_ui"`
+  그룹에 자기도 등록해서 두 모달이 동시에 뜨는 걸 막음 — 다만 Esc 처리 우선순위가 바인더 쪽과 꼬일 수
+  있어서(둘 다 `ui_cancel`을 씀) 안전하게 자체 "나가기" 카드를 항상 기본 닫기 수단으로 둠.
+- `ui/shop/shop_item_card.gd`/`.tscn` — `ui/inventory_polaroid.tscn`을 상속한 씬(가격 라벨 + 구매
+  가능 여부에 따른 어둡게 표시 추가), 카드 레이아웃을 처음부터 새로 만들지 않고 재사용.
+
+**새 상인을 추가할 때 코드 수정이 전혀 필요 없음** — `entities/<새상인>/`에 `Interactable`(짧은 인사
+대화, 마지막에 `$> StoryFlags.set_flag("<고유 플래그>", true)`) + `ShopWatcher`(자기만의
+`shop_items`/`open_flag`) 두 컴포넌트만 인스턴스하면 끝, 아래 `보따리로 판매합니다`가 이 패턴의 첫
+실사용 예시.
+
 ### 바인더 UI (`ui/binder/binder_ui.gd` 등) — Tab·Esc 통합 모달
 "상단에 라벨이 겹쳐 있는 L홀더 파일첩" 컨셉의 단일 모달 — 예전에 따로 떠 있던 인벤토리 패널
 (`inventory_ui.gd`)과 일시정지 메뉴(`pause_menu.gd`)를 [아이템]/[세이브·로드]/[설정] 3탭으로
@@ -522,6 +578,17 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
   `wing_behavior_started`/`wing_behavior_finished(wing, behavior)` 시그널을 냄(헤드리스 테스트가
   내부 상태를 몰래 훔쳐보지 않고 이 시그널만으로 3가지 행동이 실제로 도는지 확인함 — 실제 카메라 있는
   더미 씬 + `--quit-after`로 18초 시뮬레이션해서 검증).
+- **보따리로 판매합니다** (`entities/bottari_merchant/`) — `scenes/main.tscn`의 `Objects/BottariMerchant`에
+  배치(자리는 `(20, 0, 5)` 임시, 다른 NPC들처럼 에디터에서 직접 눈으로 보고 재배치 예정). 자물쇠
+  얼굴(`Face`, 그린스크린 사진을 flood-fill 크로마키)이 중심에서 `floating_photo.gd`와 같은 sine
+  bob으로 가볍게 떠 있고, 눈알 달린 열쇠꾸러미 사진(베이지색 배경이라 `rembg`로 배경 제거) 두 장
+  (`CompanionA`/`CompanionB`)이 각자 독립적으로 랜덤한 위상/속도로 느리게 둥둥 떠다님 — 서로 고정된
+  상대 각도를 유지할 필요가 없는 케이스라 `recorded_wings.gd`의 `look_at()` 트릭 대신 셋 다 그냥
+  `billboard=1` 독립 적용(더 단순한 쪽으로 판단, 손으로 맞춘 비대칭 배치가 필요해지면 그때 look_at()
+  방식으로 바꿀 것). 대화(`bottari_merchant.dialogue`, `Interactable` 재사용)는 "뭐 하나 골라
+  가실라우" 톤의 짧은 인사 뒤 "보여줘."를 고르면 위 `ShopWatcher`의 `open_flag`
+  (`shop_wants_open_bottari`)를 세워서 상점 UI가 열림. 판매 목록(전부 placeholder, 나중에 밸런스
+  잡을 것): 안 맞는 열쇠(2너)/눈이 달린 열쇠고리(4너)/이미 잠긴 자물쇠(7너).
 
 ## 개발 환경 메모
 - **Godot 4.7 헤드리스 바이너리**: `C:\Users\my\Downloads\Godot_v4.7-stable_win64.exe\
@@ -659,6 +726,12 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
       StoryFlags를 실제로 세워주기 (지금은 세이브 슬롯이 영원히 1개로 고정된 상태)
 - [ ] 엘리콘티 새 아트(마도카 마녀 스타일)에 맞춰 `Visual`의 `pixel_size`/스케일/기존 위치가 여전히
       맞는지 에디터에서 확인 — 몸통 실루엣이 이전 치비 디자인이랑 많이 달라져서 재조정 필요할 수 있음
+- [ ] 보따리로 판매합니다의 월드 배치/스케일을 에디터에서 직접 보고 조정 (지금은 `(20, 0, 5)`에
+      임시 배치)
+- [ ] 화폐 "너"의 실제 획득 경로 추가 -- 지금은 SaveSystem._ready()가 시작할 때 10을 임시로 지급함
+      (기록지/발광체와 같은 임시 상태)
+- [ ] 스탯 소모 피드백 팝업(`ui/stat_loss_toast.*`)과 상점 UI(`ui/shop/shop_ui.*`)를 실제 에디터로
+      열어서 레이아웃/애니메이션 타이밍이 의도대로 보이는지 확인 (헤드리스 검증은 로직만 확인함)
 
 ## 새 오브젝트 추가할 때
 1. `entities/<새이름>/` 폴더 생성
