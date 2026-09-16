@@ -23,6 +23,8 @@
 [ext_resource type="PackedScene" uid="uid://d1xhbiif8egkt" path="res://entities/speaker/speaker.tscn" id="26_speaker"]
 [ext_resource type="Resource" uid="uid://bvsucdl5uq5w0" path="res://entities/log_cabin/cabin_door.dialogue" id="28_cabin_dlg"]
 [ext_resource type="Script" uid="uid://df35dx5g0r08c" path="res://entities/log_cabin/cabin_door_watcher.gd" id="29_cabin_watcher"]
+[ext_resource type="PackedScene" path="res://entities/recorded_wings/recorded_wings.tscn" id="30_wings"]
+[ext_resource type="PackedScene" path="res://entities/ellikonti/ellikonti.tscn" id="31_ellikonti"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.35, 0.65, 1, 1)
@@ -932,6 +934,12 @@ script = ExtResource("8_loop_audio")
 [node name="BinderUI" parent="." unique_id=1460182729 instance=ExtResource("13_binder")]
 
 [node name="ItemToast" parent="." unique_id=1216048891 instance=ExtResource("25_toast")]
+
+[node name="RecordedWings" parent="Objects" instance=ExtResource("30_wings")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 2.5, 15)
+
+[node name="Ellikonti" parent="Objects" instance=ExtResource("31_ellikonti")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, -8)
 
 [editable path="Objects/PingPongBottle"]
 [editable path="Objects/John"]
