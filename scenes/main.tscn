@@ -25,6 +25,9 @@
 [ext_resource type="Script" uid="uid://df35dx5g0r08c" path="res://entities/log_cabin/cabin_door_watcher.gd" id="29_cabin_watcher"]
 [ext_resource type="PackedScene" uid="uid://wclmemrygmw8" path="res://entities/recorded_wings/recorded_wings.tscn" id="30_wings"]
 [ext_resource type="PackedScene" path="res://entities/ellikonti/ellikonti.tscn" id="31_ellikonti"]
+[ext_resource type="PackedScene" path="res://entities/bottari_merchant/bottari_merchant.tscn" id="32_bottari"]
+[ext_resource type="PackedScene" path="res://ui/shop/shop_ui.tscn" id="33_shop_ui"]
+[ext_resource type="PackedScene" path="res://ui/stat_loss_toast.tscn" id="34_stat_loss"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.35, 0.65, 1, 1)
@@ -929,6 +932,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.940994, 7.5517554, 15)
 [node name="Ellikonti" parent="Objects" unique_id=1232599269 instance=ExtResource("31_ellikonti")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.966066, 0, -31.255821)
 
+[node name="BottariMerchant" parent="Objects" instance=ExtResource("32_bottari")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 5)
+
 [node name="WindAmbience" type="AudioStreamPlayer" parent="." unique_id=1326488122]
 stream = ExtResource("9_wind")
 volume_db = -14.0
@@ -940,6 +946,10 @@ script = ExtResource("8_loop_audio")
 [node name="BinderUI" parent="." unique_id=1460182729 instance=ExtResource("13_binder")]
 
 [node name="ItemToast" parent="." unique_id=1216048891 instance=ExtResource("25_toast")]
+
+[node name="ShopUI" parent="." instance=ExtResource("33_shop_ui")]
+
+[node name="StatLossToast" parent="." instance=ExtResource("34_stat_loss")]
 
 [editable path="Objects/PingPongBottle"]
 [editable path="Objects/John"]
