@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://bg68oed7vthnq"
+path="res://.godot/imported/bottari_merchant.dialogue-cbad28bde65b08c37266748e4dd64d71.tres"
+
+[deps]
+
+source_file="res://entities/bottari_merchant/bottari_merchant.dialogue"
+dest_files=["res://.godot/imported/bottari_merchant.dialogue-cbad28bde65b08c37266748e4dd64d71.tres"]
+
+[params]
+
+defaults=true

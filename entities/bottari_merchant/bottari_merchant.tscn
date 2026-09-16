@@ -1,0 +1,43 @@
+[gd_scene load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://entities/bottari_merchant/bottari_merchant.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://entities/bottari_merchant/sprites/face.png" id="2_face_tex"]
+[ext_resource type="Texture2D" path="res://entities/bottari_merchant/sprites/keyring.png" id="3_keyring_tex"]
+[ext_resource type="PackedScene" path="res://entities/shared/interactable.tscn" id="4_interactable"]
+[ext_resource type="Resource" path="res://entities/bottari_merchant/bottari_merchant.dialogue" id="5_dialogue"]
+[ext_resource type="PackedScene" path="res://entities/shared/shop_watcher.tscn" id="6_shop_watcher"]
+[ext_resource type="Resource" path="res://entities/bottari_merchant/shop_items/loose_key.tres" id="7_item_key"]
+[ext_resource type="Resource" path="res://entities/bottari_merchant/shop_items/eye_charm.tres" id="8_item_eye"]
+[ext_resource type="Resource" path="res://entities/bottari_merchant/shop_items/locked_padlock.tres" id="9_item_lock"]
+[ext_resource type="Script" path="res://data/shop/shop_item.gd" id="10_shopitem_script"]
+
+[node name="BottariMerchant" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="Face" type="Sprite3D" parent="."]
+position = Vector3(0, 1.5, 0)
+billboard = 1
+pixel_size = 0.003
+texture = ExtResource("2_face_tex")
+
+[node name="CompanionA" type="Sprite3D" parent="."]
+position = Vector3(-0.55, 1.65, 0.15)
+billboard = 1
+pixel_size = 0.0012
+texture = ExtResource("3_keyring_tex")
+
+[node name="CompanionB" type="Sprite3D" parent="."]
+position = Vector3(0.55, 1.35, -0.15)
+billboard = 1
+pixel_size = 0.0012
+texture = ExtResource("3_keyring_tex")
+
+[node name="Interactable" parent="." instance=ExtResource("4_interactable")]
+dialogue_resource = ExtResource("5_dialogue")
+range_radius = 2.0
+hint_offset = Vector3(0, 1.5, 0)
+
+[node name="ShopWatcher" parent="." instance=ExtResource("6_shop_watcher")]
+shop_items = Array[ExtResource("10_shopitem_script")]([ExtResource("7_item_key"), ExtResource("8_item_eye"), ExtResource("9_item_lock")])
+shop_title = "보따리"
+open_flag = "shop_wants_open_bottari"

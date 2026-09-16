@@ -1,0 +1,12 @@
+using StoryFlags
+
+~ start
+보따리장수: 뭐 하나 골라 가실라우.
+보따리장수: 자물쇠도 팔고, 눈도 팔고, 안 맞는 열쇠도 팔아요.
+보따리장수: 다 한 번씩은 채워봤던 것들입니다.
+- 보여줘.
+	$> StoryFlags.set_flag("shop_wants_open_bottari", true)
+	=> END
+- 괜찮아요.
+	보따리장수: 그러시든가. 또 오시구랴.
+	=> END
