@@ -932,7 +932,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27.940994, 7.5517554, 15)
 [node name="Ellikonti" parent="Objects" unique_id=1232599269 instance=ExtResource("31_ellikonti")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.966066, 0, -31.255821)
 
-[node name="BottariMerchant" parent="Objects" instance=ExtResource("32_bottari")]
+[node name="BottariMerchant" parent="Objects" unique_id=1230429861 instance=ExtResource("32_bottari")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 5)
 
 [node name="WindAmbience" type="AudioStreamPlayer" parent="." unique_id=1326488122]
@@ -947,9 +947,9 @@ script = ExtResource("8_loop_audio")
 
 [node name="ItemToast" parent="." unique_id=1216048891 instance=ExtResource("25_toast")]
 
-[node name="ShopUI" parent="." instance=ExtResource("33_shop_ui")]
+[node name="ShopUI" parent="." unique_id=74848118 instance=ExtResource("33_shop_ui")]
 
-[node name="StatLossToast" parent="." instance=ExtResource("34_stat_loss")]
+[node name="StatLossToast" parent="." unique_id=933875019 instance=ExtResource("34_stat_loss")]
 
 [editable path="Objects/PingPongBottle"]
 [editable path="Objects/John"]
