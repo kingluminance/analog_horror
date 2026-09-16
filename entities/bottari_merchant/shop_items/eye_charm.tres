@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ShopItem" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/shop/shop_item.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://entities/bottari_merchant/sprites/keyring.png" id="2_tex"]
+
+[resource]
+script = ExtResource("1_script")
+item_id = "bottari_eye_charm"
+display_name = "눈이 달린 열쇠고리"
+texture = ExtResource("2_tex")
+description = "깜빡이지 않는다. 주머니 속에서도 계속 이쪽을 보고 있다."
+price = 4

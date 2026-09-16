@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ShopItem" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://data/shop/shop_item.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://entities/bottari_merchant/sprites/keyring.png" id="2_tex"]
+
+[resource]
+script = ExtResource("1_script")
+item_id = "bottari_loose_key"
+display_name = "안 맞는 열쇠"
+texture = ExtResource("2_tex")
+description = "어떤 자물쇠에도 맞지 않는다. 그런데도 손에 쥐면 마음이 놓인다."
+price = 2
