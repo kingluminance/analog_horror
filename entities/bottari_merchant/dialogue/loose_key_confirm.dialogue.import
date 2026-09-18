@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://dwsunivq1ea5"
+path="res://.godot/imported/loose_key_confirm.dialogue-9f8799a3e5d60acde3a647fc1732be52.tres"
+
+[deps]
+
+source_file="res://entities/bottari_merchant/dialogue/loose_key_confirm.dialogue"
+dest_files=["res://.godot/imported/loose_key_confirm.dialogue-9f8799a3e5d60acde3a647fc1732be52.tres"]
+
+[params]
+
+defaults=true

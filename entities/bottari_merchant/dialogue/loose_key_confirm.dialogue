@@ -1,0 +1,10 @@
+using StoryFlags
+
+~ start
+보따리장수: 안 맞는 열쇠, 2너.
+보따리장수: 가져가시겠소?
+- 예.
+	$> StoryFlags.set_flag("bottari_buy_loose_key", true)
+	=> END
+- 아니요.
+	=> END

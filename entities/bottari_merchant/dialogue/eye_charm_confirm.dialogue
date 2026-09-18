@@ -1,0 +1,10 @@
+using StoryFlags
+
+~ start
+보따리장수: 눈이 달린 열쇠고리, 4너.
+보따리장수: 가져가시겠소?
+- 예.
+	$> StoryFlags.set_flag("bottari_buy_eye_charm", true)
+	=> END
+- 아니요.
+	=> END

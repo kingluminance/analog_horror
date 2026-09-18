@@ -1,0 +1,10 @@
+using StoryFlags
+
+~ start
+보따리장수: 이미 잠긴 자물쇠, 7너.
+보따리장수: 가져가시겠소?
+- 예.
+	$> StoryFlags.set_flag("bottari_buy_locked_padlock", true)
+	=> END
+- 아니요.
+	=> END

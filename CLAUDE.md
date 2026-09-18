@@ -312,7 +312,10 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
 **새 상인을 추가할 때 코드 수정이 전혀 필요 없음** — `entities/<새상인>/`에 `Interactable`(짧은 인사
 대화, 마지막에 `$> StoryFlags.set_flag("<고유 플래그>", true)`) + `ShopWatcher`(자기만의
 `shop_items`/`open_flag`) 두 컴포넌트만 인스턴스하면 끝, 아래 `보따리로 판매합니다`가 이 패턴의 첫
-실사용 예시.
+실사용 예시. **단, `보따리로 판매합니다`는 실제로는 이 경로를 안 씀** -- 처음엔 첫 실사용 예시로
+붙여놨었는데, 나중에 "반원 카드 UI는 다른 상인용으로 아껴두고 싶다"는 요청으로 떼어냄(아래 NPC
+항목 참고). `ShopWatcher`/`ShopUI` 자체는 코드베이스에 그대로 남아있어서 다음 상인이 이 경로의 첫
+실사용 예시가 될 예정.
 
 ### 바인더 UI (`ui/binder/binder_ui.gd` 등) — Tab·Esc 통합 모달
 "상단에 라벨이 겹쳐 있는 L홀더 파일첩" 컨셉의 단일 모달 — 예전에 따로 떠 있던 인벤토리 패널
@@ -579,16 +582,47 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
   내부 상태를 몰래 훔쳐보지 않고 이 시그널만으로 3가지 행동이 실제로 도는지 확인함 — 실제 카메라 있는
   더미 씬 + `--quit-after`로 18초 시뮬레이션해서 검증).
 - **보따리로 판매합니다** (`entities/bottari_merchant/`) — `scenes/main.tscn`의 `Objects/BottariMerchant`에
-  배치(자리는 `(20, 0, 5)` 임시, 다른 NPC들처럼 에디터에서 직접 눈으로 보고 재배치 예정). 자물쇠
-  얼굴(`Face`, 그린스크린 사진을 flood-fill 크로마키)이 중심에서 `floating_photo.gd`와 같은 sine
-  bob으로 가볍게 떠 있고, 눈알 달린 열쇠꾸러미 사진(베이지색 배경이라 `rembg`로 배경 제거) 두 장
-  (`CompanionA`/`CompanionB`)이 각자 독립적으로 랜덤한 위상/속도로 느리게 둥둥 떠다님 — 서로 고정된
-  상대 각도를 유지할 필요가 없는 케이스라 `recorded_wings.gd`의 `look_at()` 트릭 대신 셋 다 그냥
-  `billboard=1` 독립 적용(더 단순한 쪽으로 판단, 손으로 맞춘 비대칭 배치가 필요해지면 그때 look_at()
-  방식으로 바꿀 것). 대화(`bottari_merchant.dialogue`, `Interactable` 재사용)는 "뭐 하나 골라
-  가실라우" 톤의 짧은 인사 뒤 "보여줘."를 고르면 위 `ShopWatcher`의 `open_flag`
-  (`shop_wants_open_bottari`)를 세워서 상점 UI가 열림. 판매 목록(전부 placeholder, 나중에 밸런스
-  잡을 것): 안 맞는 열쇠(2너)/눈이 달린 열쇠고리(4너)/이미 잠긴 자물쇠(7너).
+  배치, 사용자가 직접 에디터에서 천막(`천막`, `res://천막.fbx` 임포트, 300배 스케일 보정) 안쪽에
+  자리잡음. 자물쇠 얼굴(`Face`, 그린스크린 사진을 flood-fill 크로마키)이 중심에서 `floating_photo.gd`와
+  같은 sine bob으로 가볍게 떠 있고, 눈알 달린 열쇠꾸러미 사진(베이지색 배경이라 `rembg`로 배경 제거)
+  두 장(`CompanionA`/`CompanionB`)이 각자 독립적으로 랜덤한 위상/속도로 느리게 둥둥 떠다님(단순
+  `billboard=1` 독립 적용, `recorded_wings.gd`의 `look_at()` 트릭은 안 씀 — 고정된 상대 각도를 유지할
+  필요가 없는 케이스라서). 천막 안에는 이 상인 말고도 사용자가 직접 만든 선반(`ShelfUnit`, 판자 4단 +
+  기둥 2개)/진열대(`DisplayStand`)/랜턴(`Lantern`, 케이지 프레임 + 발광 코어 + `OmniLight3D`, 오렌지~노랑
+  계열 따뜻한 빛)/상자류(`Crates`, Kenney Pirate Kit CC0 에셋 crate/crate-bottles/barrel/chest, glTF로
+  받음 — FBX보다 스케일이 안정적)가 같이 있음. 이 오브젝트들은 전부 천막의 300배 스케일 밑에서 로컬
+  스케일을 정확히 `1/300`으로 맞춰서 붙임(아래 "천막 300배 스케일" 함정 참고) — 그래야 `mesh.size`에
+  적은 숫자가 그대로 실제 미터 단위로 나옴.
+
+  **상호작용은 네 갈래**(예전엔 `ShopWatcher`로 반원 UI를 열었었는데, "그건 다른 상인용으로 아껴두고
+  싶다"는 요청으로 전부 떼어내고 새로 짬):
+  1. **입장 자동 인사** — Area3D `body_entered`가 아니라 매 프레임 거리 체크 + **두 겹 반경(히스테리시스)**로
+     구현(`entrance_trigger_radius`=4.5m 안쪽이면 발동, `entrance_reset_radius`=7m 밖으로 완전히 나가야
+     재발동) — 처음엔 Area3D 한 겹으로 만들었다가, 좁은 천막 안에서 왔다갔다 하면 경계선을 계속
+     넘나들면서 인사가 반복 발동하는 버그가 남(사용자가 직접 발견해서 리포트). 발동하면 대화
+     (`bottari_merchant.dialogue`)가 열리면서 동시에 플레이어 카메라가 상인 얼굴로 돌아감.
+  2. **상인한테 직접 E** — `Interactable`(기본 대화형 컴포넌트) 재사용, `bottari_merchant_chat.dialogue`로
+     잡담(입장 인사와는 다른 대사, 카메라 강제 전환도 없음).
+  3. **카운터 위 아이템에 E** — `CounterItems` 밑 아이템 3개(안 맞는 열쇠 2너/눈이 달린 열쇠고리 4너/이미
+     잠긴 자물쇠 7너, 전부 placeholder), 각자 독립 `Interactable` + `*_confirm.dialogue`("가져가시겠소?"
+     예/아니요). 예를 고르면 플래그가 서고, 대화가 끝나는 순간 **배달 미니 컷씬**이 돎: 가장 가까운(안
+     바쁜) 열쇠꾸러미 동반자가 그 아이템 위치로 날아가서 아이템을 자기 자식으로 재부모화(같이 들고
+     움직이는 것처럼 보이게)한 뒤 플레이어 쪽으로 날아가 `Inventory.give_item()`으로 전달하고 원래
+     자리로 복귀. 이 전체 과정 동안 플레이어 입력은 완전히 잠기고(`player.set_cutscene_lock()`), 카메라는
+     매 프레임 `player.force_look_at()`을 다시 불러서 날아다니는 열쇠꾸러미를 계속 트래킹함.
+  4. **잡담 대화의 "아이템을 판매한다" 선택지** — 플레이어가 갖고 있는 아이템을 거꾸로 상인한테
+     파는 흐름. `entities/shared/sell_watcher.gd`/`.tscn`(새 재사용 컴포넌트, `shop_watcher.gd`의 판매 버전)를
+     `SellWatcher` 자식으로 드롭인하고 `default_sell_price`/`default_sell_line`/`sell_overrides`/
+     `open_flag`만 채우면 끝 — `.dialogue`는 정적 텍스트라 "지금 갖고 있는 아이템 목록"처럼 매번
+     개수가 달라지는 걸 대화 선택지로 나열할 수 없어서, `ui/shop/sell_list_ui.gd`/`.tscn`(재사용 가능한
+     고정 크기 스크롤 리스트 모달, `shop_ui.gd`와 같은 "단일 모달/일시정지/명시적 닫기 버튼" 규칙)로
+     따로 뺌. 목록은 `Inventory.get_owned_items()`에서 "너"(화폐) 자기 자신만 빼고 그대로 가져오고,
+     `sell_overrides`(`data/shop/sell_override.gd`, `item_id`/`price`/`line`/`sellable` 4필드 리소스)에 있는
+     아이템만 개별 가격+반응 대사, 나머지 전부는 `default_sell_price`/`default_sell_line` 하나로 통일.
+     **`sellable = false`로 고정해둔 특정 아이템은 상인이 아예 안 사** — 목록에선 사라지지 않고 계속
+     보임("판매 불가"로 표시), 클릭하면 판매가 아니라 `line`을 거절 대사로 보여줌 — 아이템 자체를
+     목록에서 아예 빼는 게 아니라 "왜 못 파는지" 보여주는 식을 취함. 리스트 맨 아래엔 "안 팔아요." 항목도
+     항상 있음(패널의 닫기 버튼과 별개로, 구매 쪽 "아니요" 선택지와 같은 급의 명시적 취소 수단).
 
 ## 개발 환경 메모
 - **Godot 4.7 헤드리스 바이너리**: `C:\Users\my\Downloads\Godot_v4.7-stable_win64.exe\
@@ -712,6 +746,28 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
   싶으면 폰트 크기/스타일박스 `content_margin_*`을 줄일 것(`custom_minimum_size`는 최솟값을 못 낮춤 --
   실제 최소 크기와 `max()`로 합쳐질 뿐).
 
+- **`.tscn` 파일 안에는 GDScript 스타일 `##`/`#` 주석을 못 씀** -- 씬 텍스트 포맷은 스크립트가 아니라서
+  일반적인 주석 구문이 아예 없음. `천막` 밑에 새 노드를 추가하면서 설명용 `##` 블록을 그 노드
+  프로퍼티 구역 안에 실수로 넣었더니, 그 다음 노드(`shelf`)의 파싱이 통째로 깨져서 "Parent path ...
+  has vanished when instantiating" 경고 + 이후 그 노드를 스크립트에서 `$이름`으로 찾으려던 다른 코드까지
+  연쇄로 터짐(`Node not found` 에러). 헤드리스로 재현·확정 후 그 주석 블록만 제거해서 해결 -- `.tscn`에
+  뭔가 설명을 남기고 싶으면 관련 `.gd` 스크립트의 독스트링에 적을 것.
+- **GDScript 타입 추론은 Dictionary 조회/느슨하게 타입된 배열 순회 결과에도 실패함** -- 위 "타입 추론 +
+  서브클래스 프로퍼티" 항목과 같은 계열의 함정을 이번 세션에서 세 번 더 겪음: (1) `for node in
+  [$CompanionA, $CompanionB]:`처럼 타입 없는 배열 리터럴을 순회하면 `node`가 Variant로 추론돼서 그 뒤
+  `var d := node.global_position.distance_to(...)`가 "타입을 추론할 수 없음" 에러를 냄, (2) `var
+  busy: bool = dict[key] or dict[key2]`처럼 Dictionary 값 조회를 `:=`로 받으면 마찬가지로 실패. 둘 다
+  `var x: float = ...`/`var x: bool = ...`처럼 **명시적 타입을 써서** 우회함 -- `:=`는 우변이 진짜
+  정적으로 타입이 확정되는 표현식(리터럴, 타입이 박힌 함수 리턴값 등)일 때만 믿을 것.
+- **천막(`res://천막.fbx`) 300배 스케일 밑에 새 오브젝트를 넣을 때는 로컬 스케일을 정확히 `1/300`
+  균일로 맞출 것** -- 원본 FBX가 작게 들어와서 씬에 넣을 때 300배로 키워뒀는데(`천막` 노드 자체의
+  Transform3D), 그 자식으로 새 메쉬/조명을 넣으면서 스케일을 손으로(스케일 기즈모로) 맞추다 보면 축마다
+  비율이 미묘하게 달라지기 아주 쉬움(예: `0.0332`/`0.0017`/`0.0028`처럼) -- 부모의 300배와 합성되면
+  실제 세계 좌표 기준으로 심하게 눌리거나 늘어난 모양이 나옴(길쭉한 판자처럼 찌그러짐, 사용자가
+  스크린샷으로 신고). 고치는 법: 로컬 스케일을 세 축 다 정확히 `0.0033333333`(=1/300)으로 주고, 실제
+  치수는 `mesh.size`(BoxMesh 등) 쪽에서 미터 단위로 직접 조절 -- 그러면 부모 스케일이 정확히 상쇄돼서
+  숫자 그대로가 실제 크기가 됨. 천막 안의 선반/진열대/랜턴/상자 전부 이 패턴으로 통일함.
+
 ## TODO
 - [ ] 게임 에디터로 직접 열어서 존/물병/탁구채/통속의뇌/트링켓/쓰레기천사/통통볼/인벤토리 전부
       플레이 테스트 (헤드리스 검증은 파싱 에러만 잡아줌, 실제 배치/크기/느낌은 안 봄)
@@ -726,8 +782,11 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
       StoryFlags를 실제로 세워주기 (지금은 세이브 슬롯이 영원히 1개로 고정된 상태)
 - [ ] 엘리콘티 새 아트(마도카 마녀 스타일)에 맞춰 `Visual`의 `pixel_size`/스케일/기존 위치가 여전히
       맞는지 에디터에서 확인 — 몸통 실루엣이 이전 치비 디자인이랑 많이 달라져서 재조정 필요할 수 있음
-- [ ] 보따리로 판매합니다의 월드 배치/스케일을 에디터에서 직접 보고 조정 (지금은 `(20, 0, 5)`에
-      임시 배치)
+- [ ] 천막 안 소품들(상인/선반/진열대/랜턴/상자류)의 정확한 위치/크기를 에디터에서 직접 보고 조정
+      (전부 감으로 배치함, 실제 천막 내부 형태를 못 보고 작업해서)
+- [ ] `bottari_merchant.dialogue`/`bottari_merchant_chat.dialogue`의 대사 화자 이름이 "보따리장수"가 아니라
+      "판매하겠습니다"로 되어있음 -- 사용자가 직접 편집하면서 바뀐 것인데 의도적인건지(새 캐릭터 이름/콘셉)
+      실수인지("판매하겠습니다:" 가 대사로 써내려다 화자 이름으로 파싱된 것일 수도) 아직 확인 안 됨
 - [ ] 화폐 "너"의 실제 획득 경로 추가 -- 지금은 SaveSystem._ready()가 시작할 때 10을 임시로 지급함
       (기록지/발광체와 같은 임시 상태)
 - [ ] 스탯 소모 피드백 팝업(`ui/stat_loss_toast.*`)과 상점 UI(`ui/shop/shop_ui.*`)를 실제 에디터로

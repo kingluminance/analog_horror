@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://bnjs0m5j83ts5"
+path="res://.godot/imported/eye_charm_confirm.dialogue-68ec9169c3bd19d3ed6ffa95f18e61fb.tres"
+
+[deps]
+
+source_file="res://entities/bottari_merchant/dialogue/eye_charm_confirm.dialogue"
+dest_files=["res://.godot/imported/eye_charm_confirm.dialogue-68ec9169c3bd19d3ed6ffa95f18e61fb.tres"]
+
+[params]
+
+defaults=true

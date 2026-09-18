@@ -1,0 +1,14 @@
+using StoryFlags
+
+~ start
+판매하겠습니다: 응? 나랑 대화하고 싶어?
+- 이 아이템들은 어디서 구했어?
+	판매하겠습니다: 흐음, 이거 영업 비밀인데~
+	판매하겠습니다: 알려주려나~
+	판매하겠습니다: 애교라도 부려볼래~ 자기?
+-
+- 아이템을 판매한다.
+	$> StoryFlags.set_flag("bottari_wants_sell", true)
+	=> END
+ 
+=> END

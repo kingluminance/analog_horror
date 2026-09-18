@@ -1,43 +1,77 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene format=3 uid="uid://beqa8ym3uafdd"]
 
-[ext_resource type="Script" path="res://entities/bottari_merchant/bottari_merchant.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://entities/bottari_merchant/sprites/face.png" id="2_face_tex"]
-[ext_resource type="Texture2D" path="res://entities/bottari_merchant/sprites/keyring.png" id="3_keyring_tex"]
+[ext_resource type="Script" uid="uid://dag52kd3hv8xb" path="res://entities/bottari_merchant/bottari_merchant.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://b3nkgcny2kb0b" path="res://entities/bottari_merchant/sprites/face.png" id="2_face_tex"]
+[ext_resource type="Texture2D" uid="uid://cnawvvpfymkv2" path="res://entities/bottari_merchant/sprites/keyring.png" id="3_keyring_tex"]
 [ext_resource type="PackedScene" path="res://entities/shared/interactable.tscn" id="4_interactable"]
-[ext_resource type="Resource" path="res://entities/bottari_merchant/bottari_merchant.dialogue" id="5_dialogue"]
-[ext_resource type="PackedScene" path="res://entities/shared/shop_watcher.tscn" id="6_shop_watcher"]
-[ext_resource type="Resource" path="res://entities/bottari_merchant/shop_items/loose_key.tres" id="7_item_key"]
-[ext_resource type="Resource" path="res://entities/bottari_merchant/shop_items/eye_charm.tres" id="8_item_eye"]
-[ext_resource type="Resource" path="res://entities/bottari_merchant/shop_items/locked_padlock.tres" id="9_item_lock"]
-[ext_resource type="Script" path="res://data/shop/shop_item.gd" id="10_shopitem_script"]
+[ext_resource type="Resource" uid="uid://c2n1bfqjmbn4l" path="res://entities/bottari_merchant/bottari_merchant_chat.dialogue" id="5_chat_dialogue"]
+[ext_resource type="Resource" uid="uid://dwsunivq1ea5" path="res://entities/bottari_merchant/dialogue/loose_key_confirm.dialogue" id="11_loose_key_confirm"]
+[ext_resource type="Resource" uid="uid://bnjs0m5j83ts5" path="res://entities/bottari_merchant/dialogue/eye_charm_confirm.dialogue" id="12_eye_charm_confirm"]
+[ext_resource type="Resource" uid="uid://cyg5mvef18x33" path="res://entities/bottari_merchant/dialogue/locked_padlock_confirm.dialogue" id="13_locked_padlock_confirm"]
+[ext_resource type="PackedScene" path="res://entities/shared/sell_watcher.tscn" id="14_sell_watcher"]
 
-[node name="BottariMerchant" type="Node3D"]
+[node name="BottariMerchant" type="Node3D" unique_id=430486183]
 script = ExtResource("1_script")
 
-[node name="Face" type="Sprite3D" parent="."]
-position = Vector3(0, 1.5, 0)
-billboard = 1
+[node name="Face" type="Sprite3D" parent="." unique_id=76614976]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 pixel_size = 0.003
+billboard = 1
 texture = ExtResource("2_face_tex")
 
-[node name="CompanionA" type="Sprite3D" parent="."]
-position = Vector3(-0.55, 1.65, 0.15)
-billboard = 1
+[node name="CompanionA" type="Sprite3D" parent="." unique_id=91189483]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55, 1.65, 0.15)
 pixel_size = 0.0012
+billboard = 1
 texture = ExtResource("3_keyring_tex")
 
-[node name="CompanionB" type="Sprite3D" parent="."]
-position = Vector3(0.55, 1.35, -0.15)
-billboard = 1
+[node name="CompanionB" type="Sprite3D" parent="." unique_id=1133795455]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.55, 1.35, -0.15)
 pixel_size = 0.0012
+billboard = 1
 texture = ExtResource("3_keyring_tex")
 
-[node name="Interactable" parent="." instance=ExtResource("4_interactable")]
-dialogue_resource = ExtResource("5_dialogue")
+[node name="Interactable" parent="." unique_id=1482363135 instance=ExtResource("4_interactable")]
+dialogue_resource = ExtResource("5_chat_dialogue")
 range_radius = 2.0
 hint_offset = Vector3(0, 1.5, 0)
 
-[node name="ShopWatcher" parent="." instance=ExtResource("6_shop_watcher")]
-shop_items = Array[ExtResource("10_shopitem_script")]([ExtResource("7_item_key"), ExtResource("8_item_eye"), ExtResource("9_item_lock")])
-shop_title = "보따리"
-open_flag = "shop_wants_open_bottari"
+[node name="SellWatcher" parent="." unique_id=186651668 instance=ExtResource("14_sell_watcher")]
+default_sell_line = "미안 이런건 괜찮아~"
+open_flag = "bottari_wants_sell"
+
+[node name="CounterItems" type="Node3D" parent="." unique_id=1058895798]
+transform = Transform3D(0.7243484, 0, 0.6894341, 0, 1, 0, -0.6894341, 0, 0.7243484, 3.1880414, 1.1177812, 2.7749827)
+
+[node name="bottari_loose_key" type="Sprite3D" parent="CounterItems" unique_id=1999852012]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.2574835, -0.892, -1.9913607)
+pixel_size = 0.0025
+texture = ExtResource("3_keyring_tex")
+
+[node name="LooseKeyInteractable" parent="CounterItems/bottari_loose_key" unique_id=1793716659 instance=ExtResource("4_interactable")]
+dialogue_resource = ExtResource("11_loose_key_confirm")
+facing_angle_degrees = 25.0
+range_radius = 1.5
+hint_offset = Vector3(0, 0.15, 0)
+
+[node name="bottari_eye_charm" type="Sprite3D" parent="CounterItems" unique_id=1381399356]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5491408, -0.892, -2.087231)
+pixel_size = 0.0025
+texture = ExtResource("3_keyring_tex")
+
+[node name="EyeCharmInteractable" parent="CounterItems/bottari_eye_charm" unique_id=699568613 instance=ExtResource("4_interactable")]
+dialogue_resource = ExtResource("12_eye_charm_confirm")
+facing_angle_degrees = 25.0
+range_radius = 1.5
+hint_offset = Vector3(0, 0.15, 0)
+
+[node name="bottari_locked_padlock" type="Sprite3D" parent="CounterItems" unique_id=811681407]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4848436, -0.892, -2.1134083)
+pixel_size = 0.0025
+texture = ExtResource("2_face_tex")
+
+[node name="LockedPadlockInteractable" parent="CounterItems/bottari_locked_padlock" unique_id=1242658814 instance=ExtResource("4_interactable")]
+dialogue_resource = ExtResource("13_locked_padlock_confirm")
+facing_angle_degrees = 25.0
+range_radius = 1.5
+hint_offset = Vector3(0, 0.15, 0)

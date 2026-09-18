@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://cyg5mvef18x33"
+path="res://.godot/imported/locked_padlock_confirm.dialogue-503f42548d8559b9cbc46d59c9bbd598.tres"
+
+[deps]
+
+source_file="res://entities/bottari_merchant/dialogue/locked_padlock_confirm.dialogue"
+dest_files=["res://.godot/imported/locked_padlock_confirm.dialogue-503f42548d8559b9cbc46d59c9bbd598.tres"]
+
+[params]
+
+defaults=true
