@@ -991,6 +991,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -31.966066, 0, -31.255821)
 
 [node name="BottariMerchant" parent="Objects" unique_id=1230429861 instance=ExtResource("32_bottari")]
 transform = Transform3D(0.2678437, 0, 0.9634624, 0, 1, 0, -0.9634624, 0, 0.2678437, -39.079617, 1.4924833, 31.06858)
+companion_orbit_speed_min = 1.5
+companion_orbit_speed_max = 1.5
+companion_bob_height = 0.5
+companion_bob_speed_min = 2.0
+companion_bob_speed_max = 2.5
 
 [node name="Node3D" type="Node3D" parent="Objects" unique_id=798836507]
 
@@ -1010,7 +1015,7 @@ script = ExtResource("8_loop_audio")
 
 [node name="StatLossToast" parent="." unique_id=933875019 instance=ExtResource("34_stat_loss")]
 
-[node name="SellListUI" parent="." instance=ExtResource("39_sell_list_ui")]
+[node name="SellListUI" parent="." unique_id=504857547 instance=ExtResource("39_sell_list_ui")]
 
 [node name="천막" parent="." unique_id=286912865 instance=ExtResource("29_yq6so")]
 transform = Transform3D(-137.79016, 0, 266.48425, 0, 299.9999, 0, -266.48425, 0, -137.79016, -33.329453, -0.38770992, 29.362946)

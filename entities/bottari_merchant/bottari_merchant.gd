@@ -1,7 +1,7 @@
 extends Node3D
 ## Root of "보따리로 판매합니다" (Bottari Merchant) -- a padlock-with-lips
 ## face floating above the ground, with two independent eyeball-keyring
-## sprites drifting lazily nearby.
+## sprites orbiting lazily around it at a distance.
 ##
 ## Three separate ways to interact with this NPC:
 ## 1. Walk within entrance_trigger_radius -- auto-opens the greeting
@@ -35,29 +35,41 @@ extends Node3D
 ## root-only look_at() trick -- that trick only earns its complexity when
 ## several sprites are hand-posed at fixed relative angles to each other
 ## and need to turn as one rigid unit (see recorded_wings.gd's docstring).
-## These two have no fixed relative pose at all, they just wander near the
-## face independently -- so each is simply billboard = 1 on its own (set in
-## bottari_merchant.tscn) and this script never touches their rotation.
-## Each companion gets its own randomized phase/speed per axis in _ready()
-## (same "randf() per instance so synced motion doesn't read as artificial"
-## spirit as floating_photo.gd's _time_offset) so CompanionA and CompanionB
-## read as two independent drifters, not mirrored twins.
+## These two have no fixed relative pose at all, they just circle the
+## merchant independently -- so each is simply billboard = 1 on its own
+## (set in bottari_merchant.tscn) and this script never touches their
+## rotation. Motion is a real orbit around companion_orbit_center (a slow
+## cos/sin circle at companion_orbit_radius) with an independent vertical
+## sine bob layered on top for the "둥둥 떠다니는" floaty feel -- each
+## companion gets its own randomized orbit phase/speed and bob phase/speed
+## in _ready() (same "randf() per instance so synced motion doesn't read
+## as artificial" spirit as floating_photo.gd's _time_offset), and their
+## starting orbit phases are seeded ~180° apart so they read as two
+## companions circling on opposite sides rather than clumping together.
 
 @export var bob_height := 0.15
 @export var bob_speed := 0.6
 
-## Roughly how far (meters) each companion wanders from its own resting
-## spot -- a slow lazy wander, not a fast tilted orbit like
-## orbiting_paddle.gd.
-@export var companion_drift_radius := 0.35
-@export var companion_drift_speed_min := 0.15 # rad/s
-@export var companion_drift_speed_max := 0.35 # rad/s
+## Center of the companions' orbit, local to this root (roughly Face's
+## resting height so they circle around the face, not the ground).
+@export var companion_orbit_center := Vector3(0, 1.5, 0)
+## How far (meters) each companion orbits from companion_orbit_center --
+## "좀 떨어진 상태로 공전" (orbiting at a bit of a distance), not sitting
+## right on top of the merchant.
+@export var companion_orbit_radius := 1.3
+@export var companion_orbit_speed_min := 0.15 # rad/s -- slow and lazy, not a fast tilted orbit like orbiting_paddle.gd
+@export var companion_orbit_speed_max := 0.3
+## Independent vertical bob layered on top of the orbit for the floaty feel.
+@export var companion_bob_height := 0.3
+@export var companion_bob_speed_min := 0.4
+@export var companion_bob_speed_max := 0.7
 
 class CompanionDrift:
 	var sprite: Sprite3D
-	var base_position: Vector3
-	var phase: Vector3
-	var speed: Vector3
+	var orbit_phase: float
+	var orbit_speed: float
+	var bob_phase: float
+	var bob_speed: float
 
 var _base_face_y: float
 var _face_time_offset: float
@@ -99,16 +111,16 @@ const PURCHASE_FLAGS := {
 func _ready() -> void:
 	_base_face_y = _face.position.y
 	_face_time_offset = randf() * TAU
-	for node in [$CompanionA, $CompanionB]:
+	var base_orbit_phases := [0.0, PI] # roughly opposite sides of the orbit
+	var companion_nodes := [$CompanionA, $CompanionB]
+	for i in range(companion_nodes.size()):
+		var node: Sprite3D = companion_nodes[i]
 		var c := CompanionDrift.new()
 		c.sprite = node
-		c.base_position = node.position
-		c.phase = Vector3(randf(), randf(), randf()) * TAU
-		c.speed = Vector3(
-			randf_range(companion_drift_speed_min, companion_drift_speed_max),
-			randf_range(companion_drift_speed_min, companion_drift_speed_max),
-			randf_range(companion_drift_speed_min, companion_drift_speed_max)
-		)
+		c.orbit_phase = base_orbit_phases[i] + randf_range(-0.4, 0.4)
+		c.orbit_speed = randf_range(companion_orbit_speed_min, companion_orbit_speed_max)
+		c.bob_phase = randf() * TAU
+		c.bob_speed = randf_range(companion_bob_speed_min, companion_bob_speed_max)
 		_companions.append(c)
 		_companion_busy[node] = false
 	DialogueManager.dialogue_started.connect(_on_dialogue_started)
@@ -120,12 +132,28 @@ func _process(_delta: float) -> void:
 	for c in _companions:
 		if _companion_busy.get(c.sprite, false):
 			continue
-		c.sprite.position = c.base_position + Vector3(
-			sin(t * c.speed.x + c.phase.x) * companion_drift_radius,
-			sin(t * c.speed.y + c.phase.y) * companion_drift_radius * 0.7,
-			sin(t * c.speed.z + c.phase.z) * companion_drift_radius * 0.5
-		)
+		c.sprite.position = _companion_orbit_position(c, t)
 	_check_entrance_trigger()
+
+## Live orbit + bob position for one companion at time `t` -- a pure
+## function of elapsed time (no persisted velocity/position state), so it
+## can be reused both by the per-frame idle motion above AND by
+## _run_delivery below to compute a fresh "where should this companion be
+## right now" target when a companion returns from its delivery cutscene,
+## instead of snapping back to a stale pre-cutscene position.
+func _companion_orbit_position(c: CompanionDrift, t: float) -> Vector3:
+	var angle := t * c.orbit_speed + c.orbit_phase
+	return companion_orbit_center + Vector3(
+		cos(angle) * companion_orbit_radius,
+		sin(t * c.bob_speed + c.bob_phase) * companion_bob_height,
+		sin(angle) * companion_orbit_radius
+	)
+
+func _find_drift(sprite: Sprite3D) -> CompanionDrift:
+	for c in _companions:
+		if c.sprite == sprite:
+			return c
+	return null
 
 func _get_player() -> Node:
 	var cam := get_viewport().get_camera_3d()
@@ -208,7 +236,7 @@ func _pick_nearest_companion(target_position: Vector3) -> Sprite3D:
 ## _dialogue_active.
 func _run_delivery(companion: Sprite3D, item_node: Node3D, item: ShopItem) -> void:
 	_companion_busy[companion] = true
-	var base_local_position := companion.position
+	var drift := _find_drift(companion)
 	var player := _get_player()
 	if player and player.has_method("set_cutscene_lock"):
 		player.set_cutscene_lock(true)
@@ -226,8 +254,14 @@ func _run_delivery(companion: Sprite3D, item_node: Node3D, item: ShopItem) -> vo
 	Inventory.give_item(item.item_id)
 	item_node.queue_free()
 
-	await _tween_companion_tracked(companion, companion.get_parent().to_global(base_local_position), 1.2, player)
-	companion.position = base_local_position # snap exactly, clears any tween float drift
+	# Return to wherever the orbit actually is RIGHT NOW, not the spot the
+	# companion happened to be at when delivery started -- the orbit keeps
+	# advancing with elapsed time the whole time _companion_busy is true,
+	# so snapping back to a stale pre-cutscene position would teleport it
+	# once idle motion resumes next frame.
+	var return_local_position := _companion_orbit_position(drift, Time.get_ticks_msec() / 1000.0) if drift else companion.position
+	await _tween_companion_tracked(companion, companion.get_parent().to_global(return_local_position), 1.2, player)
+	companion.position = return_local_position # snap exactly, clears any tween float drift
 
 	if player and player.has_method("set_cutscene_lock"):
 		player.set_cutscene_lock(false)
