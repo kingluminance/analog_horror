@@ -61,16 +61,16 @@ extends Node3D
 ## companions' original resting spots (~0.55m from center).
 @export var companion_orbit_radius := 1.2
 @export var companion_orbit_radius_variance := 0.2 # per-companion +/- jitter
-@export var companion_orbit_speed_min := 0.15 # rad/s
-@export var companion_orbit_speed_max := 0.3 # rad/s
+@export var companion_orbit_speed_min := 0.4 # rad/s
+@export var companion_orbit_speed_max := 0.7 # rad/s
 
-## Height (local Y) the orbit circle is centered on, and how far each
-## companion bobs above/below it -- bumped up from the old drift's vertical
-## component (0.35 * 0.7 =~ 0.25m) per user feedback ("더 위아래로 둥둥").
+## Height (local Y) the orbit circle is centered on, and how far/fast each
+## companion bobs above/below it -- both bumped up again per user feedback
+## ("조금더 빠른 속도로 위아래로 더 흔들리면서 이동해줘").
 @export var companion_orbit_center_height := 1.5
-@export var companion_bob_height := 0.5
-@export var companion_bob_speed_min := 0.4 # rad/s
-@export var companion_bob_speed_max := 0.8 # rad/s
+@export var companion_bob_height := 0.9
+@export var companion_bob_speed_min := 1.0 # rad/s
+@export var companion_bob_speed_max := 1.6 # rad/s
 
 class CompanionDrift:
 	var sprite: Sprite3D
