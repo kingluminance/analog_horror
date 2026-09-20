@@ -1,7 +1,7 @@
 extends Node3D
 ## Root of "보따리로 판매합니다" (Bottari Merchant) -- a padlock-with-lips
 ## face floating above the ground, with two independent eyeball-keyring
-## sprites drifting lazily nearby.
+## sprites orbiting a bit further out.
 ##
 ## Three separate ways to interact with this NPC:
 ## 1. Walk within entrance_trigger_radius -- auto-opens the greeting
@@ -35,29 +35,51 @@ extends Node3D
 ## root-only look_at() trick -- that trick only earns its complexity when
 ## several sprites are hand-posed at fixed relative angles to each other
 ## and need to turn as one rigid unit (see recorded_wings.gd's docstring).
-## These two have no fixed relative pose at all, they just wander near the
-## face independently -- so each is simply billboard = 1 on its own (set in
-## bottari_merchant.tscn) and this script never touches their rotation.
-## Each companion gets its own randomized phase/speed per axis in _ready()
-## (same "randf() per instance so synced motion doesn't read as artificial"
-## spirit as floating_photo.gd's _time_offset) so CompanionA and CompanionB
-## read as two independent drifters, not mirrored twins.
+## These two have no fixed relative pose at all -- so each is simply
+## billboard = 1 on its own (set in bottari_merchant.tscn) and this script
+## never touches their rotation.
+##
+## Motion is a real orbit (like orbiting_paddle.gd's continuous angle, not
+## floating_photo.gd's back-and-forth sine wander): each companion's
+## horizontal position is cos/sin of a continuously increasing angle around
+## the merchant's own root position, at companion_orbit_radius -- "a bit
+## away" from the face rather than hugging it like before. Vertical motion
+## stays a sine bob (companion_bob_height), just with a bigger amplitude so
+## it reads as "bobbing up and down" rather than a subtle wobble. The two
+## companions start on roughly opposite sides of the circle and orbit in
+## opposite directions (index 0 vs 1 flips orbit_speed's sign) so they
+## don't read as mirrored twins chasing each other -- combined with each
+## one's own randomized radius/phase/speed (same "randf() per instance so
+## synced motion doesn't read as artificial" spirit as floating_photo.gd's
+## _time_offset).
 
 @export var bob_height := 0.15
 @export var bob_speed := 0.6
 
-## Roughly how far (meters) each companion wanders from its own resting
-## spot -- a slow lazy wander, not a fast tilted orbit like
-## orbiting_paddle.gd.
-@export var companion_drift_radius := 0.35
-@export var companion_drift_speed_min := 0.15 # rad/s
-@export var companion_drift_speed_max := 0.35 # rad/s
+## Distance (meters) each companion orbits from the merchant's root
+## position -- "좀 떨어진 곳에서 공전" per user feedback, larger than the
+## companions' original resting spots (~0.55m from center).
+@export var companion_orbit_radius := 1.2
+@export var companion_orbit_radius_variance := 0.2 # per-companion +/- jitter
+@export var companion_orbit_speed_min := 0.15 # rad/s
+@export var companion_orbit_speed_max := 0.3 # rad/s
+
+## Height (local Y) the orbit circle is centered on, and how far each
+## companion bobs above/below it -- bumped up from the old drift's vertical
+## component (0.35 * 0.7 =~ 0.25m) per user feedback ("더 위아래로 둥둥").
+@export var companion_orbit_center_height := 1.5
+@export var companion_bob_height := 0.5
+@export var companion_bob_speed_min := 0.4 # rad/s
+@export var companion_bob_speed_max := 0.8 # rad/s
 
 class CompanionDrift:
 	var sprite: Sprite3D
-	var base_position: Vector3
-	var phase: Vector3
-	var speed: Vector3
+	var orbit_radius: float
+	var orbit_phase: float
+	var orbit_speed: float # signed -- direction of travel around the circle
+	var base_y: float
+	var bob_phase: float
+	var bob_speed: float
 
 var _base_face_y: float
 var _face_time_offset: float
@@ -99,16 +121,17 @@ const PURCHASE_FLAGS := {
 func _ready() -> void:
 	_base_face_y = _face.position.y
 	_face_time_offset = randf() * TAU
-	for node in [$CompanionA, $CompanionB]:
+	var companion_nodes: Array[Sprite3D] = [$CompanionA, $CompanionB]
+	for i in companion_nodes.size():
+		var node := companion_nodes[i]
 		var c := CompanionDrift.new()
 		c.sprite = node
-		c.base_position = node.position
-		c.phase = Vector3(randf(), randf(), randf()) * TAU
-		c.speed = Vector3(
-			randf_range(companion_drift_speed_min, companion_drift_speed_max),
-			randf_range(companion_drift_speed_min, companion_drift_speed_max),
-			randf_range(companion_drift_speed_min, companion_drift_speed_max)
-		)
+		c.orbit_radius = companion_orbit_radius + randf_range(-companion_orbit_radius_variance, companion_orbit_radius_variance)
+		c.orbit_phase = (i * PI) + randf_range(-0.4, 0.4) # roughly opposite sides, not a perfect mirror
+		c.orbit_speed = randf_range(companion_orbit_speed_min, companion_orbit_speed_max) * (1.0 if i == 0 else -1.0)
+		c.base_y = companion_orbit_center_height
+		c.bob_phase = randf() * TAU
+		c.bob_speed = randf_range(companion_bob_speed_min, companion_bob_speed_max)
 		_companions.append(c)
 		_companion_busy[node] = false
 	DialogueManager.dialogue_started.connect(_on_dialogue_started)
@@ -120,10 +143,11 @@ func _process(_delta: float) -> void:
 	for c in _companions:
 		if _companion_busy.get(c.sprite, false):
 			continue
-		c.sprite.position = c.base_position + Vector3(
-			sin(t * c.speed.x + c.phase.x) * companion_drift_radius,
-			sin(t * c.speed.y + c.phase.y) * companion_drift_radius * 0.7,
-			sin(t * c.speed.z + c.phase.z) * companion_drift_radius * 0.5
+		var angle: float = c.orbit_phase + t * c.orbit_speed
+		c.sprite.position = Vector3(
+			cos(angle) * c.orbit_radius,
+			c.base_y + sin(t * c.bob_speed + c.bob_phase) * companion_bob_height,
+			sin(angle) * c.orbit_radius
 		)
 	_check_entrance_trigger()
 
