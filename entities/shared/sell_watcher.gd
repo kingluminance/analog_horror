@@ -51,8 +51,7 @@ func _on_dialogue_ended(_resource: DialogueResource) -> void:
 		return
 	if not sell_list.sell_requested.is_connected(_on_sell_requested):
 		sell_list.sell_requested.connect(_on_sell_requested)
-	sell_list.open_list(_build_rows())
-	sell_list.show_reaction(default_sell_line) # standing greeting until the player clicks something
+	sell_list.open_list(_build_rows()) # open_list() itself clears any leftover reaction -- nothing shows until the player actually tries to sell something
 
 func _build_rows() -> Array[Dictionary]:
 	var overrides_by_id := {}

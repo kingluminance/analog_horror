@@ -19,12 +19,22 @@ extends CanvasLayer
 
 signal sell_requested(item_id: String)
 
+## Reaction line fade timing -- same "fade in / hold / fade out, no queue"
+## shape as entities/shared/mutter_label.gd's say(), just on a Control's
+## modulate instead of a Label3D's. A reaction is a momentary response to
+## one sell attempt, not a standing caption, so it always disappears on its
+## own instead of sitting there until overwritten.
+@export var reaction_fade_in_time := 0.15
+@export var reaction_hold_time := 1.4
+@export var reaction_fade_out_time := 0.3
+
 @onready var panel: Control = %Panel
 @onready var rows_container: VBoxContainer = %RowsContainer
 @onready var reaction_label: Label = %ReactionLabel
 @onready var close_button: Button = %CloseButton
 
 var _open := false
+var _reaction_tween: Tween
 
 func _ready() -> void:
 	# Same reason shop_ui.gd/binder_ui.gd set this on themselves:
@@ -50,11 +60,14 @@ func open_list(rows: Array[Dictionary]) -> void:
 			return
 
 	_rebuild_rows(rows)
-	# Deliberately NOT clearing reaction_label here -- the caller (a
-	# SellWatcher) decides what belongs in that slot each time: its
-	# default_sell_line as a standing greeting on first open, or a
-	# specific per-item reaction after a sale/refusal. Clearing it here
-	# would wipe whatever the caller sets right after this call returns.
+	# A fresh open never carries over a leftover reaction from last time --
+	# it only ever appears in response to an actual sell attempt (see
+	# show_reaction below). When this open_list() call is itself part of
+	# handling a sell attempt (SellWatcher._on_sell_requested refreshing the
+	# rows right after a sale), the show_reaction() call it makes right
+	# after this one restarts the fade from scratch anyway, so clearing
+	# here first causes no visible flicker.
+	_clear_reaction()
 	panel.show()
 	get_tree().paused = true
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -66,10 +79,31 @@ func close_list() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	_open = false
 
-## Called by a SellWatcher right after a sale so the reaction line and the
-## (now one-less) row list both update in place.
+## Called by a SellWatcher after a sell attempt (accepted sale or refusal)
+## to flash a reaction line -- fades in, holds, fades out on its own (see
+## reaction_fade_in_time/reaction_hold_time/reaction_fade_out_time above),
+## the same "no queue, kill and restart" shape as MutterLabel.say(). An
+## empty string just clears it immediately with no flash (SellWatcher never
+## actually calls it with "" today, but a caller doing so shouldn't leave a
+## stray fade running).
 func show_reaction(text: String) -> void:
+	if text == "":
+		_clear_reaction()
+		return
+	if is_instance_valid(_reaction_tween) and _reaction_tween.is_valid():
+		_reaction_tween.kill()
 	reaction_label.text = text
+	reaction_label.modulate.a = 0.0
+	_reaction_tween = create_tween()
+	_reaction_tween.tween_property(reaction_label, "modulate:a", 1.0, reaction_fade_in_time)
+	_reaction_tween.tween_interval(reaction_hold_time)
+	_reaction_tween.tween_property(reaction_label, "modulate:a", 0.0, reaction_fade_out_time)
+
+func _clear_reaction() -> void:
+	if is_instance_valid(_reaction_tween) and _reaction_tween.is_valid():
+		_reaction_tween.kill()
+	reaction_label.text = ""
+	reaction_label.modulate.a = 0.0
 
 func _rebuild_rows(rows: Array[Dictionary]) -> void:
 	for child in rows_container.get_children():
