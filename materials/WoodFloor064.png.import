@@ -2,20 +2,17 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://da0n8fpy83uas"
-path.s3tc="res://.godot/imported/천막_0.png-b08fbd20050d2bf8e4e9805133aee767.s3tc.ctex"
+uid="uid://cmagcbgva354p"
+path.s3tc="res://.godot/imported/WoodFloor064.png-a9bf1fa8892f942b2d2861b68c5d2aab.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
-generator_parameters={
-"md5": "2a48c2ec02ff737bb0c2f4a1dd31c757"
-}
 
 [deps]
 
-source_file="res://천막_0.png"
-dest_files=["res://.godot/imported/천막_0.png-b08fbd20050d2bf8e4e9805133aee767.s3tc.ctex"]
+source_file="res://materials/WoodFloor064.png"
+dest_files=["res://.godot/imported/WoodFloor064.png-a9bf1fa8892f942b2d2861b68c5d2aab.s3tc.ctex"]
 
 [params]
 

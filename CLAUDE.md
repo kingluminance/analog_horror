@@ -32,7 +32,7 @@ entities/
   ├─ floating_photo/                     실사진 빌보드 베이스
   │   ├─ floating_photo.gd/.tscn         Sprite3D, billboard, sine bob (+ Interactable 자식)
   │   └─ photos/                         사진(.png, 배경 제거됨) + 대화(.dialogue) 에셋
-  │       (john, ping_pong_bottle, brain_in_vat)
+  │       (john, ping_pong_bottle, brain_in_vat, scissor_scarf)
   ├─ orbiting_paddle/          물병 주위를 기울어진 원으로 빠르게 도는 탁구채
   ├─ spinning_trinket/         통속의 뇌 옆에서 제자리 자전하는 오브젝트 (상호작용 없음)
   ├─ red_bouncy_ball/          빨간 통통볼 NPC — 스크립트 기반 바운스+찌부 애니메이션
@@ -115,6 +115,17 @@ Interactable과 떨어져 배치된 경우 그 시각적 위치(또는 평균 �
   파일에서 `using StoryFlags` + `$> StoryFlags.set_visual_state("trash_angel", "body", "...")`처럼
   호출하면, 해당 id를 구독하는 엔티티 스크립트가 반응해서 텍스처 등을 바꾼다 (쓰레기천사가 이 방식으로
   몸통 3종을 전환함). 새 오브젝트도 이 패턴을 재사용하면 됨 — 새 오토로드 만들지 말 것.
+- `mark_choice_seen(id, choice_id)` / `has_seen_choice(id, choice_id)` /
+  `has_seen_all_choices(id, choice_ids: Array)` — **"이 NPC의 선택지를 다 골라봤는지" 범용 메커니즘**.
+  `.dialogue`에서 대화 선택지 하나를 고를 때마다 그 분기 안에서
+  `$> StoryFlags.mark_choice_seen("<entity_id>", "<choice_id>")`를 부르고, 보통 `~ start`의 라우팅에서
+  `if StoryFlags.has_seen_all_choices("<entity_id>", ["choice_a", "choice_b", ...])`로 전부 골랐는지
+  검사해서 다 골랐으면 새 대화 타이틀(에필로그 등)로, 아니면 평소 `repeat`로 보낸다. `id`/`choice_id`는
+  `flags`/`visit_counts`와 같은 호출자 임의 문자열 네임스페이스라 캐릭터별 사전 등록이 필요 없다.
+  가위(목도리) NPC(`entities/floating_photo/photos/scissor_scarf.dialogue`)가 첫 실사용 예시 —
+  "목도리는 뭐야?"/"여기서 사는거야?" 두 선택지를 각각 한 번씩 골라본 뒤부터는 다음 방문에 `~ beyond`
+  (에필로그) 타이틀로 자동 전환된다. 새 NPC에 같은 "다 물어보면 그다음부터" 연출을 넣고 싶으면 이
+  세 함수만 재사용하면 됨 — 새 오토로드나 컴포넌트 불필요.
 
 ### `DialogueVisibility` — 대화로 오브젝트 통째로 보이기/숨기기
 `entities/shared/dialogue_visibility.gd` (`class_name DialogueVisibility extends Node`).
@@ -582,7 +593,8 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
   내부 상태를 몰래 훔쳐보지 않고 이 시그널만으로 3가지 행동이 실제로 도는지 확인함 — 실제 카메라 있는
   더미 씬 + `--quit-after`로 18초 시뮬레이션해서 검증).
 - **보따리로 판매합니다** (`entities/bottari_merchant/`) — `scenes/main.tscn`의 `Objects/BottariMerchant`에
-  배치, 사용자가 직접 에디터에서 천막(`천막`, `res://천막.fbx` 임포트, 300배 스케일 보정) 안쪽에
+  배치, 사용자가 직접 에디터에서 천막(`천막`, `res://entities/bottari_merchant/tent/천막.fbx` 임포트,
+  300배 스케일 보정) 안쪽에
   자리잡음. 자물쇠 얼굴(`Face`, 그린스크린 사진을 flood-fill 크로마키)이 중심에서 `floating_photo.gd`와
   같은 sine bob으로 가볍게 떠 있고, 눈알 달린 열쇠꾸러미 사진(베이지색 배경이라 `rembg`로 배경 제거)
   두 장(`CompanionA`/`CompanionB`)이 각자 독립적으로 랜덤한 위상/속도로 느리게 둥둥 떠다님(단순
@@ -624,6 +636,12 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
      목록에서 아예 빼는 게 아니라 "왜 못 파는지" 보여주는 식을 취함. 리스트 맨 아래엔 "안 팔아요." 항목도
      항상 있음(패널의 닫기 버튼과 별개로, 구매 쪽 "아니요" 선택지와 같은 급의 명시적 취소 수단).
 
+- **가위(목도리)** (`Objects/ScissorScarf`) — floating_photo 베이스 재사용. 가위 날에 자주색
+  목도리가 감긴 사진 — 다른 floating_photo NPC들과 같은 "이상한 게 원래 거기 있던 것처럼" 톤.
+  원본 이미지가 이미 알파 채널로 배경 제거되어 있어서 별도 flood-fill/rembg 작업 없이 바로 씀
+  (`entities/floating_photo/photos/scissor_scarf.png` + `.dialogue`), `pixel_size=0.000977`로
+  약 1.5m 높이. 대화 speaker 이름은 "가위"
+
 ## 개발 환경 메모
 - **Godot 4.7 헤드리스 바이너리**: `C:\Users\my\Downloads\Godot_v4.7-stable_win64.exe\
   Godot_v4.7-stable_win64_console.exe` — `--headless --path <프로젝트> --quit`으로 파싱 에러 체크
@@ -637,6 +655,15 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
   `res://.claude/worktrees/...`로 시작하는 항목들을 수동으로 지워야 함
 - Git worktree 여러 개를 병렬로 쓸 때, 각 워크트리는 자기만의 `.godot/` 캐시를 가짐 — 한 워크트리에서
   임포트해도 다른 워크트리/메인 체크아웃에는 반영 안 됨
+- **새 에셋(사진/FBX/텍스처 등)을 드래그해서 넣을 때 프로젝트 루트에 그냥 떨어뜨리지 말 것** —
+  Godot 에디터에 파일을 드롭하면 기본적으로 열려있는 폴더(대개 루트)에 그대로 들어가는데, 방치하면
+  루트가 지저분해짐. 실제로 `천막.fbx`/`천막_0.png`/`천막2.fbx`/`천막2_0.png`(+`.tscn`)와
+  `WoodFloor064*.png` 3종이 전부 루트에 쌓여있던 걸 나중에 발견해서, 천막 관련 파일은
+  `entities/bottari_merchant/tent/`로(전용 리소스라 엔티티 폴더 규칙), WoodFloor 텍스처는 `materials/`로
+  (여러 오브젝트가 공유할 수 있는 셰어드 텍스처라 공용 폴더 규칙) 옮김 — 파일을 옮긴 뒤에는 그 파일을
+  참조하는 모든 `.tscn`의 `path=`와 `.import`의 `source_file=`을 새 경로로 고치고,
+  `--headless --editor --path . --quit`을 한 번 더 돌려서 재임포트/uid 재연결까지 확인해야 함
+  (텍스트만 고치고 헤드리스 재임포트를 안 돌리면 캐시가 예전 경로 기준으로 남아있을 수 있음).
 - **임시 헤드리스 테스트(`--headless --script res://_tmp_test_*.gd`)는 반드시 셸 레벨 `timeout`으로 감쌀 것**
   (예: `timeout 60 "$GODOT" --headless --script res://_tmp_test_x.gd`), 스크립트 자체가 금방 끝날 것 같아
   보여도 예외 없이. 실제로 겪은 사고: 진단용 테스트 스크립트가 마지막 출력 줄에서 `%` 포맷 문자열 인자
@@ -759,7 +786,7 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
   busy: bool = dict[key] or dict[key2]`처럼 Dictionary 값 조회를 `:=`로 받으면 마찬가지로 실패. 둘 다
   `var x: float = ...`/`var x: bool = ...`처럼 **명시적 타입을 써서** 우회함 -- `:=`는 우변이 진짜
   정적으로 타입이 확정되는 표현식(리터럴, 타입이 박힌 함수 리턴값 등)일 때만 믿을 것.
-- **천막(`res://천막.fbx`) 300배 스케일 밑에 새 오브젝트를 넣을 때는 로컬 스케일을 정확히 `1/300`
+- **천막(`res://entities/bottari_merchant/tent/천막.fbx`) 300배 스케일 밑에 새 오브젝트를 넣을 때는 로컬 스케일을 정확히 `1/300`
   균일로 맞출 것** -- 원본 FBX가 작게 들어와서 씬에 넣을 때 300배로 키워뒀는데(`천막` 노드 자체의
   Transform3D), 그 자식으로 새 메쉬/조명을 넣으면서 스케일을 손으로(스케일 기즈모로) 맞추다 보면 축마다
   비율이 미묘하게 달라지기 아주 쉬움(예: `0.0332`/`0.0017`/`0.0028`처럼) -- 부모의 300배와 합성되면
@@ -801,6 +828,9 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
    `rembg` AI 세그멘테이션(물병/통속의뇌 참고)
 5. "대화 진행에 따라 외형이 바뀌어야" 하면 `StoryFlags.set_visual_state`/`get_visual_state` 재사용
    (쓰레기천사 참고), 새 오토로드 만들지 말 것
+6. "선택지를 다 골라보면 그 다음부터 다른 대화가 나오게" 하고 싶으면 `StoryFlags.mark_choice_seen`/
+   `has_seen_all_choices` 재사용(가위(목도리) 참고) — 선택지 분기마다 `mark_choice_seen` 한 줄, `~ start`
+   라우팅에 `has_seen_all_choices` 조건 한 줄이면 끝
 
 ## 레퍼런스
 - Midsommar (2019) — 낮 공포의 정서

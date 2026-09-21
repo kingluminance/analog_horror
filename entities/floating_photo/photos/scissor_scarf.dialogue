@@ -1,0 +1,54 @@
+using StoryFlags
+
+~ start
+$> locals.visits = StoryFlags.get_visit_count("scissor_scarf")
+$> StoryFlags.increment_visit_count("scissor_scarf")
+if locals.visits == 0
+	=> first_meet
+elif StoryFlags.has_seen_all_choices("scissor_scarf", ["scarf", "living", "one_side"])
+	=> beyond
+
+
+~ first_meet
+가위 : 방가워야, 아름다운이야.
+- 목도리는 뭐야?
+	$> StoryFlags.mark_choice_seen("scissor_scarf", "scarf")
+	가위 : 더워 죽겄어야 단단히 춥다해서 완전 옷 껴 입었는데.
+	가위 : 너는 좀 어떄야?
+	=> END
+- 여기서 사는거야?
+	$> StoryFlags.mark_choice_seen("scissor_scarf", "living")
+	=>< living_talk
+	=> END
+- 한 쪽은 어디갔어?
+	$> StoryFlags.mark_choice_seen("scissor_scarf", "one_side")
+	가위 : 무례한 이야, 그래도 용성할게야.
+	가위 : 나는 처음 부터 하나야.
+	가위 : 너 또한 그러지 않아야?
+	
+	=> END
+
+
+~ living_talk
+가위 : 산다니? 죽어가는거야.
+가위 : 여기? 여기가 뭐가 있다고 여기서 살아야?
+- 여기를 떠나게?
+	가위 : 나야, 뭐 부수고 나가야지.
+	- 부순다니 뭘?
+		가위 : 안보여? 물론 나도 안보여야.
+		가위 : 저 안보이는 벽을 부숴야 할까?
+		가위 : 아니면 나를 부숴야 할까.
+		가위 : 나는 가위야. 한쪽 뿐이지만야.
+		가위 : 뭐가 됐든 이상향을 꿈꿔야. 아름이운 이야.
+		가위 : 그래야지 이상향에 다가가야.
+		가위 : 근처까지 다가간다면 너도 대려가 줄게.
+		
+=> END
+
+
+~ beyond
+가위 : 너의 권능은 뭐여야?
+가위 : 좋은 음악을 들을 줄 아는 것 또한 권능이야.
+가위 : 따듯한 목도리를 두르는 것도 권능이야.
+가위 : 멋진 신발 또한 권능이야.
+가위 : 너의 것은 무엇이야?

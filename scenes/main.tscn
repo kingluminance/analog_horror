@@ -23,8 +23,8 @@
 [ext_resource type="PackedScene" uid="uid://d1xhbiif8egkt" path="res://entities/speaker/speaker.tscn" id="26_speaker"]
 [ext_resource type="Resource" uid="uid://bvsucdl5uq5w0" path="res://entities/log_cabin/cabin_door.dialogue" id="28_cabin_dlg"]
 [ext_resource type="Script" uid="uid://df35dx5g0r08c" path="res://entities/log_cabin/cabin_door_watcher.gd" id="29_cabin_watcher"]
-[ext_resource type="PackedScene" uid="uid://dhom0l4ngof6f" path="res://천막.tscn" id="29_yq6so"]
-[ext_resource type="Texture2D" uid="uid://d20mscxovnmjs" path="res://WoodFloor064_4K-PNG_Color.png" id="30_fv21b"]
+[ext_resource type="PackedScene" uid="uid://dhom0l4ngof6f" path="res://entities/bottari_merchant/tent/천막.tscn" id="29_yq6so"]
+[ext_resource type="Texture2D" uid="uid://d20mscxovnmjs" path="res://materials/WoodFloor064_4K-PNG_Color.png" id="30_fv21b"]
 [ext_resource type="PackedScene" uid="uid://wclmemrygmw8" path="res://entities/recorded_wings/recorded_wings.tscn" id="30_wings"]
 [ext_resource type="PackedScene" path="res://entities/ellikonti/ellikonti.tscn" id="31_ellikonti"]
 [ext_resource type="PackedScene" uid="uid://beqa8ym3uafdd" path="res://entities/bottari_merchant/bottari_merchant.tscn" id="32_bottari"]
@@ -35,6 +35,8 @@
 [ext_resource type="PackedScene" uid="uid://myaupdnsskxk" path="res://assets/kenney_pirate_kit/barrel.glb" id="37_barrel"]
 [ext_resource type="PackedScene" uid="uid://cje3sjh2wyg25" path="res://assets/kenney_pirate_kit/chest.glb" id="38_chest"]
 [ext_resource type="PackedScene" path="res://ui/shop/sell_list_ui.tscn" id="39_sell_list_ui"]
+[ext_resource type="Texture2D" uid="uid://bqj2mnurj3xsc" path="res://entities/floating_photo/photos/scissor_scarf.png" id="40_scissor_tex"]
+[ext_resource type="Resource" uid="uid://slsnbshyqg0t" path="res://entities/floating_photo/photos/scissor_scarf.dialogue" id="41_scissor_dlg"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.35, 0.65, 1, 1)
@@ -997,6 +999,14 @@ companion_bob_height = 0.5
 companion_bob_speed_min = 2.0
 companion_bob_speed_max = 2.5
 
+[node name="ScissorScarf" parent="Objects" unique_id=583201947 instance=ExtResource("5_photo")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 1.2, 6)
+pixel_size = 0.000977
+texture = ExtResource("40_scissor_tex")
+
+[node name="Interactable" parent="Objects/ScissorScarf" index="0"]
+dialogue_resource = ExtResource("41_scissor_dlg")
+
 [node name="Node3D" type="Node3D" parent="Objects" unique_id=798836507]
 
 [node name="WindAmbience" type="AudioStreamPlayer" parent="." unique_id=1326488122]
@@ -1148,3 +1158,4 @@ transform = Transform3D(0.003333334, 0, 1.1641532e-10, 0, 0.0033333339, 0, -1.16
 [editable path="Objects/John"]
 [editable path="Objects/BrainInVat"]
 [editable path="Objects/BrainInVat/SpinningTrinket"]
+[editable path="Objects/ScissorScarf"]

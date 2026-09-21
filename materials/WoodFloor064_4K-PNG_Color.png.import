@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d20mscxovnmjs"
-path.s3tc="res://.godot/imported/WoodFloor064_4K-PNG_Color.png-dba084455b630b08b8d273baa228c57b.s3tc.ctex"
+path.s3tc="res://.godot/imported/WoodFloor064_4K-PNG_Color.png-b31abb54f8fe530987f332cbab90cd31.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://WoodFloor064_4K-PNG_Color.png"
-dest_files=["res://.godot/imported/WoodFloor064_4K-PNG_Color.png-dba084455b630b08b8d273baa228c57b.s3tc.ctex"]
+source_file="res://materials/WoodFloor064_4K-PNG_Color.png"
+dest_files=["res://.godot/imported/WoodFloor064_4K-PNG_Color.png-b31abb54f8fe530987f332cbab90cd31.s3tc.ctex"]
 
 [params]
 

@@ -4,12 +4,12 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://1sijowyh7d3n"
-path="res://.godot/imported/천막.fbx-3dade1fbc68b91011861ebfd41c0a0f7.scn"
+path="res://.godot/imported/천막.fbx-df78cec30f8922f5c161b73d27a2dc88.scn"
 
 [deps]
 
-source_file="res://천막.fbx"
-dest_files=["res://.godot/imported/천막.fbx-3dade1fbc68b91011861ebfd41c0a0f7.scn"]
+source_file="res://entities/bottari_merchant/tent/천막.fbx"
+dest_files=["res://.godot/imported/천막.fbx-df78cec30f8922f5c161b73d27a2dc88.scn"]
 
 [params]
 

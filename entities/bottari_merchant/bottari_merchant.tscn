@@ -38,6 +38,7 @@ hint_offset = Vector3(0, 1.5, 0)
 
 [node name="SellWatcher" parent="." unique_id=186651668 instance=ExtResource("14_sell_watcher")]
 default_sell_line = "미안 이런건 괜찮아~"
+default_sellable = false
 open_flag = "bottari_wants_sell"
 
 [node name="CounterItems" type="Node3D" parent="." unique_id=1058895798]

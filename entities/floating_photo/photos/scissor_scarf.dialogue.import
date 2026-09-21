@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://slsnbshyqg0t"
+path="res://.godot/imported/scissor_scarf.dialogue-6b8c32b7c19ce9e30757be59699aa6f3.tres"
+
+[deps]
+
+source_file="res://entities/floating_photo/photos/scissor_scarf.dialogue"
+dest_files=["res://.godot/imported/scissor_scarf.dialogue-6b8c32b7c19ce9e30757be59699aa6f3.tres"]
+
+[params]
+
+defaults=true
