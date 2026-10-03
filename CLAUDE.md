@@ -126,6 +126,56 @@ Interactable과 떨어져 배치된 경우 그 시각적 위치(또는 평균 �
   "목도리는 뭐야?"/"여기서 사는거야?" 두 선택지를 각각 한 번씩 골라본 뒤부터는 다음 방문에 `~ beyond`
   (에필로그) 타이틀로 자동 전환된다. 새 NPC에 같은 "다 물어보면 그다음부터" 연출을 넣고 싶으면 이
   세 함수만 재사용하면 됨 — 새 오토로드나 컴포넌트 불필요.
+  **단, "메뉴 전체를 다음 단계로 넘기는" 것만 됨 — 같은 메뉴 안에서 이미 고른 선택지 하나만 쏙 빼고
+  나머지는 계속 같이 보이게 하려면 아래 `[if ... /]` 인라인 조건과 같이 쓸 것.**
+
+### 선택지 하나만 조건부로 숨기기 — `[if ... /]` + `hide_failed_responses`
+"같은 메뉴의 선택지 여러 개 중 이미 골라본 것만 빼고 나머지는 계속 같이 보이게" 하고 싶을 때.
+**Dialogue Manager 애드온에 이미 내장된 기능**이라 새로 만들 필요 없었다 — 선택지 줄 끝에
+`[if <조건> /]`(공백 + `/]`로 정확히 끝나야 함, `DMCompilerRegEx.GOTO_REGEX`와 같은 계열의
+`WRAPPED_CONDITION_REGEX`가 파싱)를 붙이면 조건이 거짓인 그 선택지 하나만 메뉴에서 빠진다:
+```
+using StoryFlags
+
+~ wings_menu
+if StoryFlags.has_seen_all_choices("ellikonti", ["wings_what", "wings_why"])
+	=> contract_menu
+- 날개 [if not StoryFlags.has_seen_choice("ellikonti", "wings_what") /]
+	엘리콘티: 4대 날개들.. 몰라?
+	$> StoryFlags.mark_choice_seen("ellikonti", "wings_what")
+	=> wings_menu
+- 날개들은 왜? [if not StoryFlags.has_seen_choice("ellikonti", "wings_why") /]
+	엘리콘티: 저것들을 피해서 여기까지 왔어.
+	$> StoryFlags.mark_choice_seen("ellikonti", "wings_why")
+	=> wings_menu
+- 대화를 그만한다
+	=> END
+```
+**단, 이것만으론 부족함** — `DialogueManager._get_responses()`는 조건이 거짓인 응답도 `is_allowed=false`
+플래그만 붙여서 여전히 목록에 포함시키고, 실제로 화면에서 숨기는 건 응답 메뉴 노드
+(`DialogueResponsesMenu`)의 `hide_failed_responses`(기본값 `false`) 몫이다 — 그래서 우리 커스텀
+대화창 `entities/dialogue_ui/analog_dialogue_balloon.tscn`의 `ResponsesMenu` 노드에
+`hide_failed_responses = true`를 켜뒀다(딱 한 번, 씬 프로퍼티 한 줄 — 애드온 소스는 전혀 안 건드림,
+새 대화에서 또 켤 필요 없음).
+
+**함정 — 조건부 선택지 여러 개를 한 메뉴로 합치려고 각자 다른 `if` 블록으로 감싸면 안 됨**: 엘리콘티
+`wings_menu`에서 실제로 겪음 —
+```
+if not locals.seen_what
+	- 날개
+		...
+if not locals.seen_why
+	- 날개들은 왜?
+		...
+```
+처럼 짰더니 두 선택지가 한 메뉴로 안 합쳐지고 **하나씩 따로 튀어나옴**("날개" 선택지 처리가 끝나야
+"날개들은 왜?"가 떴음). 원인은 `compilation.gd`의 `parse_response_line()` — 응답 그룹은 물리적으로
+연속된 `TYPE_RESPONSE` 형제 줄끼리만 하나로 묶이는데(`sibling_index`를 거슬러 올라가며 `TYPE_UNKNOWN`이
+아닌 첫 줄을 "원본 응답"으로 찾는 로직), 그 사이에 `if`(`TYPE_CONDITION`) 같은 다른 타입 줄이 끼면
+거기서 그룹이 끊긴다. 위 `[if ... /]` 인라인 문법을 쓰면 선택지 줄 자체는 여전히 서로 물리적으로
+연속돼 있어서 한 메뉴로 묶이면서 조건만 개별 적용됨 — 이게 정석 우회법. 헤드리스로 실제
+`AnalogDialogueBalloon`을 띄워서 세 상태(둘 다 안 물어봄/하나만 물어봄/둘 다 물어봄)에서
+`responses_menu`에 실제로 보이는 버튼 텍스트를 직접 확인함.
 
 ### `DialogueVisibility` — 대화로 오브젝트 통째로 보이기/숨기기
 `entities/shared/dialogue_visibility.gd` (`class_name DialogueVisibility extends Node`).
@@ -546,6 +596,13 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
   도달하는지, `Visual`의 position/rotation이 몇 프레임 사이에 실제로 바뀌는지(떨림이 살아있는지),
   `MutterLabel.say()`가 대화 없이도 자기 타이머로 최소 한 번 발화하는지 확인함. **에디터로 직접 열어서
   스케일/월드 배치/떨림 강도 기본값을 아직 눈으로 확인 못 함** — 위 TODO 항목 참고.
+  **대화 자체는 그 뒤로 사용자가 직접 훨씬 크게 다시 씀** — `first_meet` → `wings_menu`(날개
+  얘기 선택지) → `contract_menu` → `contract_story`(계약 사연 독백, `repeat`은 계약 체결 이후의
+  완전히 다른 분위기) 구조로 확장됨. `wings_menu`는 "날개"/"날개들은 왜?" 두 선택지를 각자 골라본
+  뒤부터는 다음 방문에 `contract_menu`로 자동 전환되는 걸 `StoryFlags.has_seen_all_choices`로
+  구현(위 참고) — 처음엔 그 두 선택지를 각각 다른 `if` 블록으로 감싸서 조건부로 숨기려다가 "위
+  선택지 하나만 조건부로 숨기기" 항목의 함정을 그대로 겪음(한 메뉴로 안 합쳐지고 하나씩 튀어나옴)
+  → `[if ... /]` 인라인 조건 + `hide_failed_responses`로 해결.
 - **나무집(로그캐빈)** (`Objects/LogCabin`, `(20, 0, -20)`) — 지면에 지은 통나무집 스타일(사용자 요청:
   나무 위 트리하우스 아님). `Body`(StaticBody3D, 충돌 있음 — 벽을 그냥 뚫고 지나갈 수 없게)/`Roof`
   (`PrismMesh`, 뾰족지붕)/`Door` 전부 나무·땅 공용 `curved_world` 셰이더 + 단색 `albedo_color`로 만듦
@@ -831,6 +888,9 @@ value)`/`add_stat(id, delta)`/`get_max(id)`/`set_max(id, max)`/`add_max(id, delt
 6. "선택지를 다 골라보면 그 다음부터 다른 대화가 나오게" 하고 싶으면 `StoryFlags.mark_choice_seen`/
    `has_seen_all_choices` 재사용(가위(목도리) 참고) — 선택지 분기마다 `mark_choice_seen` 한 줄, `~ start`
    라우팅에 `has_seen_all_choices` 조건 한 줄이면 끝
+7. "같은 메뉴 안에서 이미 골라본 선택지 하나만 빼고 나머지는 계속 같이 보이게" 하고 싶으면
+   선택지 줄 끝에 `[if not StoryFlags.has_seen_choice("<id>", "<choice_id>") /]`(엘리콘티 `wings_menu`
+   참고) — **절대 조건을 별도 `if` 블록으로 감싸지 말 것**(한 메뉴로 안 합쳐지고 하나씩 튀어나옴)
 
 ## 레퍼런스
 - Midsommar (2019) — 낮 공포의 정서

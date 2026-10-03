@@ -22,16 +22,18 @@ $> tremble_level = 2.0
 $> locals.wings_done = StoryFlags.has_seen_all_choices("ellikonti", ["wings_what", "wings_why"])
 if locals.wings_done
 	=> contract_menu
-- 날개?
+- 날개 [if not StoryFlags.has_seen_choice("ellikonti", "wings_what") /]
 	엘리콘티: 4대 날개들.. 몰라?
 	엘리콘티: 원래는 이런 곳에 없는데..
 	엘리콘티: 두명이나 이곳에 있어.
 	$> StoryFlags.mark_choice_seen("ellikonti", "wings_what")
-	=> END
-- 날개들은 왜?
+	=> wings_menu
+- 날개들은 왜? [if not StoryFlags.has_seen_choice("ellikonti", "wings_why") /]
 	엘리콘티: 저것들을 피해서 여기까지 왔어.
 	엘리콘티: ..근데 왜 이런 낮은 곳까지 있는건지 모르겠어.
 	$> StoryFlags.mark_choice_seen("ellikonti", "wings_why")
+	=> wings_menu
+- 대화를 그만한다
 	=> END
 
 ~ contract_menu
@@ -40,7 +42,7 @@ $> tremble_level = 0
 엘리콘티: 왜 그렇게 궁금한 눈으로 봐?
 - 계약이 뭔데?
 	=> contract_story
-- 아니, 됐어
+- 대화를 그만한다
 	=> END
 
 ~ contract_story
