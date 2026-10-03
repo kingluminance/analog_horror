@@ -11,6 +11,7 @@
 
 이 저장소는 실제 Godot 프로젝트 루트다. 더 자세한 기획/진행 기록은 Obsidian 볼트
 `obsidian-brain/projects/analog-horror/overview.md`에 있다 (이 저장소 밖, 별도 경로).
+구조는 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) 참고.
 
 ## 코드 구조
 
