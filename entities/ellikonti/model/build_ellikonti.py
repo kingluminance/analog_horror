@@ -190,22 +190,30 @@ def build():
     hat.rotation_euler = (math.radians(-6), math.radians(-10), 0)
     add_ink(hat)
 
-    # Bell on the front of the hat (the bell drawn on it in the sketch),
-    # pivot at its top so Godot can swing it.
+    # Bell hanging off the left of the brim on a short cord (user's follow-up
+    # sketch: a dashed string under the brim with the bell dangling from it).
+    # Bell's origin is the cord's top, on the brim, so Godot's swing makes it
+    # pendulum from there; the cord is its own ink-coloured child object.
+    cord = 0.05
     bm = bmesh.new()
-    bmesh.ops.create_cone(bm, cap_ends=True, segments=8, radius1=0.045, radius2=0.022, depth=0.07)
-    bmesh.ops.translate(bm, vec=(0, 0, -0.035), verts=bm.verts)
-    knob = bmesh.new()
-    bmesh.ops.create_uvsphere(knob, u_segments=6, v_segments=4, radius=0.013)
+    body = bmesh.ops.create_cone(bm, cap_ends=True, segments=8, radius1=0.045, radius2=0.022,
+                                 depth=0.07)
+    bmesh.ops.translate(bm, vec=(0, 0, -cord - 0.035), verts=body["verts"])
     # clapper peeking out under the bell
     clap = bmesh.ops.create_uvsphere(bm, u_segments=6, v_segments=4, radius=0.016)
-    bmesh.ops.translate(bm, vec=(0, 0, -0.078), verts=clap["verts"])
+    bmesh.ops.translate(bm, vec=(0, 0, -cord - 0.078), verts=clap["verts"])
     top = bmesh.ops.create_uvsphere(bm, u_segments=6, v_segments=4, radius=0.012)
-    bmesh.ops.translate(bm, vec=(0, 0, 0.004), verts=top["verts"])
-    knob.free()
-    bell = obj_from_bmesh("Bell", bm, "bell", (0.0, -0.118, 0.17))
+    bmesh.ops.translate(bm, vec=(0, 0, -cord + 0.004), verts=top["verts"])
+    # Hung right at the left tip of the brim, a hair outside it, so the
+    # dangling bell clears the round head underneath instead of sinking in.
+    bell = obj_from_bmesh("Bell", bm, "bell", (-0.235, -0.03, -0.004))
     bell.parent = hat
     add_ink(bell, 0.006)
+    bm = bmesh.new()
+    bmesh.ops.create_cone(bm, cap_ends=True, segments=5, radius1=0.006, radius2=0.006, depth=cord)
+    bmesh.ops.translate(bm, vec=(0, 0, -cord / 2), verts=bm.verts)
+    bell_cord = obj_from_bmesh("BellCord", bm, "ink")
+    bell_cord.parent = bell
 
     # Star: little 5-point star floating off the hat tip.
     sx, sz = sk(340, 72)
