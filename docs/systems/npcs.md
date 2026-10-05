@@ -106,12 +106,12 @@
   선택지 하나만 조건부로 숨기기" 항목의 함정을 그대로 겪음(한 메뉴로 안 합쳐지고 하나씩 튀어나옴)
   → `[if ... /]` 인라인 조건 + `hide_failed_responses`로 해결.
   **2차 리디자인 (3D)**: 사용자가 직접 그린 "도형으로 이루어진" 새 스케치(삼각 고깔+종, 별, 뒤로 몽글한
-  보라 곱슬머리, 청회색 동그란 머리, 왼쪽으로 뾰족한 초록 삼각 몸통, 물방울 손, 대각선 긴 조각, 보라 동그라미)를
+  보라 곱슬머리(→ 3D로 만들었다가 사용자 요청으로 제거), 청회색 동그란 머리, 왼쪽으로 뾰족한 초록 삼각 몸통, 물방울 손, 대각선 긴 조각, 보라 동그라미)를
   해석 없이 "그 모양 그대로" 저폴리 3D로 옮김. `Visual`은 이제 `Sprite3D`가 아니라 `Node3D` 밑에
   `ellikonti.glb` 인스턴스. **모델은 손으로 안 만지고 스크립트로 생성**: `model/build_ellikonti.py`(Blender 5.2
   헤드리스, `-b --factory-startup --python ...`, `EK_PREVIEW=<경로>`를 주면 워크벤치 미리보기 4방향도 렌더)
   → `ellikonti.glb`, `model/make_textures.py`(Pillow) → `textures/*.png`(64px 손칠 스와치) + `faces/*.png`.
-  스케치의 굵은 검정 선은 inverted-hull `*_Ink` 메시(선 없는 머리카락엔 없음). 질감은 사용자 레퍼런스(PS1
+  스케치의 굵은 검정 선은 inverted-hull `*_Ink` 메시. 질감은 사용자 레퍼런스(PS1
   시절 캐릭터: 저해상도 손칠 텍스처, nearest 필터, 버텍스 떨림) 기준으로 공용 셰이더
   `shaders/retro_character.gdshader`(curved_world 휨 + 버텍스 스내핑 + unshaded 가짜 조명 + 4x4 디더
   포스터라이즈 + 얼굴 레이어). GLB 재질은 이름(`ek_<part>`)으로 `.glb.import`의 `_subresources`에서

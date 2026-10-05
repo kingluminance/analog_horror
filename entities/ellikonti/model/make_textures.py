@@ -32,9 +32,7 @@ FACE_DIR = os.path.join(ROOT, "faces")
 
 # Colours picked from the user's sketch.
 PARTS = {
-    # Hat a step lighter/redder than the hair so the cone reads in front of it.
     "hat": ((0x9A, 0x2C, 0x96), (0x6A, 0x12, 0x6C)),
-    "hair": ((0x5A, 0x0C, 0x60), (0x34, 0x04, 0x3A)),
     "head": ((0x92, 0xAA, 0xE8), (0x66, 0x7E, 0xC4)),
     "torso": ((0x92, 0xC8, 0x8C), (0x48, 0x96, 0x48)),
     "hand": ((0x8C, 0xC0, 0x86), (0x44, 0x8C, 0x44)),
@@ -48,6 +46,11 @@ PARTS = {
 }
 
 SIZE = 64
+
+# Fixed per-part seeds so removing/adding a part never reshuffles the brush
+# blotches on the others (the hair part used to sit at 1001).
+SEEDS = {"hat": 1000, "head": 1002, "torso": 1003, "hand": 1004, "knee": 1005,
+         "leg": 1006, "star": 1007, "bell": 1008, "ink": 1009}
 
 
 def lerp(a, b, t):
@@ -292,8 +295,8 @@ FACES = {
 def main():
     os.makedirs(TEX_DIR, exist_ok=True)
     os.makedirs(FACE_DIR, exist_ok=True)
-    for i, (name, (top, bottom)) in enumerate(PARTS.items()):
-        painted_swatch(top, bottom, seed=1000 + i, strokes=name not in NO_STROKES).save(os.path.join(TEX_DIR, name + ".png"))
+    for name, (top, bottom) in PARTS.items():
+        painted_swatch(top, bottom, seed=SEEDS[name], strokes=name not in NO_STROKES).save(os.path.join(TEX_DIR, name + ".png"))
     for name, fn in FACES.items():
         finish(fn()).save(os.path.join(FACE_DIR, name + ".png"))
     print("textures:", len(PARTS), "faces:", len(FACES))

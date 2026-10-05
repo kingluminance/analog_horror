@@ -13,8 +13,8 @@ a character made of shapes, so the model is too.
 
 The thick black marker lines of the sketch become inverted-hull ink shells
 (<part>_Ink objects: a copy pushed out along the normals with flipped faces;
-with back-face culling only the rim shows). The colour-only areas of the
-sketch (the curly hair) get no ink, same as in the drawing.
+with back-face culling only the rim shows). The sketch's curly purple hair
+behind the hat was tried and then removed at the user's request.
 
 Materials are only named here (ek_<part>); the actual look -- painted
 textures, vertex snapping, face layers -- lives in Godot materials that the
@@ -60,7 +60,7 @@ _materials = {}
 
 # Viewport/preview colours only -- the real look is the Godot materials.
 PREVIEW_COLORS = {
-    "hat": (0.22, 0.02, 0.24, 1), "hair": (0.18, 0.01, 0.2, 1), "head": (0.2, 0.28, 0.58, 1),
+    "hat": (0.22, 0.02, 0.24, 1), "head": (0.2, 0.28, 0.58, 1),
     "torso": (0.12, 0.33, 0.12, 1), "hand": (0.11, 0.3, 0.11, 1), "knee": (0.24, 0.02, 0.72, 1),
     "leg": (0.15, 0.1, 0.5, 1), "star": (0.88, 0.85, 0.45, 1), "bell": (0.78, 0.62, 0.25, 1),
     "ink": (0.01, 0.01, 0.01, 1),
@@ -214,33 +214,6 @@ def build():
     star = parent(obj_from_bmesh("Star", extrude_polygon(pts, 0.022), "star", (sx, -0.02, sz)))
     star.rotation_euler = (0, math.radians(-14), 0)
     add_ink(star, 0.006)
-
-    # Curly hair: lumpy cloud behind the hat, colour only (no ink in the
-    # sketch). Built in the hat's local space and parented to it, so the
-    # blobs hug the cone's sides/back from tip to brim (peeking out past the
-    # hat silhouette like the bumpy edge in the sketch) and follow the hat's
-    # tilt -- plus a fringe hanging below the brim behind the head.
-    hair_bm = bmesh.new()
-    blobs = []
-    for k in range(8):
-        z = 0.28 - k * 0.04
-        r_c = 0.215 * (1.0 - z / hat_h)
-        b = 0.012 + 0.45 * r_c
-        for phi in (110, 145, 180, 215, 250):
-            a = math.radians(phi + (10 if k % 2 else -10))
-            off = r_c + b * 0.1
-            blobs.append(((math.sin(a) * off, -math.cos(a) * off, z), b))
-    for k in range(3):
-        z = -0.03 - k * 0.07
-        for phi in (105, 135, 160, 185, 210, 235, 260):
-            a = math.radians(phi + (15 if k % 2 else 0))
-            off = 0.2 - k * 0.02
-            blobs.append(((math.sin(a) * off, -math.cos(a) * off, z), 0.07 - k * 0.008))
-    for (x, y, z), r in blobs:
-        geom = bmesh.ops.create_icosphere(hair_bm, subdivisions=1, radius=r)
-        bmesh.ops.translate(hair_bm, vec=(x, y, z), verts=geom["verts"])
-    hair = obj_from_bmesh("Hair", hair_bm, "hair")
-    hair.parent = hat
 
     # Torso: the left-pointing triangle under the head.
     tri = [sk(412, 430), sk(238, 512), sk(532, 545)]

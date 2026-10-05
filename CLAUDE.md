@@ -154,7 +154,7 @@ addons/dialogue_manager/        Dialogue Manager v4.1.0 (doda 프로젝트에서
 - [ ] "기록된 날개와의 계약" 스토리 이벤트 만들어서 wings_contract_stage1/stage2
       StoryFlags를 실제로 세워주기 (지금은 세이브 슬롯이 영원히 1개로 고정된 상태)
 - [ ] 3D 엘리콘티(`entities/ellikonti/ellikonti.glb`)를 에디터/플레이로 직접 보고 크기·표정 크기·
-      버텍스 스내핑 강도(`snap_resolution`)·머리카락 덩어리 배치 조정 (스크립트 렌더 미리보기로만 확인함)
+      버텍스 스내핑 강도(`snap_resolution`) 조정 (스크립트 렌더 미리보기로만 확인함)
 - [ ] 천막 안 소품들(상인/선반/진열대/랜턴/상자류)의 정확한 위치/크기를 에디터에서 직접 보고 조정
       (전부 감으로 배치함, 실제 천막 내부 형태를 못 보고 작업해서)
 - [ ] `bottari_merchant.dialogue`/`bottari_merchant_chat.dialogue`의 대사 화자 이름이 "보따리장수"가 아니라

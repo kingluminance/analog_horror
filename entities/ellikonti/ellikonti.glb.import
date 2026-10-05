@@ -46,11 +46,6 @@ _subresources={
 "use_external/fallback_path": "res://entities/ellikonti/materials/ek_bell.tres",
 "use_external/path": "res://entities/ellikonti/materials/ek_bell.tres"
 },
-"ek_hair": {
-"use_external/enabled": true,
-"use_external/fallback_path": "res://entities/ellikonti/materials/ek_hair.tres",
-"use_external/path": "res://entities/ellikonti/materials/ek_hair.tres"
-},
 "ek_hand": {
 "use_external/enabled": true,
 "use_external/fallback_path": "res://entities/ellikonti/materials/ek_hand.tres",
