@@ -121,7 +121,8 @@
   정의하고, 대화에선 `$> StoryFlags.set_visual_state("ellikonti", "face", "panic")`로 바꿈(새 오토로드
   없음), `DialogueManager.dialogue_ended`에서 `default`로 복귀. 머리 재질은 `_ready()`에서 duplicate해서
   override로 씀(공유 `.tres` 오염 방지). 그 외: 빌보드가 아니므로 플레이어가 `look_radius`(기본 4m) 안에 들어오면 `Visual`만
-  플레이어 쪽으로 yaw 회전, 멀어지면 원래 방향으로 복귀(루트/`Interactable`은 고정). 크기는 `Visual` 스케일 1.3, 랜덤 눈 깜빡임, 모자 종이 떨림에 맞춰 흔들림, 별은 둥실+좌우 흔들림(완전
+  플레이어 쪽으로 yaw 회전 + `Head`가 플레이어 눈높이 쪽으로 고개를 듦(최대 `max_look_up_degrees`=35°,
+  .glb에서 `Hat`/`Star`를 `Head` 자식으로 만들어서 같이 따라감), 멀어지면 원래 방향으로 복귀(루트/`Interactable`은 고정). 크기는 `Visual` 스케일 1.3, 랜덤 눈 깜빡임, 모자 종이 떨림에 맞춰 흔들림, 별은 둥실+좌우 흔들림(완전
   회전은 옆에서 판자처럼 보여서 뺌). 새 표정 추가 = `make_textures.py`에 그리는 함수 추가 → `EXPRESSIONS`에
   한 줄. Krita로 `faces/*.png`를 직접 덮어그려도 됨(128x128 RGBA, 얼굴 UV 0..1이 머리 앞면 전체).
 - **나무집(로그캐빈)** (`Objects/LogCabin`, `(20, 0, -20)`) — 지면에 지은 통나무집 스타일(사용자 요청:

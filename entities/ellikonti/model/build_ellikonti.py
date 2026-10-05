@@ -183,7 +183,10 @@ def build():
     bmesh.ops.create_cone(bm, cap_ends=True, cap_tris=False, segments=8,
                           radius1=0.215, radius2=0.0, depth=hat_h)
     bmesh.ops.translate(bm, vec=(0, 0, hat_h / 2), verts=bm.verts)
-    hat = parent(obj_from_bmesh("Hat", bm, "hat", (bx, 0.0, bz)))
+    # Parented to the head (local offset, head has no rotation/scale) so when
+    # Godot tilts the head up to look at the player, the hat goes with it.
+    hat = obj_from_bmesh("Hat", bm, "hat", (bx - hx, 0.0, bz - hz))
+    hat.parent = head
     hat.rotation_euler = (math.radians(-6), math.radians(-10), 0)
     add_ink(hat)
 
@@ -211,7 +214,8 @@ def build():
         a = math.pi / 2 + i * math.pi / 5
         r = 0.04 if i % 2 == 0 else 0.019
         pts.append((math.cos(a) * r, math.sin(a) * r))
-    star = parent(obj_from_bmesh("Star", extrude_polygon(pts, 0.022), "star", (sx, -0.02, sz)))
+    star = obj_from_bmesh("Star", extrude_polygon(pts, 0.022), "star", (sx - hx, -0.02, sz - hz))
+    star.parent = head  # follows the head tilt too
     star.rotation_euler = (0, math.radians(-14), 0)
     add_ink(star, 0.006)
 

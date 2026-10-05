@@ -50,6 +50,9 @@ extends Node3D
 # (whatever yaw Visual has in the scene). Applied to Visual only.
 @export var look_radius := 4.0
 @export var turn_speed := 2.5
+# Within look_radius she also tilts her head (hat and star ride along, they
+# are children of Head in the .glb) up toward the player's eyes.
+@export var max_look_up_degrees := 35.0
 
 # Expression name -> [eyes, mouth, extra] layer textures in faces/.
 const EXPRESSIONS := {
@@ -92,6 +95,8 @@ var _bell_base_rotation: Vector3
 var _star: Node3D
 var _star_base_position: Vector3
 var _rest_yaw: float
+var _head: Node3D
+var _head_base_pitch: float
 
 @onready var _visual: Node3D = $Visual
 @onready var _mutter: MutterLabel = $MutterLabel
@@ -112,6 +117,8 @@ func _ready() -> void:
 
 	# owned=false: these live inside the instanced .glb scene.
 	var head := _visual.find_child("Head", true, false) as MeshInstance3D
+	_head = head
+	_head_base_pitch = head.rotation.x
 	_bell = _visual.find_child("Bell", true, false) as Node3D
 	_star = _visual.find_child("Star", true, false) as Node3D
 	_rest_yaw = _visual.rotation.y
@@ -171,8 +178,15 @@ func _update_facing(delta: float) -> void:
 	if dist < 0.01:
 		return
 	var target := _rest_yaw
+	var pitch := 0.0
 	if dist <= look_radius:
 		target = atan2(to_cam.x, to_cam.z) - global_rotation.y
+		var to_eyes := cam.global_position - _head.global_position
+		var flat := Vector2(to_eyes.x, to_eyes.z).length()
+		pitch = clampf(atan2(to_eyes.y, flat), 0.0, deg_to_rad(max_look_up_degrees))
+	# Model faces +Z, so a negative X rotation lifts the face.
+	_head.rotation.x = lerp_angle(_head.rotation.x, _head_base_pitch - pitch,
+			clampf(turn_speed * delta, 0.0, 1.0))
 	_visual.rotation.y = lerp_angle(_visual.rotation.y, target, clampf(turn_speed * delta, 0.0, 1.0))
 
 
