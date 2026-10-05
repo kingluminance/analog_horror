@@ -10,13 +10,14 @@
 script = ExtResource("1_script")
 
 [node name="Visual" type="Node3D" parent="."]
+transform = Transform3D(1.3, 0, 0, 0, 1.3, 0, 0, 0, 1.3, 0, 0, 0)
 
 [node name="Model" parent="Visual" instance=ExtResource("2_model")]
 
 [node name="Interactable" parent="." instance=ExtResource("3_interactable")]
 dialogue_resource = ExtResource("4_dialogue")
-range_radius = 1.6
-hint_offset = Vector3(0, 0.58, 0)
+range_radius = 1.9
+hint_offset = Vector3(0, 0.75, 0)
 
 [node name="MutterLabel" parent="." instance=ExtResource("5_mutter")]
-position = Vector3(0, 1.2, 0)
+position = Vector3(0, 1.55, 0)

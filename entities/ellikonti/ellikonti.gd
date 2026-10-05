@@ -45,8 +45,10 @@ extends Node3D
 @export var mutter_interval_min := 4.0
 @export var mutter_interval_max := 9.0
 
-# How fast the body turns to face the player (it is a 3D model now, not a
-# billboard, so it has to look at you on its own). Applied to Visual only.
+# She only turns to stare at the player once they come within look_radius
+# (horizontal metres); further away she turns back to her resting direction
+# (whatever yaw Visual has in the scene). Applied to Visual only.
+@export var look_radius := 4.0
 @export var turn_speed := 2.5
 
 # Expression name -> [eyes, mouth, extra] layer textures in faces/.
@@ -89,6 +91,7 @@ var _bell: Node3D
 var _bell_base_rotation: Vector3
 var _star: Node3D
 var _star_base_position: Vector3
+var _rest_yaw: float
 
 @onready var _visual: Node3D = $Visual
 @onready var _mutter: MutterLabel = $MutterLabel
@@ -111,6 +114,7 @@ func _ready() -> void:
 	var head := _visual.find_child("Head", true, false) as MeshInstance3D
 	_bell = _visual.find_child("Bell", true, false) as Node3D
 	_star = _visual.find_child("Star", true, false) as Node3D
+	_rest_yaw = _visual.rotation.y
 	_bell_base_rotation = _bell.rotation
 	_star_base_position = _star.position
 	# Own copy of the head material so swapping face layers never touches
@@ -163,9 +167,12 @@ func _update_facing(delta: float) -> void:
 	if cam == null:
 		return
 	var to_cam := cam.global_position - global_position
-	if Vector2(to_cam.x, to_cam.z).length() < 0.01:
+	var dist := Vector2(to_cam.x, to_cam.z).length()
+	if dist < 0.01:
 		return
-	var target := atan2(to_cam.x, to_cam.z) - global_rotation.y
+	var target := _rest_yaw
+	if dist <= look_radius:
+		target = atan2(to_cam.x, to_cam.z) - global_rotation.y
 	_visual.rotation.y = lerp_angle(_visual.rotation.y, target, clampf(turn_speed * delta, 0.0, 1.0))
 
 
