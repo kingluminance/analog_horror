@@ -4,8 +4,12 @@ using Stats
 ~ start
 $> locals.visits = StoryFlags.get_visit_count("ellikonti")
 $> StoryFlags.increment_visit_count("ellikonti")
-if locals.visits >= 1
-	=> repeat
+if StoryFlags.get_flag("ellikonti_contract_accepted") or StoryFlags.get_flag("ellikonti_contract_forced")
+	=> after_contract
+elif StoryFlags.get_flag("ellikonti_offer_pending")
+	=> offer_again
+elif locals.visits >= 1
+	=> again
 else
 	=> first_meet
 
@@ -17,6 +21,24 @@ $> tremble_level = 2.0
 엘리콘티: 아.. 안녕?
 엘리콘티: 날 어떻게 찾은거야?
 엘리콘티: 날개들 한테도 보일려나?
+엘리콘티: 언제부터 있었어, 너는 누구야?
+- 모르겠어.
+	엘리콘티: 모르겠다니?
+	엘리콘티: 그래 모를수도 있지
+	엘리콘티: 나도 내가 누군지 잘 몰라
+	=> wings_menu
+- 너야 말로 누구야? 여기서 뭐하는거야
+	엘리콘티: 나는 엘리콘티야
+	엘리콘티: 보다시피 여기 숨어있지
+	=> wings_menu
+- 너를 도와줄게
+	=> offer_help
+
+# 첫 만남에서 계약까지 안 가고 나갔다가 다시 온 경우
+~ again
+$> StoryFlags.set_visual_state("ellikonti", "face", "scared")
+$> tremble_level = 2.0
+엘리콘티: ...또 왔어?
 => wings_menu
 
 ~ wings_menu
@@ -34,6 +56,8 @@ if locals.wings_done
 	엘리콘티: ..근데 왜 이런 낮은 곳까지 있는건지 모르겠어.
 	$> StoryFlags.mark_choice_seen("ellikonti", "wings_why")
 	=> wings_menu
+- 너를 도와줄게
+	=> offer_help
 - 대화를 그만한다
 	=> END
 
@@ -44,6 +68,8 @@ $> tremble_level = 0
 엘리콘티: 왜 그렇게 궁금한 눈으로 봐?
 - 계약이 뭔데?
 	=> contract_story
+- 너를 도와줄게
+	=> offer_help
 - 대화를 그만한다
 	=> END
 
@@ -91,32 +117,68 @@ $> StoryFlags.set_visual_state("ellikonti", "face", "panic")
 엘리콘티: 시계가 보여.
 엘리콘티: 얼마 안남았어.
 엘리콘티: 제기랄
-$> StoryFlags.set_visual_state("ellikonti", "face", "cry")
-엘리콘티: 혼자 있게 해줘.
 $> Stats.add_stat("flexibility", -1)
 $> Stats.add_stat("aggression", -1)
 $> Stats.add_stat("hp", -1)
+=> offer
+
+# 엘리콘티가 먼저 계약을 제안함 -- 여기서 거절하면 강제 계약
+~ offer
+$> StoryFlags.set_visual_state("ellikonti", "face", "tired")
+$> tremble_level = 0
+엘리콘티: ...
+엘리콘티: 있잖아.
+엘리콘티: 계약은 두 명 이상이 동의하면 무조건 성립돼.
+엘리콘티: 너랑 나. 딱 두 명이네.
+엘리콘티: 조건은.. 날 데려가 주는 거야. 날개들이 못 보는 곳으로.
+엘리콘티: 나랑 계약해줄래?
+=> offer_choice
+
+# "생각해볼게" 하고 나갔다가 다시 온 경우
+~ offer_again
+$> StoryFlags.set_visual_state("ellikonti", "face", "tired")
+$> tremble_level = 1.0
+엘리콘티: 또 왔네.
+엘리콘티: ...생각은 해봤어?
+=> offer_choice
+
+~ offer_choice
+- 계약한다
+	$> StoryFlags.set_flag("ellikonti_offer_pending", false)
+	=> contract_accept
+- 거절한다
+	$> StoryFlags.set_flag("ellikonti_offer_pending", false)
+	=> contract_refuse
+- 생각해볼게
+	$> StoryFlags.set_flag("ellikonti_offer_pending", true)
+	$> StoryFlags.set_visual_state("ellikonti", "face", "cry")
+	엘리콘티: ...응. 기다릴게. 시간이 별로 없지만.
+	=> END
+
+~ contract_accept
+$> StoryFlags.set_visual_state("ellikonti", "face", "cry")
+$> tremble_level = 0
+엘리콘티: ...진짜?
+$> StoryFlags.set_visual_state("ellikonti", "face", "flustered")
+엘리콘티: 진짜지? 무르기 없어.
+엘리콘티: 계약 체결.
+$> StoryFlags.set_flag("ellikonti_contract_accepted", true)
 => END
 
-
-~ repeat
-$> StoryFlags.set_visual_state("ellikonti", "face", "panic")
-$> tremble_level = 5.0
+# 거절 -> 강제 계약 (예전 repeat의 주문을 그대로 옮겨옴)
+~ contract_refuse
+$> StoryFlags.set_visual_state("ellikonti", "face", "default")
+$> tremble_level = 0
 엘리콘티: ...
+엘리콘티: 그렇구나.
+엘리콘티: 그래, 그게 맞아. 누가 나 같은 걸..
 $> tremble_level = 9.0
-엘리콘티: 여기선 나만 정상이야..
+엘리콘티: 근데 미안.
+엘리콘티: 나 시간이 없거든.
+$> StoryFlags.set_visual_state("ellikonti", "face", "panic")
 $> tremble_level = 11.0
-엘리콘티: 그런게.. (중얼거림)
-너 : 괜찮아?
-엘리콘티: 너..너 뭐야 여기서..
-엘리콘티: 잘못된 계약이었어.. 이건 무효라고.
-엘리콘티: 그들이 날 알고있어.
-엘리콘티: 내가 여기 있다는걸 알고 있다고.
-엘리콘티: 아아.. 넌 이 소리가 안들려?
-엘리콘티: (헛구역질)..
 엘리콘티: 너.. 내가 하는말을 끝까지 들을수 밖에 없구나.
 엘리콘티: 신이시여.
-엘리콘티: 시간이 얼마 없어..
 $> StoryFlags.set_visual_state("ellikonti", "face", "cry")
 엘리콘티: 나를 용서해줘
 $> unskippable = true
@@ -126,5 +188,61 @@ $> tremble_level = 15.0
 $> StoryFlags.set_visual_state("ellikonti", "face", "panic")
 엘리콘티: [speed=0.2] 중압감을이겨내사모든세상에힘이내아래있고수직적인세계여바닥을보여라수평적인세계에하늘을날으리끝이없는이의한숨에힘을부어놓고날개날개날개날개엘리콘티이름모를탐험가가계약에참여하니먼길이의말이여계약에강제를불어넣으사일방적인문이양쪽으로열리게하시오난여기에있으면안되오내가있을곳을모험과의계약으로가방에숨어끊임없는계약의과오위에덮어강한힘으로누르사근원의흔들림이올때까지나를구원하라
 엘리콘티: [speed=0.2] 계약 체결됨.
+$> unskippable = false
+$> tremble_level = 0
 $> Stats.add_stat("flexibility", -4)
+$> StoryFlags.set_flag("ellikonti_contract_forced", true)
+=> END
+
+# 플레이어가 먼저 "너를 도와줄게"로 계약하러 가는 길 (수락 루트로 이어짐)
+~ offer_help
+$> StoryFlags.set_visual_state("ellikonti", "face", "scared")
+$> tremble_level = 2.0
+엘리콘티: 도와준다니?
+- 계약에 관해서
+	엘리콘티: 너가 계약을 어떻게 알아?
+- 너랑 날개에 대해서
+	엘리콘티: 나랑 날개?
+	엘리콘티: 어떻게 알고있어?
+$> StoryFlags.set_visual_state("ellikonti", "face", "tired")
+$> tremble_level = 0
+엘리콘티: 도와준다면야..
+엘리콘티: 뭐 말리지 않을게.
+엘리콘티: 어떻게 도와주려고?
+- 나와 계약해.
+- 나와 계약해.
+- 나와 계약해.
+엘리콘티: 어디까지 알고있는건지 모르겠지만.
+엘리콘티: 그래 알았어.
+엘리콘티: 조건은 내가 정할게.
+엘리콘티: 하나.
+엘리콘티: 날 네 가방에 넣어줄 것.
+엘리콘티: 둘.
+엘리콘티: 날개가 네 이름을 불러도 대답하지 말 것.
+엘리콘티: 셋.
+$> unskippable = true
+엘리콘티: [speed=0.5] 뒷면을 보게 되면, 나한테 제일 먼저 말해줄 것.
+$> unskippable = false
+엘리콘티: ...
+엘리콘티: 동의하면 이제 무를 수 없어.
+- 동의한다.
+엘리콘티: 계약 체결.
+$> StoryFlags.set_flag("ellikonti_offer_pending", false)
+$> StoryFlags.set_flag("ellikonti_contract_accepted", true)
+=> END
+
+# 계약 이후 -- 아직 안 만듦 (수락: 가방 속 아이템 / 강제: 월드에 남아서 플레이어를 피함).
+# 예전 repeat 대사 중 강제 계약 이후에 쓸 만한 것들:
+#   엘리콘티: 여기선 나만 정상이야..
+#   엘리콘티: 그런게.. (중얼거림)
+#   너 : 괜찮아?
+#   엘리콘티: 너..너 뭐야 여기서..
+#   엘리콘티: 잘못된 계약이었어.. 이건 무효라고.
+#   엘리콘티: 그들이 날 알고있어.
+#   엘리콘티: 내가 여기 있다는걸 알고 있다고.
+#   엘리콘티: 아아.. 넌 이 소리가 안들려?
+#   엘리콘티: (헛구역질)..
+#   엘리콘티: 시간이 얼마 없어..
+~ after_contract
+엘리콘티: ...
 => END
