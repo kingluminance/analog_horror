@@ -105,6 +105,25 @@
   구현(위 참고) — 처음엔 그 두 선택지를 각각 다른 `if` 블록으로 감싸서 조건부로 숨기려다가 "위
   선택지 하나만 조건부로 숨기기" 항목의 함정을 그대로 겪음(한 메뉴로 안 합쳐지고 하나씩 튀어나옴)
   → `[if ... /]` 인라인 조건 + `hide_failed_responses`로 해결.
+  **2차 리디자인 (3D)**: 사용자가 직접 그린 "도형으로 이루어진" 새 스케치(삼각 고깔+종, 별, 뒤로 몽글한
+  보라 곱슬머리, 청회색 동그란 머리, 왼쪽으로 뾰족한 초록 삼각 몸통, 물방울 손, 대각선 긴 조각, 보라 동그라미)를
+  해석 없이 "그 모양 그대로" 저폴리 3D로 옮김. `Visual`은 이제 `Sprite3D`가 아니라 `Node3D` 밑에
+  `ellikonti.glb` 인스턴스. **모델은 손으로 안 만지고 스크립트로 생성**: `model/build_ellikonti.py`(Blender 5.2
+  헤드리스, `-b --factory-startup --python ...`, `EK_PREVIEW=<경로>`를 주면 워크벤치 미리보기 4방향도 렌더)
+  → `ellikonti.glb`, `model/make_textures.py`(Pillow) → `textures/*.png`(64px 손칠 스와치) + `faces/*.png`.
+  스케치의 굵은 검정 선은 inverted-hull `*_Ink` 메시(선 없는 머리카락엔 없음). 질감은 사용자 레퍼런스(PS1
+  시절 캐릭터: 저해상도 손칠 텍스처, nearest 필터, 버텍스 떨림) 기준으로 공용 셰이더
+  `shaders/retro_character.gdshader`(curved_world 휨 + 버텍스 스내핑 + unshaded 가짜 조명 + 4x4 디더
+  포스터라이즈 + 얼굴 레이어). GLB 재질은 이름(`ek_<part>`)으로 `.glb.import`의 `_subresources`에서
+  `materials/ek_<part>.tres`(외부 재질)에 매핑 — 그래서 GLB를 다시 뽑아도 재질은 유지되고 에디터에서도 같은
+  모습으로 보임. **표정은 지오메트리가 아니라 머리 재질의 텍스처 레이어 3장(eyes/mouth/extra)**, 머리 로컬
+  +Z 방향으로 투영. `ellikonti.gd`의 `EXPRESSIONS`(default/scared/panic/cry/tired/flustered)가 조합을
+  정의하고, 대화에선 `$> StoryFlags.set_visual_state("ellikonti", "face", "panic")`로 바꿈(새 오토로드
+  없음), `DialogueManager.dialogue_ended`에서 `default`로 복귀. 머리 재질은 `_ready()`에서 duplicate해서
+  override로 씀(공유 `.tres` 오염 방지). 그 외: 빌보드가 아니므로 `Visual`만 플레이어 쪽으로 yaw 회전
+  (루트/`Interactable`은 고정), 랜덤 눈 깜빡임, 모자 종이 떨림에 맞춰 흔들림, 별은 둥실+좌우 흔들림(완전
+  회전은 옆에서 판자처럼 보여서 뺌). 새 표정 추가 = `make_textures.py`에 그리는 함수 추가 → `EXPRESSIONS`에
+  한 줄. Krita로 `faces/*.png`를 직접 덮어그려도 됨(128x128 RGBA, 얼굴 UV 0..1이 머리 앞면 전체).
 - **나무집(로그캐빈)** (`Objects/LogCabin`, `(20, 0, -20)`) — 지면에 지은 통나무집 스타일(사용자 요청:
   나무 위 트리하우스 아님). `Body`(StaticBody3D, 충돌 있음 — 벽을 그냥 뚫고 지나갈 수 없게)/`Roof`
   (`PrismMesh`, 뾰족지붕)/`Door` 전부 나무·땅 공용 `curved_world` 셰이더 + 단색 `albedo_color`로 만듦

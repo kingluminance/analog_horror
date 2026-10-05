@@ -59,6 +59,7 @@ ui/
       └─ settings_page.gd/.tscn     [설정] 탭 -- 옛 pause_menu.gd 내용을 그대로 이전
 shaders/
   ├─ curved_world.gdshader     땅+나무+오브젝트 공용, 세계가 살짝 구형으로 휘어 보임
+  ├─ retro_character.gdshader  저폴리 3D 캐릭터용 PS1 질감(버텍스 스내핑/디더/얼굴 텍스처 레이어), 첫 사용처 엘리콘티
   └─ dither_overlay.gdshader   화면 전체 포스트프로세싱(디더링/비네트/스캔라인/그레인/CA)
 audio/                          외부 에셋 없이 Python stdlib(wave/math/random)로 합성한 SFX
 addons/dialogue_manager/        Dialogue Manager v4.1.0 (doda 프로젝트에서 그대로 가져온 애드온)
@@ -152,8 +153,8 @@ addons/dialogue_manager/        Dialogue Manager v4.1.0 (doda 프로젝트에서
       시작할 때 1장을 임시로 지급함 (발광체와 같은 임시 상태)
 - [ ] "기록된 날개와의 계약" 스토리 이벤트 만들어서 wings_contract_stage1/stage2
       StoryFlags를 실제로 세워주기 (지금은 세이브 슬롯이 영원히 1개로 고정된 상태)
-- [ ] 엘리콘티 새 아트(마도카 마녀 스타일)에 맞춰 `Visual`의 `pixel_size`/스케일/기존 위치가 여전히
-      맞는지 에디터에서 확인 — 몸통 실루엣이 이전 치비 디자인이랑 많이 달라져서 재조정 필요할 수 있음
+- [ ] 3D 엘리콘티(`entities/ellikonti/ellikonti.glb`)를 에디터/플레이로 직접 보고 크기·표정 크기·
+      버텍스 스내핑 강도(`snap_resolution`)·머리카락 덩어리 배치 조정 (스크립트 렌더 미리보기로만 확인함)
 - [ ] 천막 안 소품들(상인/선반/진열대/랜턴/상자류)의 정확한 위치/크기를 에디터에서 직접 보고 조정
       (전부 감으로 배치함, 실제 천막 내부 형태를 못 보고 작업해서)
 - [ ] `bottari_merchant.dialogue`/`bottari_merchant_chat.dialogue`의 대사 화자 이름이 "보따리장수"가 아니라

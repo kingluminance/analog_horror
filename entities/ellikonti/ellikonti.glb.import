@@ -1,0 +1,98 @@
+[remap]
+
+importer="scene"
+importer_version=1
+type="PackedScene"
+uid="uid://bo0qxtks50i8x"
+path="res://.godot/imported/ellikonti.glb-f3c00bd1b2eef5e1d94145ed2090c958.scn"
+
+[deps]
+
+source_file="res://entities/ellikonti/ellikonti.glb"
+dest_files=["res://.godot/imported/ellikonti.glb-f3c00bd1b2eef5e1d94145ed2090c958.scn"]
+
+[params]
+
+nodes/root_type=""
+nodes/root_name=""
+nodes/root_script=null
+mesh_library/use_node_names_as_mesh_names=false
+array_mesh/deduplicate_surfaces=true
+nodes/apply_root_scale=true
+nodes/root_scale=1.0
+nodes/import_as_skeleton_bones=false
+nodes/use_name_suffixes=true
+nodes/use_node_type_suffixes=true
+meshes/ensure_tangents=true
+meshes/generate_lods=false
+meshes/create_shadow_meshes=false
+meshes/light_baking=1
+meshes/lightmap_texel_size=0.2
+meshes/force_disable_compression=false
+skins/use_named_skins=true
+animation/import=true
+animation/fps=30
+animation/trimming=false
+animation/remove_immutable_tracks=true
+animation/import_rest_as_RESET=false
+import_script/path=""
+materials/extract=0
+materials/extract_format=0
+materials/extract_path=""
+_subresources={
+"materials": {
+"ek_bell": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://entities/ellikonti/materials/ek_bell.tres",
+"use_external/path": "res://entities/ellikonti/materials/ek_bell.tres"
+},
+"ek_hair": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://entities/ellikonti/materials/ek_hair.tres",
+"use_external/path": "res://entities/ellikonti/materials/ek_hair.tres"
+},
+"ek_hand": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://entities/ellikonti/materials/ek_hand.tres",
+"use_external/path": "res://entities/ellikonti/materials/ek_hand.tres"
+},
+"ek_hat": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://entities/ellikonti/materials/ek_hat.tres",
+"use_external/path": "res://entities/ellikonti/materials/ek_hat.tres"
+},
+"ek_head": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://entities/ellikonti/materials/ek_head.tres",
+"use_external/path": "res://entities/ellikonti/materials/ek_head.tres"
+},
+"ek_ink": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://entities/ellikonti/materials/ek_ink.tres",
+"use_external/path": "res://entities/ellikonti/materials/ek_ink.tres"
+},
+"ek_knee": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://entities/ellikonti/materials/ek_knee.tres",
+"use_external/path": "res://entities/ellikonti/materials/ek_knee.tres"
+},
+"ek_leg": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://entities/ellikonti/materials/ek_leg.tres",
+"use_external/path": "res://entities/ellikonti/materials/ek_leg.tres"
+},
+"ek_star": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://entities/ellikonti/materials/ek_star.tres",
+"use_external/path": "res://entities/ellikonti/materials/ek_star.tres"
+},
+"ek_torso": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://entities/ellikonti/materials/ek_torso.tres",
+"use_external/path": "res://entities/ellikonti/materials/ek_torso.tres"
+}
+}
+}
+gltf/naming_version=2
+gltf/embedded_image_handling=1
+gltf/texture_map_mode=1

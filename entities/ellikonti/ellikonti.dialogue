@@ -11,6 +11,7 @@ else
 
 
 ~ first_meet
+$> StoryFlags.set_visual_state("ellikonti", "face", "scared")
 $> tremble_level = 2.0
 엘리콘티: ...
 엘리콘티: 아.. 안녕?
@@ -37,6 +38,7 @@ if locals.wings_done
 	=> END
 
 ~ contract_menu
+$> StoryFlags.set_visual_state("ellikonti", "face", "tired")
 $> tremble_level = 0
 엘리콘티: ...
 엘리콘티: 왜 그렇게 궁금한 눈으로 봐?
@@ -48,8 +50,10 @@ $> tremble_level = 0
 ~ contract_story
 $> tremble_level = 5.0
 엘리콘티: ...
+$> StoryFlags.set_visual_state("ellikonti", "face", "cry")
 엘리콘티: 내 인생은 망했어.
 엘리콘티: 시작은 그냥 호기심이었어.
+$> StoryFlags.set_visual_state("ellikonti", "face", "scared")
 엘리콘티: 저것들이 계속, 게속, 계속. 날 바라 보잖아.
 $> unskippable = true
 엘리콘티: [speed=0.5] 넌 누군가의 뒷면을 본적이 있어?
@@ -63,26 +67,31 @@ $> unskippable = false
 엘리콘티: 두명 이상이 동의 하면 무조건 성립되는 계약을 할 수 있어.
 엘리콘티: 내 권능이지. 이래보여도 나는 꽤 높은 곳에 있었거든.
 엘리콘티: 어릴때부터 이 능력을 내가 잘 다룬다고 생각했지.
+$> StoryFlags.set_visual_state("ellikonti", "face", "panic")
 엘리콘티: 근데 망할! 아니었던거야.
 엘리콘티: 내가 하늘에 닿으려했던건가?
 엘리콘티: 자칭 멋진 아이디어는 여기서 출발했어.
 엘리콘티: 기록지.
 엘리콘티: 기록된 날개가 가지고 있는 기록지 말이야.
 엘리콘티: 거기라면 뒷면도 기록돼 있지 않을까?
+$> StoryFlags.set_visual_state("ellikonti", "face", "flustered")
 엘리콘티: 난 내 아주아주 작은 뇌에 감탄을 했어.
 엘리콘티: 당장 나는 기록된 날개에게 찾아 갔지.
 엘리콘티: 그곳에는 근데 기록된 날개 말고도 4대 날개가 다 있었어.
 엘리콘티: 나는 기록된 날개에게 다짜고짜 계약하자했지.
 엘리콘티: 기록된 날개는 순순히 내 계약에 응했어.
+$> StoryFlags.set_visual_state("ellikonti", "face", "scared")
 엘리콘티: 계약 조건은 간단했어.
 엘리콘티: 4대 날개 모두를 계약에 포함 시킬 것.
 엘리콘티: ...?
+$> StoryFlags.set_visual_state("ellikonti", "face", "panic")
 엘리콘티: 머리가 너무 아파.
 엘리콘티: 너 나한테 무슨 짓을 한거야.
 엘리콘티: 아.. 아닌가..
 엘리콘티: 시계가 보여.
 엘리콘티: 얼마 안남았어.
 엘리콘티: 제기랄
+$> StoryFlags.set_visual_state("ellikonti", "face", "cry")
 엘리콘티: 혼자 있게 해줘.
 $> Stats.add_stat("flexibility", -1)
 $> Stats.add_stat("aggression", -1)
@@ -91,6 +100,7 @@ $> Stats.add_stat("hp", -1)
 
 
 ~ repeat
+$> StoryFlags.set_visual_state("ellikonti", "face", "panic")
 $> tremble_level = 5.0
 엘리콘티: ...
 $> tremble_level = 9.0
@@ -107,11 +117,13 @@ $> tremble_level = 11.0
 엘리콘티: 너.. 내가 하는말을 끝까지 들을수 밖에 없구나.
 엘리콘티: 신이시여.
 엘리콘티: 시간이 얼마 없어..
+$> StoryFlags.set_visual_state("ellikonti", "face", "cry")
 엘리콘티: 나를 용서해줘
 $> unskippable = true
 $> tremble_level = 0
 엘리콘티: 미[wait=0.5]안[wait=0.5]해.
 $> tremble_level = 15.0
+$> StoryFlags.set_visual_state("ellikonti", "face", "panic")
 엘리콘티: [speed=0.2] 중압감을이겨내사모든세상에힘이내아래있고수직적인세계여바닥을보여라수평적인세계에하늘을날으리끝이없는이의한숨에힘을부어놓고날개날개날개날개엘리콘티이름모를탐험가가계약에참여하니먼길이의말이여계약에강제를불어넣으사일방적인문이양쪽으로열리게하시오난여기에있으면안되오내가있을곳을모험과의계약으로가방에숨어끊임없는계약의과오위에덮어강한힘으로누르사근원의흔들림이올때까지나를구원하라
 엘리콘티: [speed=0.2] 계약 체결됨.
 $> Stats.add_stat("flexibility", -4)

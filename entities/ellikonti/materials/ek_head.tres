@@ -1,0 +1,17 @@
+[gd_resource type="ShaderMaterial" load_steps=6 format=3]
+
+[ext_resource type="Shader" path="res://shaders/retro_character.gdshader" id="1_shader"]
+[ext_resource type="Texture2D" path="res://entities/ellikonti/textures/head.png" id="2_tex"]
+[ext_resource type="Texture2D" path="res://entities/ellikonti/faces/eyes_default.png" id="3_face_eyes"]
+[ext_resource type="Texture2D" path="res://entities/ellikonti/faces/mouth_default.png" id="4_face_mouth"]
+[ext_resource type="Texture2D" path="res://entities/ellikonti/faces/extra_none.png" id="5_face_extra"]
+
+[resource]
+shader = ExtResource("1_shader")
+shader_parameter/albedo_tex = ExtResource("2_tex")
+shader_parameter/face_eyes = ExtResource("3_face_eyes")
+shader_parameter/face_mouth = ExtResource("4_face_mouth")
+shader_parameter/face_extra = ExtResource("5_face_extra")
+shader_parameter/use_face = true
+shader_parameter/face_center = Vector2(0, 0)
+shader_parameter/face_size = Vector2(0.4, 0.368)
