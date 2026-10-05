@@ -4,7 +4,7 @@ using Stats
 ~ start
 $> locals.visits = StoryFlags.get_visit_count("ellikonti")
 $> StoryFlags.increment_visit_count("ellikonti")
-if StoryFlags.get_flag("ellikonti_contract_accepted") or StoryFlags.get_flag("ellikonti_contract_forced")
+if StoryFlags.get_flag("ellikonti_contracted")
 	=> after_contract
 elif StoryFlags.get_flag("ellikonti_offer_pending")
 	=> offer_again
@@ -162,7 +162,7 @@ $> tremble_level = 0
 $> StoryFlags.set_visual_state("ellikonti", "face", "flustered")
 엘리콘티: 진짜지? 무르기 없어.
 엘리콘티: 계약 체결.
-$> StoryFlags.set_flag("ellikonti_contract_accepted", true)
+$> StoryFlags.set_flag("ellikonti_contracted", true)
 => END
 
 # 거절 -> 강제 계약 (예전 repeat의 주문을 그대로 옮겨옴)
@@ -191,7 +191,7 @@ $> StoryFlags.set_visual_state("ellikonti", "face", "panic")
 $> unskippable = false
 $> tremble_level = 0
 $> Stats.add_stat("flexibility", -4)
-$> StoryFlags.set_flag("ellikonti_contract_forced", true)
+$> StoryFlags.set_flag("ellikonti_contracted", true)
 => END
 
 # 플레이어가 먼저 "너를 도와줄게"로 계약하러 가는 길 (수락 루트로 이어짐)
@@ -228,11 +228,12 @@ $> unskippable = false
 - 동의한다.
 엘리콘티: 계약 체결.
 $> StoryFlags.set_flag("ellikonti_offer_pending", false)
-$> StoryFlags.set_flag("ellikonti_contract_accepted", true)
+$> StoryFlags.set_flag("ellikonti_contracted", true)
 => END
 
-# 계약 이후 -- 아직 안 만듦 (수락: 가방 속 아이템 / 강제: 월드에 남아서 플레이어를 피함).
-# 예전 repeat 대사 중 강제 계약 이후에 쓸 만한 것들:
+# 계약 이후 -- 아직 안 만듦. 어느 루트(수락/거절->강제/"너를 도와줄게")로 계약했든
+# 결과는 똑같음 -- 그래서 플래그도 ellikonti_contracted 하나뿐.
+# 예전 repeat 대사 중 나중에 쓸 만한 것들:
 #   엘리콘티: 여기선 나만 정상이야..
 #   엘리콘티: 그런게.. (중얼거림)
 #   너 : 괜찮아?

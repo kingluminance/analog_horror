@@ -153,8 +153,8 @@ addons/dialogue_manager/        Dialogue Manager v4.1.0 (doda 프로젝트에서
       시작할 때 1장을 임시로 지급함 (발광체와 같은 임시 상태)
 - [ ] "기록된 날개와의 계약" 스토리 이벤트 만들어서 wings_contract_stage1/stage2
       StoryFlags를 실제로 세워주기 (지금은 세이브 슬롯이 영원히 1개로 고정된 상태)
-- [ ] 엘리콘티 계약 이후 내용(`ellikonti.dialogue`의 `after_contract`, 지금은 `...` 한 줄): 수락 루트는
-      가방 속 인벤토리 아이템(실제 도움 기능은 나중에) + 월드에서 사라짐, 강제 계약 루트는 월드에 남아 플레이어를 피함
+- [ ] 엘리콘티 계약 이후 내용(`ellikonti.dialogue`의 `after_contract`, 지금은 `...` 한 줄) — 어느 루트로
+      계약하든 결과는 같음(`ellikonti_contracted` 플래그 하나)
 - [ ] 3D 엘리콘티(`entities/ellikonti/ellikonti.glb`)를 에디터/플레이로 직접 보고 크기·표정 크기·
       버텍스 스내핑 강도(`snap_resolution`) 조정 (스크립트 렌더 미리보기로만 확인함)
 - [ ] 천막 안 소품들(상인/선반/진열대/랜턴/상자류)의 정확한 위치/크기를 에디터에서 직접 보고 조정
