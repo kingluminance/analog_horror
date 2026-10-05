@@ -108,3 +108,8 @@
   스크린샷으로 신고). 고치는 법: 로컬 스케일을 세 축 다 정확히 `0.0033333333`(=1/300)으로 주고, 실제
   치수는 `mesh.size`(BoxMesh 등) 쪽에서 미터 단위로 직접 조절 -- 그러면 부모 스케일이 정확히 상쇄돼서
   숫자 그대로가 실제 크기가 됨. 천막 안의 선반/진열대/랜턴/상자 전부 이 패턴으로 통일함.
+- **3D에서 쓰는 픽셀아트 텍스처가 에디터를 열면 VRAM 압축으로 자동 전환됨**: 텍스처 `.import`의 기본값
+  `detect_3d/compress_to=1` 때문에, 에디터가 그 PNG가 3D 재질에서 쓰이는 걸 감지하면 `.import`를
+  `compress/mode=2`(VRAM 압축) + `mipmaps/generate=true`로 스스로 고쳐 씀 -- 작은 손칠/픽셀 텍스처(엘리콘티
+  `textures/`, `faces/`)는 색이 뭉개지고, 커밋된 `.import`와 달라져서 다음 머지가 "local changes would be
+  overwritten"으로 막힘. 픽셀 그대로 쓸 텍스처는 `compress/mode=0` + `detect_3d/compress_to=0`으로 커밋할 것.
