@@ -135,7 +135,8 @@
   설명 대사 밑에서 계속 도는 "돌림노래" -- E단조 3/4 120BPM 32마디 정확히 48초, 인트로/엔딩 없이 마지막 B7이 첫 Em으로
   이어짐, 바순 "쿵" + 피치카토 "짝짝" + 듬성듬성한 오르골/첼레스타 멜로디(대사를 가리지 않게 낮은 음량), 잔향 꼬리를
   앞에 겹친 이음매 없는 루프, import `loop_mode` Forward. 사용자가 LMMS판(D단조 행진풍)과 MIDI판(E단조 왈츠) 둘을 듣고
-  "둘 다 섞어서 루프곡으로" 고른 결과. 원본은 저장소 밖 `C:/Users/my/Documents/music/ellikonti_explain_loop.py/.mid/.pdf`)이 별 효과음 1.4초 뒤 페이드인. **새 씬의 엘리콘티 설명
+  "둘 다 섞어서 루프곡으로" 고른 결과. v2에서 "말 못할 불편함" 추가: 피치벤드로 약 +37센트 어긋나게 출렁이는
+  오르골 쌍둥이, 패드에 삼전음(E 밑 Bb, Cm 밑 F#), 피치카토 반음 충돌, b 후반 반음 위 메아리, 바순이 가끔 E 대신 F. 원본은 저장소 밖 `C:/Users/my/Documents/music/ellikonti_explain_loop.py/.mid/.pdf`)이 별 효과음 1.4초 뒤 페이드인. **새 씬의 엘리콘티 설명
   대사와 그 이후는 아직 없음**(사용자 요청). 끝나면 `ellikonti_contract_cutscene_seen` 플래그. 타이밍은 전부
   `AnimationPlayer`의 `contract` 애니메이션(17.7초)에 있음 — 스크립트 `@export` 손잡이(`cam_blend`,
   `arm_reach`, `mouth_size`, `head_scale`, `head_rise`, `look_head`, `head_push`, `darkness`, `sweep`,

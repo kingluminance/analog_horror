@@ -7,7 +7,8 @@ extends Node
 ## background. Then Ellikonti's explanation BGM fades in under it (Bgm:
 ## contract_space_bgm.wav -- a seamless 48 s "돌림노래" loop meant to sit
 ## under her talking: E minor 3/4, bassoon oom + pizzicato pah-pah, sparse
-## music-box/celesta melody; source C:/Users/my/Documents/music/
+## music-box/celesta melody, with quiet wrongness underneath -- a detuned
+## music-box twin, tritone shadows, semitone clashes; source C:/Users/my/Documents/music/
 ## ellikonti_explain_loop.py/.mid/.pdf, a mix of the earlier LMMS march and
 ## MIDI waltz drafts).
 ## Ellikonti talking to you in the middle of it (and where you go afterwards)
