@@ -37,6 +37,7 @@
 [ext_resource type="PackedScene" path="res://ui/shop/sell_list_ui.tscn" id="39_sell_list_ui"]
 [ext_resource type="Texture2D" uid="uid://bqj2mnurj3xsc" path="res://entities/floating_photo/photos/scissor_scarf.png" id="40_scissor_tex"]
 [ext_resource type="Resource" uid="uid://slsnbshyqg0t" path="res://entities/floating_photo/photos/scissor_scarf.dialogue" id="41_scissor_dlg"]
+[ext_resource type="Script" path="res://entities/shared/sight_blockers.gd" id="40_sight_blockers"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.35, 0.65, 1, 1)
@@ -329,6 +330,7 @@ shape = SubResource("BoxShape3D_boundary_segment")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 5)
 
 [node name="Trees" type="Node3D" parent="." unique_id=1679648827]
+script = ExtResource("40_sight_blockers")
 
 [node name="Tree0" type="Node3D" parent="Trees" unique_id=1237486572]
 transform = Transform3D(-0.801886, 0, -0.268497, 0, 0.845643, 0, 0.268497, 0, -0.801886, 24.713934, 0, -11.027682)
@@ -957,6 +959,7 @@ transform = Transform3D(0.60702544, 0, -0.79468256, 0, 1, 0, 0.79468256, 0, 0.60
 
 [node name="Body" type="StaticBody3D" parent="Objects/LogCabin" unique_id=1402501880]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+collision_layer = 3
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Objects/LogCabin/Body" unique_id=1950293480]
 material_override = SubResource("ShaderMaterial_cabin_body")

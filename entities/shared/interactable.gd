@@ -19,6 +19,21 @@ extends Area3D
 ## NPCs are both in range and both within the facing cone (e.g. lined up
 ## next to each other) showed both hints and opened both dialogues on one
 ## E press.
+##
+## You also have to be able to SEE it: a ray from the camera to the hint
+## point must not hit anything on the sight-blocker layer -- tree trunks (via
+## entities/shared/sight_blockers.gd) and the log cabin's walls. Ordinary
+## collision does NOT block sight: the invisible WorldBoundary walls would
+## otherwise hide the bottari merchant, whose tent overlaps them. Started with
+## Ellikonti being talked to from behind a tree -- her cutscene then played
+## with a trunk filling the screen. The entity's own collision bodies (its
+## parent's subtree) and the player's body never count as blockers.
+
+## Physics layer 2: "blocks line of sight". Nothing has it in its
+## collision_mask, so on its own it never physically stops anything; solid
+## visible things (the cabin) are on layers 1 + 2.
+const SIGHT_BLOCKER_LAYER := 1 << 1
+const SIGHT_RAY_MASK := SIGHT_BLOCKER_LAYER
 
 @export var dialogue_resource: DialogueResource
 @export var dialogue_start_title := "start"
@@ -54,10 +69,16 @@ extends Area3D
 # CLAUDE.md's Jolt scale-error note — but the user liked the synced look).
 @export var hint_spin_speed := 0.0 # radians/sec
 
+## Off only for something that must stay reachable through walls on purpose.
+@export var require_line_of_sight := true
+
 var _player_in_range := false
 # ponytail: DialogueManager exposes no "is running" property, only start/end signals —
 # track it locally. Fine even with multiple instances since only one dialogue runs at a time.
 var _dialogue_running := false
+# Collision bodies belonging to this entity itself (filled in _ready) -- a ray
+# that only hits these isn't "blocked".
+var _own_bodies: Array[RID] = []
 
 @onready var _shape: CollisionShape3D = $CollisionShape3D
 @onready var _hint: Label3D = $InteractHint
@@ -82,6 +103,9 @@ func _ready() -> void:
 	collision_mask = 1
 	_shape.shape.radius = range_radius
 	_hint.position = hint_offset
+	if get_parent():
+		for body in get_parent().find_children("*", "CollisionObject3D", true, false):
+			_own_bodies.append((body as CollisionObject3D).get_rid())
 	if _has_action():
 		body_entered.connect(_on_body_entered)
 		body_exited.connect(_on_body_exited)
@@ -105,7 +129,7 @@ func _process(_delta: float) -> void:
 		Interactable._next_best_dist = INF
 		Interactable._tally_frame = frame
 
-	if _player_in_range and _is_player_facing():
+	if _player_in_range and _is_player_facing() and _has_line_of_sight():
 		var cam := get_viewport().get_camera_3d()
 		var dist := global_position.distance_to(cam.global_position) if cam else 0.0
 		if dist < Interactable._next_best_dist:
@@ -117,6 +141,8 @@ func _process(_delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not _has_action() or not _player_in_range or not _is_player_facing():
 		return
+	# _best is only ever set to an instance that passed the line-of-sight
+	# check this frame (see _process), so no second raycast needed here.
 	if self != Interactable._best:
 		return
 	if event.is_action_pressed("ui_accept") or (event is InputEventKey and event.pressed and event.keycode == KEY_E):
@@ -154,3 +180,21 @@ func _is_player_facing() -> bool:
 		return true
 	var forward := -cam.global_transform.basis.z
 	return forward.normalized().dot(to_self.normalized()) >= cos(deg_to_rad(facing_angle_degrees))
+
+
+# True when nothing solid sits between the camera and the hint point.
+func _has_line_of_sight() -> bool:
+	if not require_line_of_sight:
+		return true
+	var cam := get_viewport().get_camera_3d()
+	if not cam:
+		return true
+	var exclude := _own_bodies.duplicate()
+	var node: Node = cam
+	while node:  # the player's own capsule, wherever the camera hangs
+		if node is CollisionObject3D:
+			exclude.append((node as CollisionObject3D).get_rid())
+		node = node.get_parent()
+	var query := PhysicsRayQueryParameters3D.create(
+			cam.global_position, global_position + hint_offset, SIGHT_RAY_MASK, exclude)
+	return get_world_3d().direct_space_state.intersect_ray(query).is_empty()
