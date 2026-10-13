@@ -1,6 +1,7 @@
-[gd_scene load_steps=16 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://entities/ellikonti/contract_cutscene/contract_cutscene.gd" id="1_script"]
+[ext_resource type="Shader" path="res://entities/ellikonti/contract_cutscene/dome_light.gdshader" id="5_dome"]
 [ext_resource type="Script" path="res://entities/ellikonti/contract_cutscene/rubber_arm.gd" id="2_arm"]
 [ext_resource type="AudioStream" path="res://entities/ellikonti/audio/church_bell.wav" id="10_church_bell"]
 [ext_resource type="AudioStream" path="res://entities/ellikonti/audio/rubber_stretch.wav" id="11_rubber_stretch"]
@@ -168,10 +169,10 @@ tracks/12/path = NodePath(".:sweep")
 tracks/12/interp = 1
 tracks/12/loop_wrap = true
 tracks/12/keys = {
-"times": PackedFloat32Array(0.0, 12.59, 12.6, 13.1, 13.11),
-"transitions": PackedFloat32Array(1.0, 1.0, 1.0, 1.0, 1.0),
+"times": PackedFloat32Array(0.0, 12.59, 12.6, 13.2, 13.21, 14.59, 14.6, 15.2, 15.21, 16.29, 16.3, 16.9, 16.91),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0),
 "update": 0,
-"values": [-1.0, -1.0, 0.0, 1.0, -1.0]
+"values": [-1.0, -1.0, 0.0, 1.0, -1.0, -1.0, 0.0, 1.0, -1.0, -1.0, 0.0, 1.0, -1.0]
 }
 tracks/13/type = "value"
 tracks/13/imported = false
@@ -310,6 +311,9 @@ _data = {
 &"contract": SubResource("Animation_contract")
 }
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dome"]
+shader = ExtResource("5_dome")
+
 [node name="ContractCutscene" type="Node3D"]
 script = ExtResource("1_script")
 
@@ -332,6 +336,7 @@ script = ExtResource("2_arm")
 layer = 0
 
 [node name="Black" type="ColorRect" parent="Overlay"]
+material = SubResource("ShaderMaterial_dome")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -339,13 +344,6 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0)
-
-[node name="Sweep" type="ColorRect" parent="Overlay"]
-visible = false
-offset_right = 6.0
-offset_bottom = 720.0
-mouse_filter = 2
-color = Color(1, 1, 1, 1)
 
 [node name="BellBig" type="AudioStreamPlayer" parent="."]
 

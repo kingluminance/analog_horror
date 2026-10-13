@@ -7,7 +7,8 @@ extends Node3D
 ##   4 the face (stretching as much as the mouth) balloons up over you and
 ##     hangs at the top of the screen like a UFO, all-red mouth open downward
 ##   5 it drops onto you, the view is sucked in -> black
-##   6 pitch dark, one white line of light sweeps past (small bell)
+##   6 pitch dark; each of the three bells sends a line of light over the
+##     inside of a dome around you (dome_light.gdshader)
 ##   7 ~5 s later -> next scene, where the stars burst up from below once
 ##     ("쨔라라라랑~", see contract_space.gd)
 ## Stays first person the whole way; the player is cutscene-locked from the
@@ -49,7 +50,8 @@ const MOUTH_POS := Vector3(0.0, -0.066, 0.175)
 @export var look_head := 0.0
 ## Black overlay alpha.
 @export var darkness := 0.0
-## White line of light: <0 hidden, 0..1 sweeping left -> right.
+## Line of light over the dark dome: <0 hidden, 0..1 sweeping left -> right
+## (keyed three times, once per bell).
 @export var sweep := -1.0
 ## Fades the level's ambience (wind) out as the world goes quiet.
 @export var world_volume := 1.0
@@ -72,7 +74,6 @@ var _wind_base_db := 0.0
 @onready var _arm_l: RubberArm = $ArmL
 @onready var _arm_r: RubberArm = $ArmR
 @onready var _black: ColorRect = $Overlay/Black
-@onready var _sweep: ColorRect = $Overlay/Sweep
 @onready var _anim: AnimationPlayer = $AnimationPlayer
 
 
@@ -158,7 +159,8 @@ func _update_head_and_mouth() -> void:
 		var in_front := cam - _camera.global_basis.z * 0.45
 		pos = pos.lerp(in_front - mouth_offset, head_push)
 	_head.global_transform = Transform3D(basis, pos)
-	_mouth.scale = Vector3(0.05 * mouth_size.x, 0.03 * mouth_size.y, 1.0)
+	_mouth.scale = Vector3(0.05 * mouth_size.x, 0.03 * mouth_size.y,
+			0.02 * maxf(mouth_size.x, mouth_size.y))
 
 
 func _update_arms() -> void:
@@ -181,39 +183,64 @@ func _update_arms() -> void:
 
 
 func _update_overlay() -> void:
-	var size := get_viewport().get_visible_rect().size
-	_black.color.a = darkness
-	_sweep.visible = sweep >= 0.0 and sweep <= 1.0
-	_sweep.position = Vector2(lerpf(-40.0, size.x + 40.0, sweep), 0.0)
-	_sweep.size = Vector2(6.0, size.y)
+	var dome := _black.material as ShaderMaterial
+	dome.set_shader_parameter("darkness", darkness)
+	dome.set_shader_parameter("sweep", sweep)
 
 
-# The torn mouth: one flat all-red disc (no black lips/throat -- user asked
-# for pure red) on the head, a separate 3D piece because the painted mouth
-# layer can't open. Sits where the painted mouth is, tilted to the head's
-# surface there; mouth_size stretches it.
+# The torn mouth: a red half-dome (rounded like the face, not a flat plate)
+# swelling out of the head where the painted mouth was. All red, no black
+# (user asked): bright at the rim, deeper red toward the middle so it still
+# reads as an open hole. Separate 3D piece because the painted mouth layer
+# can't open; mouth_size stretches it and the dome depth grows with it.
 func _build_mouth() -> Node3D:
 	var mouth := Node3D.new()
 	mouth.name = "TearMouth"
 	mouth.position = MOUTH_POS
 	mouth.rotation.x = 0.37
-	var disc := MeshInstance3D.new()
-	var cyl := CylinderMesh.new()
-	cyl.top_radius = 1.0
-	cyl.bottom_radius = 1.0
-	cyl.height = 0.002
-	cyl.radial_segments = 12
-	cyl.rings = 1
-	disc.mesh = cyl
-	disc.rotation.x = PI / 2  # cylinder axis Y -> facing +Z
+	var dome := MeshInstance3D.new()
+	dome.mesh = _half_dome_mesh(7, 16)
+	var grad := Image.create(1, 16, false, Image.FORMAT_RGBA8)
+	for y in 16:
+		var k := y / 15.0  # 0 = middle of the mouth, 1 = rim
+		grad.set_pixel(0, y, Color(0.55, 0.0, 0.06).lerp(Color(0.92, 0.06, 0.11), k))
 	var mat := ShaderMaterial.new()
 	mat.shader = RETRO_SHADER
-	mat.set_shader_parameter("albedo_tex", _flat_texture(Color(0.86, 0.04, 0.10)))
-	mat.set_shader_parameter("shade_strength", 0.0)
-	disc.material_override = mat
-	disc.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	mouth.add_child(disc)
+	mat.set_shader_parameter("albedo_tex", ImageTexture.create_from_image(grad))
+	mat.set_shader_parameter("shade_strength", 0.15)
+	dome.material_override = mat
+	dome.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	mouth.add_child(dome)
 	return mouth
+
+
+# Unit half-sphere bulging toward +Z (rim on z=0). UV.y runs 0 at the
+# centre -> 1 at the rim, for the gradient above.
+func _half_dome_mesh(rings: int, segments: int) -> ArrayMesh:
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var grid: Array = []
+	for r in rings + 1:
+		var t := float(r) / rings
+		var a := t * PI / 2.0
+		var row: Array[Vector3] = []
+		for sgm in segments + 1:
+			var ang := TAU * sgm / segments
+			row.append(Vector3(cos(ang) * sin(a), sin(ang) * sin(a), cos(a)))
+		grid.append(row)
+	for r in rings:
+		for sgm in segments:
+			var v00: Vector3 = grid[r][sgm]
+			var v01: Vector3 = grid[r][sgm + 1]
+			var v10: Vector3 = grid[r + 1][sgm]
+			var v11: Vector3 = grid[r + 1][sgm + 1]
+			var t0 := float(r) / rings
+			var t1 := float(r + 1) / rings
+			for v in [[v00, t0], [v01, t0], [v11, t1], [v00, t0], [v11, t1], [v10, t1]]:
+				st.set_normal((v[0] as Vector3).normalized())
+				st.set_uv(Vector2(0.5, v[1]))
+				st.add_vertex(v[0])
+	return st.commit()
 
 
 func _flat_texture(c: Color) -> Texture2D:
