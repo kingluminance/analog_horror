@@ -5,8 +5,11 @@ extends Node
 ## the user wanted one burst, not two), with the "쨔라라라랑~" sting
 ## (StarBurstSfx, autoplay), while the black lifts off the drifting
 ## background. Then Ellikonti's explanation BGM fades in under it (Bgm:
-## contract_space_bgm.wav, a seamless 80 s loop -- "dark but bouncy", D minor;
-## source project C:/Users/my/Documents/music/ellikonti_explain.py/.mmp).
+## contract_space_bgm.wav -- a seamless 48 s "돌림노래" loop meant to sit
+## under her talking: E minor 3/4, bassoon oom + pizzicato pah-pah, sparse
+## music-box/celesta melody; source C:/Users/my/Documents/music/
+## ellikonti_explain_loop.py/.mid/.pdf, a mix of the earlier LMMS march and
+## MIDI waltz drafts).
 ## Ellikonti talking to you in the middle of it (and where you go afterwards)
 ## is not built yet.
 
