@@ -1,7 +1,8 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://entities/ellikonti/contract_cutscene/contract_cutscene.gd" id="1_script"]
 [ext_resource type="Shader" path="res://entities/ellikonti/contract_cutscene/dome_light.gdshader" id="5_dome"]
+[ext_resource type="Shader" path="res://entities/ellikonti/contract_cutscene/jaws_close.gdshader" id="6_jaws"]
 [ext_resource type="Script" path="res://entities/ellikonti/contract_cutscene/rubber_arm.gd" id="2_arm"]
 [ext_resource type="AudioStream" path="res://entities/ellikonti/audio/church_bell.wav" id="10_church_bell"]
 [ext_resource type="AudioStream" path="res://entities/ellikonti/audio/rubber_stretch.wav" id="11_rubber_stretch"]
@@ -61,10 +62,10 @@ tracks/3/path = NodePath(".:cam_shake")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0.0, 2.6, 2.65, 2.95, 4.1, 4.45, 5.7, 6.3, 7.6, 8.7, 10.9, 11.2, 11.8),
-"transitions": PackedFloat32Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0),
+"times": PackedFloat32Array(0.0, 2.6, 2.65, 2.95, 4.1, 4.45, 5.7, 6.3, 7.6, 8.7, 10.9, 11.2, 11.85, 12.1),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0),
 "update": 0,
-"values": [0.0, 0.0, 0.3, 0.0, 0.45, 0.0, 0.75, 0.0, 1.2, 0.1, 0.4, 1.0, 0.0]
+"values": [0.0, 0.0, 0.3, 0.0, 0.45, 0.0, 0.75, 0.0, 1.2, 0.1, 0.4, 1.0, 1.4, 0.0]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
@@ -109,7 +110,7 @@ tracks/7/path = NodePath(".:head_scale")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0.0, 4.1, 4.4, 5.7, 6.3, 7.6, 8.7, 8.9, 11.0, 11.2, 11.75),
+"times": PackedFloat32Array(0.0, 4.1, 4.4, 5.7, 6.3, 7.6, 8.7, 8.9, 11.0, 11.2, 11.6),
 "transitions": PackedFloat32Array(-2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0),
 "update": 0,
 "values": [Vector3(1, 1, 1), Vector3(1, 1, 1), Vector3(1.3, 1.15, 1.1), Vector3(1.3, 1.15, 1.1), Vector3(1.8, 1.4, 1.3), Vector3(1.8, 1.4, 1.3), Vector3(2.6, 1.9, 1.6), Vector3(2.6, 1.9, 1.6), Vector3(6.0, 5.0, 4.0), Vector3(6.0, 5.0, 4.0), Vector3(8.0, 7.0, 6.0)]
@@ -133,7 +134,7 @@ tracks/9/path = NodePath(".:look_head")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
-"times": PackedFloat32Array(0.0, 8.9, 10.6, 11.2, 11.75),
+"times": PackedFloat32Array(0.0, 8.9, 10.6, 11.2, 11.6),
 "transitions": PackedFloat32Array(-2.0, -2.0, -2.0, -2.0, -2.0),
 "update": 0,
 "values": [0.0, 0.0, 0.45, 0.45, 1.0]
@@ -145,7 +146,7 @@ tracks/10/path = NodePath(".:head_push")
 tracks/10/interp = 1
 tracks/10/loop_wrap = true
 tracks/10/keys = {
-"times": PackedFloat32Array(0.0, 11.2, 11.75),
+"times": PackedFloat32Array(0.0, 11.2, 11.6),
 "transitions": PackedFloat32Array(-2.0, -2.0, -2.0),
 "update": 0,
 "values": [0.0, 0.0, 1.0]
@@ -153,56 +154,68 @@ tracks/10/keys = {
 tracks/11/type = "value"
 tracks/11/imported = false
 tracks/11/enabled = true
-tracks/11/path = NodePath(".:darkness")
+tracks/11/path = NodePath(".:jaw_close")
 tracks/11/interp = 1
 tracks/11/loop_wrap = true
 tracks/11/keys = {
-"times": PackedFloat32Array(0.0, 11.7, 11.8),
-"transitions": PackedFloat32Array(1.0, 1.0, 1.0),
+"times": PackedFloat32Array(0.0, 11.59, 11.6, 11.85),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0, 1.0),
 "update": 0,
-"values": [0.0, 0.0, 1.0]
+"values": [-1.0, -1.0, 0.0, 1.0]
 }
 tracks/12/type = "value"
 tracks/12/imported = false
 tracks/12/enabled = true
-tracks/12/path = NodePath(".:sweep")
+tracks/12/path = NodePath(".:darkness")
 tracks/12/interp = 1
 tracks/12/loop_wrap = true
 tracks/12/keys = {
+"times": PackedFloat32Array(0.0, 11.97, 12.12),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0),
+"update": 0,
+"values": [0.0, 0.0, 1.0]
+}
+tracks/13/type = "value"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath(".:sweep")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = {
 "times": PackedFloat32Array(0.0, 12.59, 12.6, 13.2, 13.21, 14.59, 14.6, 15.2, 15.21, 16.29, 16.3, 16.9, 16.91),
 "transitions": PackedFloat32Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0),
 "update": 0,
 "values": [-1.0, -1.0, 0.0, 1.0, -1.0, -1.0, 0.0, 1.0, -1.0, -1.0, 0.0, 1.0, -1.0]
 }
-tracks/13/type = "value"
-tracks/13/imported = false
-tracks/13/enabled = true
-tracks/13/path = NodePath(".:world_volume")
-tracks/13/interp = 1
-tracks/13/loop_wrap = true
-tracks/13/keys = {
+tracks/14/type = "value"
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/path = NodePath(".:world_volume")
+tracks/14/interp = 1
+tracks/14/loop_wrap = true
+tracks/14/keys = {
 "times": PackedFloat32Array(0.0, 8.9, 11.0),
 "transitions": PackedFloat32Array(-2.0, -2.0, -2.0),
 "update": 0,
 "values": [1.0, 1.0, 0.0]
 }
-tracks/14/type = "value"
-tracks/14/imported = false
-tracks/14/enabled = true
-tracks/14/path = NodePath("BellBig:volume_db")
-tracks/14/interp = 1
-tracks/14/loop_wrap = true
-tracks/14/keys = {
+tracks/15/type = "value"
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/path = NodePath("BellBig:volume_db")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/keys = {
 "times": PackedFloat32Array(0.0, 8.9, 11.0),
 "transitions": PackedFloat32Array(1.0, 1.0, 1.0),
 "update": 0,
 "values": [0.0, 0.0, -60.0]
 }
-tracks/15/type = "audio"
-tracks/15/imported = false
-tracks/15/enabled = true
-tracks/15/path = NodePath("BellBig")
-tracks/15/keys = {
+tracks/16/type = "audio"
+tracks/16/imported = false
+tracks/16/enabled = true
+tracks/16/path = NodePath("BellBig")
+tracks/16/keys = {
 "clips": [{
 "end_offset": 0.0,
 "start_offset": 0.0,
@@ -210,12 +223,12 @@ tracks/15/keys = {
 }],
 "times": PackedFloat32Array(0.6)
 }
-tracks/15/use_blend = true
-tracks/16/type = "audio"
-tracks/16/imported = false
-tracks/16/enabled = true
-tracks/16/path = NodePath("SfxA")
-tracks/16/keys = {
+tracks/16/use_blend = true
+tracks/17/type = "audio"
+tracks/17/imported = false
+tracks/17/enabled = true
+tracks/17/path = NodePath("SfxA")
+tracks/17/keys = {
 "clips": [{
 "end_offset": 0.0,
 "start_offset": 0.0,
@@ -239,12 +252,12 @@ tracks/16/keys = {
 }],
 "times": PackedFloat32Array(0.9, 4.1, 5.7, 7.6, 11.1)
 }
-tracks/16/use_blend = true
-tracks/17/type = "audio"
-tracks/17/imported = false
-tracks/17/enabled = true
-tracks/17/path = NodePath("SfxB")
-tracks/17/keys = {
+tracks/17/use_blend = true
+tracks/18/type = "audio"
+tracks/18/imported = false
+tracks/18/enabled = true
+tracks/18/path = NodePath("SfxB")
+tracks/18/keys = {
 "clips": [{
 "end_offset": 0.0,
 "start_offset": 0.0,
@@ -254,14 +267,14 @@ tracks/17/keys = {
 "start_offset": 0.0,
 "stream": ExtResource("18_gulp")
 }],
-"times": PackedFloat32Array(2.65, 11.68)
+"times": PackedFloat32Array(2.65, 11.82)
 }
-tracks/17/use_blend = true
-tracks/18/type = "audio"
-tracks/18/imported = false
-tracks/18/enabled = true
-tracks/18/path = NodePath("Drone")
-tracks/18/keys = {
+tracks/18/use_blend = true
+tracks/19/type = "audio"
+tracks/19/imported = false
+tracks/19/enabled = true
+tracks/19/path = NodePath("Drone")
+tracks/19/keys = {
 "clips": [{
 "end_offset": 0.0,
 "start_offset": 0.0,
@@ -269,12 +282,12 @@ tracks/18/keys = {
 }],
 "times": PackedFloat32Array(8.9)
 }
-tracks/18/use_blend = true
-tracks/19/type = "audio"
-tracks/19/imported = false
-tracks/19/enabled = true
-tracks/19/path = NodePath("SmallBell")
-tracks/19/keys = {
+tracks/19/use_blend = true
+tracks/20/type = "audio"
+tracks/20/imported = false
+tracks/20/enabled = true
+tracks/20/path = NodePath("SmallBell")
+tracks/20/keys = {
 "clips": [{
 "end_offset": 0.0,
 "start_offset": 0.0,
@@ -290,14 +303,14 @@ tracks/19/keys = {
 }],
 "times": PackedFloat32Array(12.6, 14.6, 16.3)
 }
-tracks/19/use_blend = true
-tracks/20/type = "method"
-tracks/20/imported = false
-tracks/20/enabled = true
-tracks/20/path = NodePath(".")
-tracks/20/interp = 1
-tracks/20/loop_wrap = true
-tracks/20/keys = {
+tracks/20/use_blend = true
+tracks/21/type = "method"
+tracks/21/imported = false
+tracks/21/enabled = true
+tracks/21/path = NodePath(".")
+tracks/21/interp = 1
+tracks/21/loop_wrap = true
+tracks/21/keys = {
 "times": PackedFloat32Array(17.6),
 "transitions": PackedFloat32Array(1),
 "values": [{
@@ -313,6 +326,9 @@ _data = {
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_dome"]
 shader = ExtResource("5_dome")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jaws"]
+shader = ExtResource("6_jaws")
 
 [node name="ContractCutscene" type="Node3D"]
 script = ExtResource("1_script")
@@ -334,6 +350,15 @@ script = ExtResource("2_arm")
 
 [node name="Overlay" type="CanvasLayer" parent="."]
 layer = 0
+
+[node name="Jaws" type="ColorRect" parent="Overlay"]
+material = SubResource("ShaderMaterial_jaws")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
 [node name="Black" type="ColorRect" parent="Overlay"]
 material = SubResource("ShaderMaterial_dome")

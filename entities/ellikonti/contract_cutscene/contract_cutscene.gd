@@ -6,7 +6,8 @@ extends Node3D
 ##     then the mouth stretches ("약간" -> "좌악." -> "좌아악!")
 ##   4 the face (stretching as much as the mouth) balloons up over you and
 ##     hangs at the top of the screen like a UFO, all-red mouth open downward
-##   5 it drops onto you, the view is sucked in -> black
+##   5 it drops onto you until the red fills the screen, then two red
+##     half-circle jaws clamp shut over you (jaws_close.gdshader) -> black
 ##   6 pitch dark; each of the three bells sends a line of light over the
 ##     inside of a dome around you (dome_light.gdshader)
 ##   7 ~5 s later -> next scene, where the stars burst up from below once
@@ -29,8 +30,10 @@ extends Node3D
 const NEXT_SCENE := "res://scenes/ellikonti_contract_space.tscn"
 const RETRO_SHADER := preload("res://shaders/retro_character.gdshader")
 const INK_MATERIAL := preload("res://entities/ellikonti/materials/ek_ink.tres")
-## Where the painted mouth sits on the head mesh (head local space).
+## Where the painted mouth sits on the head mesh (head local space), and how
+## far it tilts down to lie on the head's surface there.
 const MOUTH_POS := Vector3(0.0, -0.066, 0.175)
+const MOUTH_TILT := 0.37
 
 ## 0 = the player's own view, 1 = CamTarget/LookTarget. Keyed at the start
 ## so the cutscene camera eases off from exactly where you were looking.
@@ -46,6 +49,8 @@ const MOUTH_POS := Vector3(0.0, -0.066, 0.175)
 @export var head_rise := 0.0
 ## 0 = head where head_rise put it, 1 = right in front of the lens (the drop).
 @export var head_push := 0.0
+## Screen-space jaws: <0 hidden, 0 = open at the screen edges, 1 = shut.
+@export var jaw_close := -1.0
 ## How much the camera turns to look at the mouth instead of LookTarget.
 @export var look_head := 0.0
 ## Black overlay alpha.
@@ -74,6 +79,7 @@ var _wind_base_db := 0.0
 @onready var _arm_l: RubberArm = $ArmL
 @onready var _arm_r: RubberArm = $ArmR
 @onready var _black: ColorRect = $Overlay/Black
+@onready var _jaws: ColorRect = $Overlay/Jaws
 @onready var _anim: AnimationPlayer = $AnimationPlayer
 
 
@@ -153,11 +159,20 @@ func _update_head_and_mouth() -> void:
 	var global_scale := parent.global_basis.get_scale() * _head_base_scale * head_scale
 	var face := (cam - pos).normalized()
 	var up := Vector3.UP if absf(face.y) < 0.98 else Vector3.FORWARD
-	var basis := Basis.looking_at(-face, up) * Basis.from_scale(global_scale)
+	var rot := Basis.looking_at(-face, up)
 	if head_push > 0.0:
-		var mouth_offset := basis * MOUTH_POS
-		var in_front := cam - _camera.global_basis.z * 0.45
-		pos = pos.lerp(in_front - mouth_offset, head_push)
+		# Turn the MOUTH (not the head centre) square onto the lens, so no
+		# forehead slides in between, and stop with the dome's tip just short
+		# of the camera -- inside the back-face-culled dome you would see the
+		# world behind it. The jaws overlay finishes the swallow from there.
+		rot = rot.slerp(rot * Basis(Vector3.RIGHT, -MOUTH_TILT), head_push)
+	var basis := rot * Basis.from_scale(global_scale)
+	if head_push > 0.0:
+		var normal := (basis * _mouth.transform.basis.z).normalized()
+		var dome_depth := 0.02 * maxf(mouth_size.x, mouth_size.y) * global_scale.z
+		var apex := cam - _camera.global_basis.z * 0.15
+		var rim_centre := apex - normal * dome_depth
+		pos = pos.lerp(rim_centre - basis * MOUTH_POS, head_push)
 	_head.global_transform = Transform3D(basis, pos)
 	_mouth.scale = Vector3(0.05 * mouth_size.x, 0.03 * mouth_size.y,
 			0.02 * maxf(mouth_size.x, mouth_size.y))
@@ -186,6 +201,7 @@ func _update_overlay() -> void:
 	var dome := _black.material as ShaderMaterial
 	dome.set_shader_parameter("darkness", darkness)
 	dome.set_shader_parameter("sweep", sweep)
+	(_jaws.material as ShaderMaterial).set_shader_parameter("close", jaw_close)
 
 
 # The torn mouth: a red half-dome (rounded like the face, not a flat plate)
@@ -197,7 +213,7 @@ func _build_mouth() -> Node3D:
 	var mouth := Node3D.new()
 	mouth.name = "TearMouth"
 	mouth.position = MOUTH_POS
-	mouth.rotation.x = 0.37
+	mouth.rotation.x = MOUTH_TILT
 	var dome := MeshInstance3D.new()
 	dome.mesh = _half_dome_mesh(7, 16)
 	var grad := Image.create(1, 16, false, Image.FORMAT_RGBA8)
