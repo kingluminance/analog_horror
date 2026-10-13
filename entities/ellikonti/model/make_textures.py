@@ -200,6 +200,16 @@ def eyes_teary():
     return img
 
 
+def eyes_diverge():
+    # Contract cutscene: round staring eyes, each pupil looking somewhere
+    # different (left one up-left, right one down-right) -- nobody home.
+    img, d = new_layer()
+    for c, (dx, dy) in ((EYE_L, (-0.03, -0.035)), (EYE_R, (0.032, 0.03))):
+        ellipse(d, c, 0.085, 0.09, fill=WHITE, outline=INK, width=int(0.016 * BIG))
+        ellipse(d, (c[0] + dx, c[1] + dy), 0.026, 0.028, fill=INK)
+    return img
+
+
 def mouth_default():
     # Small open beak-triangle from the sketch.
     img, d = new_layer()
@@ -232,6 +242,12 @@ def mouth_small():
     img, d = new_layer()
     ellipse(d, MOUTH, 0.024, 0.03, fill=(60, 20, 50, 255), outline=INK, width=int(0.012 * BIG))
     return img
+
+
+def mouth_none():
+    # Blank mouth layer: the cutscene swaps in a separate 3D mouth that can
+    # actually stretch open (contract_cutscene/), so the painted one hides.
+    return new_layer()[0]
 
 
 def extra_none():
@@ -281,15 +297,40 @@ FACES = {
     "eyes_halflid": eyes_halflid,
     "eyes_closed": eyes_closed,
     "eyes_teary": eyes_teary,
+    "eyes_diverge": eyes_diverge,
     "mouth_default": mouth_default,
     "mouth_open": mouth_open,
     "mouth_wavy": mouth_wavy,
     "mouth_small": mouth_small,
+    "mouth_none": mouth_none,
     "extra_none": extra_none,
     "extra_sweat": extra_sweat,
     "extra_tears": extra_tears,
     "extra_blush": extra_blush,
 }
+
+
+STAR_DIR = os.path.join(ROOT, "contract_cutscene")
+STARS = {"star_pink": (0xFF, 0x2A, 0xD4), "star_green": (0x7C, 0xFF, 0x2E)}
+
+
+def star_sprite(colour):
+    """Chunky 5-point star like the ones in the user's storyboard, black edge."""
+    big = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
+    d = ImageDraw.Draw(big)
+    pts = []
+    for i in range(10):
+        a = -math.pi / 2 + i * math.pi / 5
+        r = 120 if i % 2 == 0 else 52
+        pts.append((128 + math.cos(a) * r, 132 + math.sin(a) * r))
+    d.polygon(pts, fill=colour + (255,), outline=INK, width=14)
+    small = big.resize((32, 32), Image.LANCZOS)
+    px = small.load()
+    for y in range(32):
+        for x in range(32):
+            r, g, b, a = px[x, y]
+            px[x, y] = (r, g, b, 255) if a >= 110 else (0, 0, 0, 0)
+    return small
 
 
 def main():
@@ -299,7 +340,10 @@ def main():
         painted_swatch(top, bottom, seed=SEEDS[name], strokes=name not in NO_STROKES).save(os.path.join(TEX_DIR, name + ".png"))
     for name, fn in FACES.items():
         finish(fn()).save(os.path.join(FACE_DIR, name + ".png"))
-    print("textures:", len(PARTS), "faces:", len(FACES))
+    os.makedirs(STAR_DIR, exist_ok=True)
+    for name, colour in STARS.items():
+        star_sprite(colour).save(os.path.join(STAR_DIR, name + ".png"))
+    print("textures:", len(PARTS), "faces:", len(FACES), "stars:", len(STARS))
 
 
 if __name__ == "__main__":

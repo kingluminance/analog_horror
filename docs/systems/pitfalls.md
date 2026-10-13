@@ -113,3 +113,7 @@
   `compress/mode=2`(VRAM 압축) + `mipmaps/generate=true`로 스스로 고쳐 씀 -- 작은 손칠/픽셀 텍스처(엘리콘티
   `textures/`, `faces/`)는 색이 뭉개지고, 커밋된 `.import`와 달라져서 다음 머지가 "local changes would be
   overwritten"으로 막힘. 픽셀 그대로 쓸 텍스처는 `compress/mode=0` + `detect_3d/compress_to=0`으로 커밋할 것.
+- **`ImmediateMesh`로 직접 만든 삼각형의 앞/뒷면이 생각과 반대일 수 있음**: 엘리콘티 계약 연출의 고무팔
+  (`rubber_arm.gd`)을 링 순서대로 삼각형을 이어 붙였더니, 검은 몸통이 통째로 back-face culling돼서
+  흰 inverted-hull 테두리만 보였음(헤드리스로는 절대 안 잡힘 -- 실제 렌더 캡처로 발견). 손으로 메시를 만들면
+  반드시 한 번 렌더해서 보고, 안 보이면 와인딩(두 꼭짓점 순서)을 뒤집을 것.

@@ -114,6 +114,22 @@
   나가면 `again`("...또 왔어?"). **어느 루트로 계약하든 결과는 똑같음**(사용자 확정) — 플래그도
   `ellikonti_contracted` 하나. 계약 이후(`after_contract`)는 사용자 요청으로 아직 비워둠(`...` 한 줄, 예전
   repeat 대사는 주석으로 보관).
+  **계약 체결 후 연출 (2026-10-14, 사용자 draw.io 스토리보드 기준)**: `ellikonti_contracted`가 선 채로 대화가
+  끝나면 `ellikonti.gd`가 같은 프레임에 `contract_cutscene/contract_cutscene.tscn`을 자식으로 붙이고
+  `start()` — 플레이어는 `set_cutscene_lock(true)`로 계속 경직, 스킵 불가, 1인칭 유지. 순서: 등에서 검은
+  고무팔(`rubber_arm.gd`, 매 프레임 Bezier 튜브를 `ImmediateMesh`로 재생성, 흰 inverted-hull 테두리, 손가락이
+  `grip`으로 오므라듦) → 얼굴 줌인 + 새 표정 `contract`(눈 두 개가 다른 데를 봄, 그려진 입은 비움) → **카메라가
+  먼저 한 단계 빠지고 그다음 입이 찢어지는** 3단(`TearMouth` = 머리에 붙인 3D 원반: 검은 입술/빨간 안쪽/
+  어두운 목구멍, 효과음 `tear_1/2/3` "약간→좌악.→좌아악!") → 머리째 커지며 화면으로 덮침 → 암전, 흰 선
+  빛 한 번(작은 종) → 약 5초 뒤 아래서 분홍/초록 별 폭발 → `scenes/ellikonti_contract_space.tscn`(파란 바탕에
+  분홍 조각·초록 동그라미가 왼쪽으로 흐르는 배경, 별이 이어서 터지며 암전이 걷힘). **새 씬의 엘리콘티 설명
+  대사와 그 이후는 아직 없음**(사용자 요청). 끝나면 `ellikonti_contract_cutscene_seen` 플래그. 타이밍은 전부
+  `AnimationPlayer`의 `contract` 애니메이션(19.5초)에 있음 — 스크립트 `@export` 손잡이(`cam_blend`,
+  `arm_reach`, `mouth_size`, `head_scale`, `head_push`, `darkness`, `sweep`, `world_volume` 등) +
+  `CamTarget`/`LookTarget` 위치 + 효과음 오디오 트랙 + `_emit_stars`/`_finish` 메서드 키. 에디터에서
+  드래그해서 조정할 것(코드는 손잡이를 실제 노드에 적용만 함). 효과음은 `entities/ellikonti/audio/make_sfx.py`
+  (numpy/scipy 합성, 같은 이름 wav로 덮어쓰면 교체됨): 1번엔 큰 교회 종, 6번엔 작고 맑은 종(사용자 지정).
+  배경음은 나중에 같이 정하기로 함.
   **2차 리디자인 (3D)**: 사용자가 직접 그린 "도형으로 이루어진" 새 스케치(삼각 고깔+종, 별, 뒤로 몽글한
   보라 곱슬머리(→ 3D로 만들었다가 사용자 요청으로 제거), 청회색 동그란 머리, 왼쪽으로 뾰족한 초록 삼각 몸통, 물방울 손, 대각선 긴 조각, 보라 동그라미)를
   해석 없이 "그 모양 그대로" 저폴리 3D로 옮김. `Visual`은 이제 `Sprite3D`가 아니라 `Node3D` 밑에

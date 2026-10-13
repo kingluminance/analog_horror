@@ -62,8 +62,12 @@ const EXPRESSIONS := {
 	"cry": ["eyes_teary", "mouth_wavy", "extra_tears"],
 	"tired": ["eyes_halflid", "mouth_small", "extra_none"],
 	"flustered": ["eyes_closed", "mouth_wavy", "extra_blush"],
+	# Contract cutscene: eyes staring two different ways, painted mouth
+	# blanked because the cutscene's 3D TearMouth takes over.
+	"contract": ["eyes_diverge", "mouth_none", "extra_none"],
 }
 const FACE_DIR := "res://entities/ellikonti/faces/"
+const CONTRACT_CUTSCENE := preload("res://entities/ellikonti/contract_cutscene/contract_cutscene.tscn")
 const BLINK_TIME := 0.12
 
 const MUTTER_LINES := [
@@ -95,6 +99,7 @@ var _bell_base_rotation: Vector3
 var _star: Node3D
 var _star_base_position: Vector3
 var _rest_yaw: float
+var _in_cutscene := false
 var _head: Node3D
 var _head_base_pitch: float
 
@@ -162,9 +167,28 @@ func _on_visual_state_changed(id: String, key: String, value) -> void:
 
 # The .dialogue sets faces mid-conversation; whichever way it ends (many
 # "=> END" exits), she goes back to her resting face.
+# The contract (any route) ends the dialogue with ellikonti_contracted set:
+# go straight into the cutscene on the same frame, so the player never gets
+# control back in between ("대화 직후에 계속 경직").
 func _on_dialogue_ended(resource: DialogueResource) -> void:
-	if resource == $Interactable.dialogue_resource:
-		StoryFlags.set_visual_state("ellikonti", "face", "default")
+	if resource != $Interactable.dialogue_resource:
+		return
+	if StoryFlags.get_flag("ellikonti_contracted") and not StoryFlags.get_flag("ellikonti_contract_cutscene_seen")\
+			and not _in_cutscene:
+		_start_contract_cutscene()
+		return
+	StoryFlags.set_visual_state("ellikonti", "face", "default")
+
+
+func _start_contract_cutscene() -> void:
+	_in_cutscene = true
+	$Interactable.process_mode = Node.PROCESS_MODE_DISABLED
+	$Interactable.visible = false
+	set_expression("contract")
+	var cutscene := CONTRACT_CUTSCENE.instantiate()
+	add_child(cutscene)
+	cutscene.rotation.y = _visual.rotation.y  # local +Z = toward the player
+	cutscene.start(self, _visual, _head)
 
 
 # Yaw only, on Visual only -- the root and its Interactable never rotate.
@@ -203,6 +227,8 @@ func _update_trinkets() -> void:
 # Occasional blink: eyes layer alone flips to "closed" for a moment, unless
 # the current expression already has its eyes shut.
 func _update_blink(delta: float) -> void:
+	if _in_cutscene:
+		return
 	_blink_timer += delta
 	if _blink_timer >= _next_blink:
 		var eyes: String = EXPRESSIONS[_expression][0]
@@ -230,6 +256,8 @@ func _update_tremble() -> void:
 
 
 func _update_mutter(delta: float) -> void:
+	if _in_cutscene:
+		return
 	_mutter_timer += delta
 	if _mutter_timer >= _next_mutter_delay:
 		_mutter_timer = 0.0
