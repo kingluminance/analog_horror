@@ -119,14 +119,18 @@
   `start()` — 플레이어는 `set_cutscene_lock(true)`로 계속 경직, 스킵 불가, 1인칭 유지. 순서: 등에서 검은
   고무팔(`rubber_arm.gd`, 매 프레임 Bezier 튜브를 `ImmediateMesh`로 재생성, 흰 inverted-hull 테두리, 손가락이
   `grip`으로 오므라듦) → 얼굴 줌인 + 새 표정 `contract`(눈 두 개가 다른 데를 봄, 그려진 입은 비움) → **카메라가
-  먼저 한 단계 빠지고 그다음 입이 찢어지는** 3단(`TearMouth` = 머리에 붙인 3D 원반: 검은 입술/빨간 안쪽/
-  어두운 목구멍, 효과음 `tear_1/2/3` "약간→좌악.→좌아악!") → 머리째 커지며 화면으로 덮침 → 암전, 흰 선
-  빛 한 번(작은 종) → 약 5초 뒤 아래서 분홍/초록 별 폭발 → `scenes/ellikonti_contract_space.tscn`(파란 바탕에
-  분홍 조각·초록 동그라미가 왼쪽으로 흐르는 배경, 별이 이어서 터지며 암전이 걷힘). **새 씬의 엘리콘티 설명
+  먼저 한 단계 빠지고 그다음 입이 찢어지는** 3단(`TearMouth` = 머리에 붙인 3D 원반, **검정 없이 전부
+  빨강**(사용자 요청), 얼굴(`head_scale`)도 입만큼 같이 늘어남, 효과음 `tear_1/2/3` "약간→좌악.→좌아악!") →
+  얼굴이 훨씬 커지며 **카메라 위로 떠올라 화면 위쪽에 UFO처럼** 입을 아래로 벌림(`head_rise`, 카메라는
+  `look_head`로 살짝 올려다봄) → 그대로 화면으로 덮침(`head_push`) → 암전, 흰 선 빛 한 번(작은 종) → 약 5초 뒤
+  `scenes/ellikonti_contract_space.tscn`으로 전환(파란 바탕에 분홍 조각·초록 동그라미가 왼쪽으로 흐르는 배경).
+  **별 폭발은 새 씬에서 한 번만**("쨔라라라랑~" 효과음 `star_burst`, 처음엔 연출 끝과 새 씬에서 두 번 터졌는데
+  한 번으로 줄여달라는 요청). 연출 중엔 머리를 연출 스크립트가 전역 좌표로 직접 잡음(항상 카메라를 향하게) --
+  `ellikonti.gd`는 `_in_cutscene` 동안 자기 고개 들기 pitch를 멈춤. **새 씬의 엘리콘티 설명
   대사와 그 이후는 아직 없음**(사용자 요청). 끝나면 `ellikonti_contract_cutscene_seen` 플래그. 타이밍은 전부
-  `AnimationPlayer`의 `contract` 애니메이션(19.5초)에 있음 — 스크립트 `@export` 손잡이(`cam_blend`,
-  `arm_reach`, `mouth_size`, `head_scale`, `head_push`, `darkness`, `sweep`, `world_volume` 등) +
-  `CamTarget`/`LookTarget` 위치 + 효과음 오디오 트랙 + `_emit_stars`/`_finish` 메서드 키. 에디터에서
+  `AnimationPlayer`의 `contract` 애니메이션(17.7초)에 있음 — 스크립트 `@export` 손잡이(`cam_blend`,
+  `arm_reach`, `mouth_size`, `head_scale`, `head_rise`, `look_head`, `head_push`, `darkness`, `sweep`,
+  `world_volume` 등) + `CamTarget`/`LookTarget` 위치 + 효과음 오디오 트랙 + `_finish` 메서드 키. 에디터에서
   드래그해서 조정할 것(코드는 손잡이를 실제 노드에 적용만 함). 효과음은 `entities/ellikonti/audio/make_sfx.py`
   (numpy/scipy 합성, 같은 이름 wav로 덮어쓰면 교체됨): 1번엔 큰 교회 종, 6번엔 작고 맑은 종(사용자 지정).
   배경음은 나중에 같이 정하기로 함.

@@ -208,9 +208,11 @@ func _update_facing(delta: float) -> void:
 		var to_eyes := cam.global_position - _head.global_position
 		var flat := Vector2(to_eyes.x, to_eyes.z).length()
 		pitch = clampf(atan2(to_eyes.y, flat), 0.0, deg_to_rad(max_look_up_degrees))
-	# Model faces +Z, so a negative X rotation lifts the face.
-	_head.rotation.x = lerp_angle(_head.rotation.x, _head_base_pitch - pitch,
-			clampf(turn_speed * delta, 0.0, 1.0))
+	# Model faces +Z, so a negative X rotation lifts the face. (The contract
+	# cutscene drives the head itself, so hands off during it.)
+	if not _in_cutscene:
+		_head.rotation.x = lerp_angle(_head.rotation.x, _head_base_pitch - pitch,
+				clampf(turn_speed * delta, 0.0, 1.0))
 	_visual.rotation.y = lerp_angle(_visual.rotation.y, target, clampf(turn_speed * delta, 0.0, 1.0))
 
 

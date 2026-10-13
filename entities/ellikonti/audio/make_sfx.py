@@ -17,7 +17,7 @@ Cue list (see contract_cutscene.tscn for where each one sits on the timeline):
   gulp             5 "꿀꺽" -- the cut to black
   small_bell       6 small clear bell when the white light sweeps the dark
   small_bell_far   6 same bell, distant, rung again in the silence
-  star_burst       7 stars bursting up from below into the next scene
+  star_burst       7 "쨔라라라랑~" as the stars burst up once in the next scene
 """
 import os
 import wave
@@ -203,24 +203,39 @@ def gulp():
 
 # ------------------------------------------------------------------ stars
 def star_burst():
-    secs = 4.5
+    """"쨔라라라랑~": bright hit ("쨔"), a fast ascending pentatonic run of
+    little bell pings ("라라라라"), then a shimmering high chord that rings out
+    with a tremolo ("랑~")."""
+    secs = 4.0
     x = np.zeros(int(SR * secs))
-    # cascade of tiny chimes, densest at the start of the burst
-    for _ in range(70):
-        start = int(SR * (rng.random() ** 2) * 1.6)
-        f = rng.uniform(1500, 5200)
-        d = t_axis(0.5)
-        ping = np.sin(2 * np.pi * f * d) * np.exp(-d / rng.uniform(0.05, 0.18))
-        end = min(len(x), start + len(ping))
-        x[start:end] += ping[:end - start] * rng.uniform(0.2, 0.6)
-    # a few small bells together under the sparkle
-    for f, delay in ((1318.5, 0.0), (1760.0, 0.06), (2093.0, 0.13), (1568.0, 0.2)):
-        b = bell(f, 4.0, [(1.0, 1.0, 1.0), (2.76, 0.3, 0.4), (5.40, 0.15, 0.2)], strike=0.1)
-        s = int(SR * delay)
-        n = min(len(b), len(x) - s)
-        x[s:s + n] += b[:n] * 0.35
-    hiss = highpass(rng.standard_normal(len(x)), 5000) * np.exp(-t_axis(secs) / 0.4) * 0.3
-    return reverb(x + hiss, 2.0, 0.3, 7000)
+
+    def add(sig, at):
+        s0 = int(SR * at)
+        n = min(len(sig), len(x) - s0)
+        x[s0:s0 + n] += sig[:n]
+
+    # 쨔
+    hit = t_axis(0.25)
+    zza = highpass(rng.standard_normal(len(hit)), 4000) * np.exp(-hit / 0.03) * 0.5
+    for f in (2093.0, 2637.0, 3136.0):
+        zza += np.sin(2 * np.pi * f * hit) * np.exp(-hit / 0.08) * 0.35
+    add(zza, 0.0)
+    # 라라라라 -- C major pentatonic, two octaves up from C6
+    scale = [1046.5, 1174.7, 1318.5, 1568.0, 1760.0]
+    run = [f * (2 ** octave) for octave in (0, 1) for f in scale] + [4186.0]
+    for i, f in enumerate(run):
+        ping = bell(f, 0.9, [(1.0, 1.0, 0.35), (2.76, 0.25, 0.12), (5.40, 0.1, 0.06)], strike=0.05)
+        add(ping * (0.35 + 0.03 * i), 0.06 + i * 0.055)
+    # 랑~
+    ring_at = 0.06 + len(run) * 0.055
+    ring_t = t_axis(secs - ring_at)
+    trem = 1.0 + 0.25 * np.sin(2 * np.pi * 6.0 * ring_t)
+    ring = np.zeros_like(ring_t)
+    for f, amp in ((2093.0, 1.0), (2637.0, 0.7), (3136.0, 0.6), (4186.0, 0.35), (1046.5, 0.5)):
+        ring += amp * bell(f, secs - ring_at, [(1.0, 1.0, 1.1), (2.76, 0.2, 0.3)], strike=0.0)[:len(ring_t)]
+    add(ring * trem * 0.3, ring_at)
+    sparkle = highpass(rng.standard_normal(len(x)), 6000) * np.exp(-t_axis(secs) / 0.9) * 0.06
+    return reverb(x + sparkle, 2.0, 0.3, 8000)
 
 
 def main():

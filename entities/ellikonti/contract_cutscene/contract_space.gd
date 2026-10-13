@@ -1,9 +1,11 @@
 extends Node
 ## The place Ellikonti's contract cutscene drops you into
 ## (scenes/ellikonti_contract_space.tscn). For now it is only the arrival:
-## the stars that burst at the end of the cutscene keep bursting here while
-## the black lifts off the drifting background. Ellikonti talking to you in
-## the middle of it (and where you go afterwards) is not built yet.
+## the stars burst up from below exactly once, here (not in the cutscene --
+## the user wanted one burst, not two), with the "쨔라라라랑~" sting
+## (StarBurstSfx, autoplay), while the black lifts off the drifting
+## background. Ellikonti talking to you in the middle of it (and where you
+## go afterwards) is not built yet.
 
 @onready var _black: ColorRect = $Overlay/Black
 @onready var _stars: Array[CPUParticles2D] = [$Overlay/StarsPink, $Overlay/StarsGreen]
