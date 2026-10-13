@@ -131,7 +131,10 @@
   `scenes/ellikonti_contract_space.tscn`으로 전환(파란 바탕에 분홍 조각·초록 동그라미가 왼쪽으로 흐르는 배경).
   **별 폭발은 새 씬에서 한 번만**("쨔라라라랑~" 효과음 `star_burst`, 처음엔 연출 끝과 새 씬에서 두 번 터졌는데
   한 번으로 줄여달라는 요청). 연출 중엔 머리를 연출 스크립트가 전역 좌표로 직접 잡음(항상 카메라를 향하게) --
-  `ellikonti.gd`는 `_in_cutscene` 동안 자기 고개 들기 pitch를 멈춤. **새 씬의 엘리콘티 설명
+  `ellikonti.gd`는 `_in_cutscene` 동안 자기 고개 들기 pitch를 멈춤. 새 씬엔 엘리콘티 설명용 BGM(`entities/ellikonti/audio/contract_space_bgm.wav`, "약간 어두우면서 발랄하게" D단조
+  108BPM 80초, 첼레스타/오르골/스타카토 바순/피치카토/어두운 패드, 36마디로 정확히 잘라 잔향 꼬리를 앞에 겹친
+  이음매 없는 루프, import `loop_mode` Forward; 원본 LMMS 프로젝트·생성 스크립트는 저장소 밖
+  `C:/Users/my/Documents/music/ellikonti_explain.py/.mmp`)이 별 효과음 1.4초 뒤 페이드인. **새 씬의 엘리콘티 설명
   대사와 그 이후는 아직 없음**(사용자 요청). 끝나면 `ellikonti_contract_cutscene_seen` 플래그. 타이밍은 전부
   `AnimationPlayer`의 `contract` 애니메이션(17.7초)에 있음 — 스크립트 `@export` 손잡이(`cam_blend`,
   `arm_reach`, `mouth_size`, `head_scale`, `head_rise`, `look_head`, `head_push`, `darkness`, `sweep`,

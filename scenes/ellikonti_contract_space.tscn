@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://entities/ellikonti/contract_cutscene/contract_space.gd" id="1_script"]
 [ext_resource type="Shader" path="res://entities/ellikonti/contract_cutscene/contract_space_bg.gdshader" id="2_bg"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" path="res://entities/ellikonti/contract_cutscene/star_green.png" id="4_green"]
 [ext_resource type="PackedScene" path="res://ui/post_process.tscn" id="5_post"]
 [ext_resource type="AudioStream" path="res://entities/ellikonti/audio/star_burst.wav" id="6_star_sfx"]
+[ext_resource type="AudioStream" path="res://entities/ellikonti/audio/contract_space_bgm.wav" id="7_bgm"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_bg"]
 shader = ExtResource("2_bg")
@@ -75,5 +76,9 @@ scale_amount_max = 3.0
 [node name="StarBurstSfx" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_star_sfx")
 autoplay = true
+
+[node name="Bgm" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_bgm")
+volume_db = -40.0
 
 [node name="PostProcess" parent="." instance=ExtResource("5_post")]
