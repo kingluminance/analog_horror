@@ -131,6 +131,11 @@ addons/dialogue_manager/        Dialogue Manager v4.1.0 (doda 프로젝트에서
   이 버그에 완전히 안전함**(쓰레기천사가 처음부터 이 방식이었음). `floating_photo.tscn`처럼 여러
   인스턴스(존/물병/통속의뇌)가 서로 다른 대화를 쓰는 경우만 어쩔 수 없이 오버라이드 + `[editable
   path=...]` 조합을 써야 함
+- **웹 익스포트 확인 링크**: Web 프리셋은 `~/web/<프로젝트이름>/index.html`로 출력되고(이 프로젝트는
+  `analog_horror_project`), `~/web`이 Tailscale(tailnet 전용)로 서빙됨. 익스포트 후 확인 링크는
+  `https://pop-os.tail159d07.ts.net/<프로젝트이름>/?v=<커밋해시>` 형식으로 줄 것
+  (예: `https://pop-os.tail159d07.ts.net/analog_horror_project/?v=8442bbb`) — `?v=`는 브라우저
+  캐시 때문에 예전 빌드가 뜨는 걸 막는 용도라, 매번 현재 커밋 해시(`git rev-parse --short HEAD`)로 바꿀 것
 
 ## 알려진 함정
 
