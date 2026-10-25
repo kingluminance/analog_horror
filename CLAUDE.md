@@ -131,11 +131,20 @@ addons/dialogue_manager/        Dialogue Manager v4.1.0 (doda 프로젝트에서
   이 버그에 완전히 안전함**(쓰레기천사가 처음부터 이 방식이었음). `floating_photo.tscn`처럼 여러
   인스턴스(존/물병/통속의뇌)가 서로 다른 대화를 쓰는 경우만 어쩔 수 없이 오버라이드 + `[editable
   path=...]` 조합을 써야 함
-- **웹 익스포트 확인 링크**: Web 프리셋은 `~/web/<프로젝트이름>/index.html`로 출력되고(이 프로젝트는
-  `analog_horror_project`), `~/web`이 Tailscale(tailnet 전용)로 서빙됨. 익스포트 후 확인 링크는
-  `https://pop-os.tail159d07.ts.net/<프로젝트이름>/?v=<커밋해시>` 형식으로 줄 것
-  (예: `https://pop-os.tail159d07.ts.net/analog_horror_project/?v=8442bbb`) — `?v=`는 브라우저
-  캐시 때문에 예전 빌드가 뜨는 걸 막는 용도라, 매번 현재 커밋 해시(`git rev-parse --short HEAD`)로 바꿀 것
+- **웹 익스포트는 반드시 `./export_web.sh`로** (에디터 Export 메뉴나 `--export-release` 직접 호출 금지).
+  스크립트가 프로젝트를 `~/build/analog_horror_web`으로 rsync(`.godot`/`.git`/`.claude` 제외)하고,
+  **복사본의** 4096px 이상 텍스처 `.import`에만 `process/size_limit=1024`를 걸어 `--import` 후 Web
+  프리셋으로 `~/web/analog_horror/index.html`에 익스포트함 — 원본 `.import`는 데스크톱 화질 그대로 유지.
+  Godot 4.7 바이너리는 `~/.local/opt/godot/Godot_v4.7-stable_linux.x86_64`(PATH의 `godot`은 4.6.2라
+  쓰면 안 됨, `GODOT=` 환경변수로 바꿀 수 있음). 안 쓰는 대용량 에셋(Carpet013, WoodFloor
+  Displacement, 천막2 등)은 `export_presets.cfg`의 `exclude_filter`로 빠져 있음 — 새로 안 쓰게 된
+  큰 파일은 여기에 추가할 것
+- **웹 서빙**: `~/web`을 nginx(`127.0.0.1:8000`, gzip, `.wasm`=`application/wasm`)가 서빙하고
+  Tailscale serve(tailnet 전용)가 그 포트로 프록시함. 설정은 `/etc/nginx/sites-available/gamesrv`
+  (예전 python `gamesrv.service`는 disable됨)
+- **웹 익스포트 확인 링크**: 익스포트 후 `https://pop-os.tail159d07.ts.net/analog_horror/?v=<커밋해시>`
+  형식으로 줄 것(`export_web.sh`가 마지막에 출력해줌) — `?v=`는 브라우저 캐시 때문에 예전 빌드가 뜨는
+  걸 막는 용도라, 매번 현재 커밋 해시(`git rev-parse --short HEAD`)로 바꿀 것
 
 ## 알려진 함정
 
